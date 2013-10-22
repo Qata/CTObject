@@ -6,12 +6,71 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		238958711817317200096409 /* CTAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 238958651817317200096409 /* CTAllocator.h */; };
+		238958721817317200096409 /* CTAllocator.c in Sources */ = {isa = PBXBuildFile; fileRef = 238958661817317200096409 /* CTAllocator.c */; };
+		238958731817317200096409 /* CTArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 238958671817317200096409 /* CTArray.h */; };
+		238958741817317200096409 /* CTArray.c in Sources */ = {isa = PBXBuildFile; fileRef = 238958681817317200096409 /* CTArray.c */; };
+		238958751817317200096409 /* CTDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 238958691817317200096409 /* CTDictionary.h */; };
+		238958761817317200096409 /* CTDictionary.c in Sources */ = {isa = PBXBuildFile; fileRef = 2389586A1817317200096409 /* CTDictionary.c */; };
+		238958771817317200096409 /* CTFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 2389586B1817317200096409 /* CTFunctions.h */; };
+		238958781817317200096409 /* CTFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 2389586C1817317200096409 /* CTFunctions.c */; };
+		238958791817317200096409 /* CTNetServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2389586D1817317200096409 /* CTNetServer.h */; };
+		2389587A1817317200096409 /* CTNetServer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2389586E1817317200096409 /* CTNetServer.c */; };
+		2389587B1817317200096409 /* CTString.h in Headers */ = {isa = PBXBuildFile; fileRef = 2389586F1817317200096409 /* CTString.h */; };
+		2389587C1817317200096409 /* CTString.c in Sources */ = {isa = PBXBuildFile; fileRef = 238958701817317200096409 /* CTString.c */; };
+		23895884181731AA00096409 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 23895883181731AA00096409 /* main.c */; };
+		23895886181731AA00096409 /* CTObject_Tests.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 23895885181731AA00096409 /* CTObject_Tests.1 */; };
+		2389588D181735E500096409 /* CTAllocator.c in Sources */ = {isa = PBXBuildFile; fileRef = 238958661817317200096409 /* CTAllocator.c */; };
+		2389588E181735E500096409 /* CTArray.c in Sources */ = {isa = PBXBuildFile; fileRef = 238958681817317200096409 /* CTArray.c */; };
+		2389588F181735E500096409 /* CTDictionary.c in Sources */ = {isa = PBXBuildFile; fileRef = 2389586A1817317200096409 /* CTDictionary.c */; };
+		23895890181735E500096409 /* CTFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 2389586C1817317200096409 /* CTFunctions.c */; };
+		23895891181735E500096409 /* CTNetServer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2389586E1817317200096409 /* CTNetServer.c */; };
+		23895892181735E500096409 /* CTString.c in Sources */ = {isa = PBXBuildFile; fileRef = 238958701817317200096409 /* CTString.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2389587F181731AA00096409 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				23895886181731AA00096409 /* CTObject_Tests.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		2389585E1817314600096409 /* libCTObject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCTObject.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		238958651817317200096409 /* CTAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTAllocator.h; sourceTree = "<group>"; };
+		238958661817317200096409 /* CTAllocator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTAllocator.c; sourceTree = "<group>"; };
+		238958671817317200096409 /* CTArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTArray.h; sourceTree = "<group>"; };
+		238958681817317200096409 /* CTArray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTArray.c; sourceTree = "<group>"; };
+		238958691817317200096409 /* CTDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTDictionary.h; sourceTree = "<group>"; };
+		2389586A1817317200096409 /* CTDictionary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTDictionary.c; sourceTree = "<group>"; };
+		2389586B1817317200096409 /* CTFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTFunctions.h; sourceTree = "<group>"; };
+		2389586C1817317200096409 /* CTFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTFunctions.c; sourceTree = "<group>"; };
+		2389586D1817317200096409 /* CTNetServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTNetServer.h; sourceTree = "<group>"; };
+		2389586E1817317200096409 /* CTNetServer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTNetServer.c; sourceTree = "<group>"; };
+		2389586F1817317200096409 /* CTString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTString.h; sourceTree = "<group>"; };
+		238958701817317200096409 /* CTString.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTString.c; sourceTree = "<group>"; };
+		23895881181731AA00096409 /* CTObject Tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CTObject Tests"; sourceTree = BUILT_PRODUCTS_DIR; };
+		23895883181731AA00096409 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		23895885181731AA00096409 /* CTObject_Tests.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = CTObject_Tests.1; sourceTree = "<group>"; };
+		2389588C181731F300096409 /* CTPrelude.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTPrelude.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		2389585B1817314600096409 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2389587E181731AA00096409 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -24,6 +83,20 @@
 		238958551817314600096409 = {
 			isa = PBXGroup;
 			children = (
+				2389588C181731F300096409 /* CTPrelude.h */,
+				238958651817317200096409 /* CTAllocator.h */,
+				238958661817317200096409 /* CTAllocator.c */,
+				238958671817317200096409 /* CTArray.h */,
+				238958681817317200096409 /* CTArray.c */,
+				238958691817317200096409 /* CTDictionary.h */,
+				2389586A1817317200096409 /* CTDictionary.c */,
+				2389586B1817317200096409 /* CTFunctions.h */,
+				2389586C1817317200096409 /* CTFunctions.c */,
+				2389586D1817317200096409 /* CTNetServer.h */,
+				2389586E1817317200096409 /* CTNetServer.c */,
+				2389586F1817317200096409 /* CTString.h */,
+				238958701817317200096409 /* CTString.c */,
+				23895882181731AA00096409 /* CTObject Tests */,
 				2389585F1817314600096409 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -32,8 +105,18 @@
 			isa = PBXGroup;
 			children = (
 				2389585E1817314600096409 /* libCTObject.a */,
+				23895881181731AA00096409 /* CTObject Tests */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		23895882181731AA00096409 /* CTObject Tests */ = {
+			isa = PBXGroup;
+			children = (
+				23895883181731AA00096409 /* main.c */,
+				23895885181731AA00096409 /* CTObject_Tests.1 */,
+			);
+			path = "CTObject Tests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -43,6 +126,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				238958711817317200096409 /* CTAllocator.h in Headers */,
+				238958731817317200096409 /* CTArray.h in Headers */,
+				2389587B1817317200096409 /* CTString.h in Headers */,
+				238958751817317200096409 /* CTDictionary.h in Headers */,
+				238958791817317200096409 /* CTNetServer.h in Headers */,
+				238958771817317200096409 /* CTFunctions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +155,23 @@
 			productReference = 2389585E1817314600096409 /* libCTObject.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		23895880181731AA00096409 /* CTObject Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 23895887181731AA00096409 /* Build configuration list for PBXNativeTarget "CTObject Tests" */;
+			buildPhases = (
+				2389587D181731AA00096409 /* Sources */,
+				2389587E181731AA00096409 /* Frameworks */,
+				2389587F181731AA00096409 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "CTObject Tests";
+			productName = "CTObject Tests";
+			productReference = 23895881181731AA00096409 /* CTObject Tests */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -88,6 +194,7 @@
 			projectRoot = "";
 			targets = (
 				2389585D1817314600096409 /* CTObject */,
+				23895880181731AA00096409 /* CTObject Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -97,6 +204,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				238958741817317200096409 /* CTArray.c in Sources */,
+				2389587C1817317200096409 /* CTString.c in Sources */,
+				238958761817317200096409 /* CTDictionary.c in Sources */,
+				238958781817317200096409 /* CTFunctions.c in Sources */,
+				2389587A1817317200096409 /* CTNetServer.c in Sources */,
+				238958721817317200096409 /* CTAllocator.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2389587D181731AA00096409 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23895884181731AA00096409 /* main.c in Sources */,
+				2389588D181735E500096409 /* CTAllocator.c in Sources */,
+				2389588E181735E500096409 /* CTArray.c in Sources */,
+				2389588F181735E500096409 /* CTDictionary.c in Sources */,
+				23895890181735E500096409 /* CTFunctions.c in Sources */,
+				23895891181735E500096409 /* CTNetServer.c in Sources */,
+				23895892181735E500096409 /* CTString.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +314,26 @@
 			};
 			name = Release;
 		};
+		23895888181731AA00096409 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		23895889181731AA00096409 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -204,6 +351,14 @@
 			buildConfigurations = (
 				238958631817314600096409 /* Debug */,
 				238958641817314600096409 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		23895887181731AA00096409 /* Build configuration list for PBXNativeTarget "CTObject Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				23895888181731AA00096409 /* Debug */,
+				23895889181731AA00096409 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
