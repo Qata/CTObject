@@ -1,4 +1,4 @@
 CTLibrary
 =========
 
-A C library inspired by CoreFoundation and attempting to bridge power gap between C and C++
+A C library inspired by CoreFoundation and attempting to bridge the power gap between C and C++
