@@ -7,11 +7,12 @@
 //
 #pragma once
 #include "CTAllocator.h"
+#include "CTString.h"
 
 typedef struct
 {
-	char * key;
-	char * value;
+	CTString * key;
+	CTString * value;
 } CTDictionaryEntry;
 
 typedef struct
@@ -27,5 +28,5 @@ void CTDictionaryAddEntriesFromQueryString(CTDictionary * restrict dict, const c
 
 void CTDictionaryAddEntry(CTDictionary * restrict dict, const char * restrict key, const char * restrict value);
 void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict key);
-const char * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key);
+const CTString * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key);
 unsigned long CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key);

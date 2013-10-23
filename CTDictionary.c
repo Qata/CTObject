@@ -69,8 +69,10 @@ void CTDictionaryAddEntry(CTDictionary * restrict dict, const char * restrict ke
     }
     
     dict->elements[index] = CTDictionaryCreateEntry(dict->alloc);
-    dict->elements[index]->key = stringDuplicate(dict->alloc, key);
-    dict->elements[index]->value = stringDuplicate(dict->alloc, value);
+	dict->elements[index]->key = CTStringCreate(dict->alloc, key);
+    dict->elements[index]->value = CTStringCreate(dict->alloc, key);
+//    dict->elements[index]->key = stringDuplicate(dict->alloc, key);
+//    dict->elements[index]->value = stringDuplicate(dict->alloc, value);
 }
 
 void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict key)
@@ -80,7 +82,7 @@ void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict
 		int countOfKeys = 0;
 		for (unsigned long i = 0; i < dict->count; i++)
 		{
-			if (!strcmp(dict->elements[i]->key, key))
+			if (!strcmp(dict->elements[i]->key->characters, key))
 			{
 				++countOfKeys;
 			}
@@ -90,7 +92,7 @@ void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict
 			CTDictionaryEntry ** retVal = CTAllocatorAllocate(dict->alloc, sizeof(CTDictionaryEntry *) * dict->count - countOfKeys);
 			for (unsigned long i = 0, count = 0; i < dict->count; i++)
 			{
-				if (strcmp(dict->elements[i]->key, key))
+				if (strcmp(dict->elements[i]->key->characters, key))
 				{
 					retVal[count++] = dict->elements[i];
 				}
@@ -106,11 +108,11 @@ void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict
 	}
 }
 
-const char * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key)
+const CTString * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key)
 {
     for (unsigned long i = 0; i < dict->count; i++)
     {
-        if (!strcmp(dict->elements[i]->key, key))
+        if (!strcmp(dict->elements[i]->key->characters, key))
         {
             return dict->elements[i]->value;
         }
@@ -122,7 +124,7 @@ unsigned long CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const
 {
     for (unsigned long i = 0; i < dict->count; i++)
     {
-        if (!strcmp(dict->elements[i]->key, key))
+        if (!strcmp(dict->elements[i]->key->characters, key))
         {
             return i;
         }

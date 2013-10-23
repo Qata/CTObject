@@ -74,7 +74,7 @@ int main(int argc, const char * argv[])
     for (int i = 0; i < 0x10; i++)
     {
         assert(CTDictionaryIndexOfEntry(dict, testStrings[i]) == i);
-        assert(strcmp(CTDictionaryValueForKey(dict, testStrings[i]), testStrings2[i]) == 0);
+        assert(strcmp(CTDictionaryValueForKey(dict, testStrings[i])->characters, testStrings2[i]) == 0);
     }
     
     for (int i = 0; i < 0x10; i++)
