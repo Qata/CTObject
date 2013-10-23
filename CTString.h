@@ -16,10 +16,10 @@ typedef struct
     char * characters;
 } CTString;
 
-CTString * CTStringCreate(CTAllocator * alloc, const char * restrict characters);
-void CTStringAppendCharacters(CTString * string, const char * restrict characters);
-void CTStringPrependCharacters(CTString * string, const char * restrict characters);
-void CTStringSet(CTString * string, const char * restrict characters);
-void CTStringRemoveCharactersFromStart(CTString * string, unsigned long count);
-void CTStringRemoveCharactersFromEnd(CTString * string, unsigned long count);
-const char * CTStringStringBetween(CTString * string, const char * restrict search1, const char * restrict search2);
+CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict characters);
+void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters);
+void CTStringPrependCharacters(CTString * restrict string, const char * restrict characters);
+void CTStringSet(CTString * restrict string, const char * restrict characters);
+void CTStringRemoveCharactersFromStart(CTString * restrict string, unsigned long count);
+void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long count);
+const char * CTStringStringBetween(CTString * restrict string, const char * restrict search1, const char * restrict search2);

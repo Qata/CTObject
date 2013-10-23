@@ -15,8 +15,8 @@ typedef struct
 } CTAllocator;
 
 CTAllocator * CTAllocatorCreate();
-void CTAllocatorRelease(CTAllocator * allocator);
+void CTAllocatorRelease(CTAllocator * restrict allocator);
 
-void * CTAllocatorAllocate(CTAllocator * allocator, unsigned long size);
-void * CTAllocatorReallocate(CTAllocator * allocator, void * ptr, unsigned long size);
-void CTAllocatorDeallocate(CTAllocator * allocator, void * ptr);
+void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size);
+void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, unsigned long size);
+void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr);

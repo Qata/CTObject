@@ -7,47 +7,93 @@
 //
 
 #include "CTPrelude.h"
+#include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <time.h>
 
 int main(int argc, const char * argv[])
 {
-    char * emergencyBroadcastTest = "This is a test of the emergency broadcast system, do not be alarmed. Be alarmed when this is not a test.";
-    
+    clock_t t = clock();
 #pragma mark - CTAllocator Test Begin
     CTAllocator * allocator = CTAllocatorCreate();
     
+    char ** testStrings = CTAllocatorAllocate(allocator, sizeof(void *) * 0x10);
+    char ** testStrings2 = CTAllocatorAllocate(allocator, sizeof(void *) * 0x10);
+    
+    for (int i = 0; i < 0x10; i++)
+    {
+        char string[0x10];
+        char string2[0x10];
+        memset(string, 0, 0x10);
+        sprintf(string, "Test%i", i);
+        sprintf(string2, "Test%i", i + 0x10);
+        testStrings[i] = stringDuplicate(allocator, string);
+        testStrings2[i] = stringDuplicate(allocator, string);
+    }
+    
 #pragma mark - CTArray Test Begin
     CTArray * array = CTArrayCreate(allocator);
-    CTArrayAddEntry(array, emergencyBroadcastTest, strlen(emergencyBroadcastTest));
-    CTArrayAddEntry(array, "supercalafragalisticexpialadoshus", strlen("supercalafragalisticexpialadoshus"));
-    assert(CTArrayIndexOfEntry(array, "This is a test of the emergency broadcast system, do not be alarmed. Be alarmed when this is not a test.") == 0);
-    assert(CTArrayIndexOfEntry(array, "supercalafragalisticexpialadoshus") == 1);
-    assert(strcmp(array->values[0]->characters, emergencyBroadcastTest) == 0);
-    CTArrayDeleteEntry(array, 0);
-    CTArrayDeleteEntry(array, 1);
+    
+    for (int i = 0; i < 0x10; i++)
+    {
+        CTArrayAddEntry(array, testStrings[i]);
+    }
+    
+    assert(array->count == 0x10);
+    assert(CTArrayIndexOfEntry(array, "not found in array") == -1);
+    
+    for (int i = 0; i < 0x10; i++)
+    {
+        assert(CTArrayIndexOfEntry(array, testStrings[i]) == i);
+        assert(strcmp(array->values[i]->characters, testStrings[i]) == 0);
+    }
+    
+    for (int i = 0xF; i >= 0x0; i--)
+    {
+        CTArrayDeleteEntry(array, i);
+    }
+    
+    assert(array->count == 0x0);
 #pragma mark - CTArray Test End
     
 #pragma mark - CTDictionary Test Begin
     CTDictionary * dict = CTDictionaryCreate(allocator);
-    CTDictionaryAddEntry(dict, "Hello", "Yes");
-    CTDictionaryAddEntry(dict, "Yes", "Hello");
-    CTDictionaryAddEntry(dict, "Only", "Once");
-    assert(CTDictionaryIndexOfEntry(dict, "Yes") == 1);
-    assert(strcmp(CTDictionaryValueForKey(dict, "Hello"), "Yes") == 0);
-    assert(strcmp(CTDictionaryValueForKey(dict, "Yes"), "Hello") == 0);
-    assert(strcmp(CTDictionaryValueForKey(dict, "Only"), "Once") == 0);
+    
+    for (int i = 0; i < 0x10; i++)
+    {
+        CTDictionaryAddEntry(dict, testStrings[i], testStrings2[i]);
+    }
+    
+    assert(dict->count == 0x10);
+    assert(CTDictionaryIndexOfEntry(dict, "not found in dictionary") == -1);
+    assert(CTDictionaryValueForKey(dict, "not found in dictionary") == NULL);
+    
+    for (int i = 0; i < 0x10; i++)
+    {
+        assert(CTDictionaryIndexOfEntry(dict, testStrings[i]) == i);
+        assert(strcmp(CTDictionaryValueForKey(dict, testStrings[i]), testStrings2[i]) == 0);
+    }
+    
+    for (int i = 0; i < 0x10; i++)
+    {
+        CTDictionaryDeleteEntry(dict, testStrings[i]);
+    }
+    
+    assert(dict->count == 0x0);
 #pragma mark - CTDictionary Test End
     
 #pragma mark - CTString Test Begin
     char * stringTest = "Test of string";
     char * prepend = "Prepended Characters. ";
     char * append = ". Appended Characters";
+    
     CTString * string = CTStringCreate(allocator, stringTest);
     CTStringAppendCharacters(string, append);
     CTStringPrependCharacters(string, prepend);
     assert(strcmp(string->characters, "Prepended Characters. Test of string. Appended Characters") == 0);
-    assert(strcmp(CTStringStringBetween(string, prepend, ". Appended Characters"), "Test of string") == 0);
+    assert(strcmp(CTStringStringBetween(string, prepend, append), "Test of string") == 0);
+    assert(CTStringStringBetween(string, append, prepend) == NULL);
     assert(CTStringStringBetween(string, "not found", "in string") == NULL);
     CTStringRemoveCharactersFromEnd(string, strlen(append));
     assert(strcmp(string->characters, "Prepended Characters. Test of string") == 0);
@@ -57,7 +103,7 @@ int main(int argc, const char * argv[])
     
     CTAllocatorRelease(allocator);
 #pragma mark - CTAllocator Test End
-    
+    printf("%f seconds (%lu ticks)\n", (clock() - t) / (double)CLOCKS_PER_SEC, clock() - t);
     return 0;
 }
 

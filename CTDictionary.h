@@ -21,11 +21,11 @@ typedef struct
     CTAllocator * alloc;
 } CTDictionary;
 
-CTDictionary * CTDictionaryCreate(CTAllocator * alloc);
+CTDictionary * CTDictionaryCreate(CTAllocator * restrict alloc);
 
-void CTDictionaryAddEntriesFromQueryString(CTDictionary * dict, const char * restrict query);
+void CTDictionaryAddEntriesFromQueryString(CTDictionary * restrict dict, const char * restrict query);
 
-void CTDictionaryAddEntry(CTDictionary * dict, const char * restrict key, const char * restrict value);
-void CTDictionaryDeleteEntry(CTDictionary * dict, const char * restrict key);
+void CTDictionaryAddEntry(CTDictionary * restrict dict, const char * restrict key, const char * restrict value);
+void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict key);
 const char * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key);
 unsigned long CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key);

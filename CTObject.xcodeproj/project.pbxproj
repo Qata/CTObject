@@ -217,13 +217,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23895884181731AA00096409 /* main.c in Sources */,
 				2389588D181735E500096409 /* CTAllocator.c in Sources */,
 				2389588E181735E500096409 /* CTArray.c in Sources */,
 				2389588F181735E500096409 /* CTDictionary.c in Sources */,
 				23895890181735E500096409 /* CTFunctions.c in Sources */,
 				23895891181735E500096409 /* CTNetServer.c in Sources */,
 				23895892181735E500096409 /* CTString.c in Sources */,
+				23895884181731AA00096409 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,6 +353,7 @@
 				238958641817314600096409 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		23895887181731AA00096409 /* Build configuration list for PBXNativeTarget "CTObject Tests" */ = {
 			isa = XCConfigurationList;
@@ -361,6 +362,7 @@
 				23895889181731AA00096409 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

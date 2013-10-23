@@ -9,7 +9,7 @@
 #include "CTFunctions.h"
 #include <string.h>
 
-char * stringDuplicate(CTAllocator * alloc, const char * restrict str)
+char * stringDuplicate(CTAllocator * restrict alloc, const char * restrict str)
 {
     char * string;
     string = CTAllocatorAllocate(alloc, strlen(str) + 1);

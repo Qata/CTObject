@@ -18,7 +18,7 @@ typedef struct
     int handle;
 } CTNetServer;
 
-CTNetServer * CTNetServerOpen(CTAllocator * alloc, const char * address, unsigned short port);
+CTNetServer * CTNetServerOpen(CTAllocator * restrict alloc, const char * restrict address, unsigned short port);
 void CTNetServerClose(const CTNetServer * restrict server);
-long CTNetServerSend(const CTNetServer * restrict server, const char * bytes, unsigned long size);
+long CTNetServerSend(const CTNetServer * restrict server, const char * restrict bytes, unsigned long size);
 const char * CTNetServerReceive(const CTNetServer * restrict server, unsigned long size);

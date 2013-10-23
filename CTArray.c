@@ -6,11 +6,12 @@
 //  Copyright (c) 2013 Carlo Tortorella. All rights reserved.
 //
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "CTArray.h"
 
-CTArray * CTArrayCreate(CTAllocator * alloc)
+CTArray * CTArrayCreate(CTAllocator * restrict alloc)
 {
     CTArray * array = CTAllocatorAllocate(alloc, sizeof(CTArray));
     array->count = 0;
@@ -20,7 +21,7 @@ CTArray * CTArrayCreate(CTAllocator * alloc)
     return array;
 }
 
-void CTArrayAddEntry(CTArray * array, const char * restrict value, unsigned long size)
+void CTArrayAddEntry(CTArray * restrict array, const char * restrict value)
 {
     unsigned long index = array->count++;
     
@@ -32,9 +33,9 @@ void CTArrayAddEntry(CTArray * array, const char * restrict value, unsigned long
     array->values[index] = CTStringCreate(array->alloc, value);
 }
 
-void CTArrayDeleteEntry(CTArray * array, unsigned long index)
+void CTArrayDeleteEntry(CTArray * restrict array, unsigned long index)
 {
-    if (array->count < index)
+    if (array->count > index)
 	{
 		CTString ** values = CTAllocatorAllocate(array->alloc, sizeof(CTString *) * array->count - 1);
         for (unsigned long i = 0, count = 0; i < array->count; i++)
@@ -54,7 +55,7 @@ void CTArrayDeleteEntry(CTArray * array, unsigned long index)
 	}
 }
 
-unsigned long CTArrayIndexOfEntry(CTArray * array, const char * restrict value)
+unsigned long CTArrayIndexOfEntry(CTArray * restrict array, const char * restrict value)
 {
     for (unsigned long i = 0; i < array->count; i++)
     {

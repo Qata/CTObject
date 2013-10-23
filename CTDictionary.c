@@ -13,7 +13,7 @@
 #include <string.h>
 #include <ctype.h>
 
-CTDictionaryEntry * CTDictionaryCreateEntry(CTAllocator * alloc)
+CTDictionaryEntry * CTDictionaryCreateEntry(CTAllocator * restrict alloc)
 {
     CTDictionaryEntry * retVal = CTAllocatorAllocate(alloc, sizeof(CTDictionaryEntry));
     retVal->key = NULL;
@@ -30,7 +30,7 @@ CTDictionary * CTDictionaryCreate(CTAllocator * alloc)
     return dict;
 }
 
-void CTDictionaryAddEntriesFromQueryString(CTDictionary * dict, const char * restrict query)
+void CTDictionaryAddEntriesFromQueryString(CTDictionary * restrict dict, const char * restrict query)
 {
     if (query)
     {
@@ -48,7 +48,7 @@ void CTDictionaryAddEntriesFromQueryString(CTDictionary * dict, const char * res
             {
                 str[0] = 0;
                 val[0] = 0;
-                memset(str, 0, sizeof(val));
+                memset(str, 0, sizeof(str));
                 memset(val, 0, sizeof(val));
                 sscanf(pointer, "%[^=]=%s", str, val);
                 CTDictionaryAddEntry(dict, str, val);
@@ -59,7 +59,7 @@ void CTDictionaryAddEntriesFromQueryString(CTDictionary * dict, const char * res
     }
 }
 
-void CTDictionaryAddEntry(CTDictionary * dict, const char * restrict key, const char * restrict value)
+void CTDictionaryAddEntry(CTDictionary * restrict dict, const char * restrict key, const char * restrict value)
 {
     unsigned long index = dict->count++;
     
@@ -73,14 +73,14 @@ void CTDictionaryAddEntry(CTDictionary * dict, const char * restrict key, const 
     dict->elements[index]->value = stringDuplicate(dict->alloc, value);
 }
 
-void CTDictionaryDeleteEntry(CTDictionary * dict, const char * restrict key)
+void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict key)
 {
     if (dict->count)
 	{
 		int countOfKeys = 0;
 		for (unsigned long i = 0; i < dict->count; i++)
 		{
-			if (!strcmp((*dict->elements)[i].key, key))
+			if (!strcmp(dict->elements[i]->key, key))
 			{
 				++countOfKeys;
 			}
@@ -90,7 +90,7 @@ void CTDictionaryDeleteEntry(CTDictionary * dict, const char * restrict key)
 			CTDictionaryEntry ** retVal = CTAllocatorAllocate(dict->alloc, sizeof(CTDictionaryEntry *) * dict->count - countOfKeys);
 			for (unsigned long i = 0, count = 0; i < dict->count; i++)
 			{
-				if (strcmp((*dict->elements)[i].key, key))
+				if (strcmp(dict->elements[i]->key, key))
 				{
 					retVal[count++] = dict->elements[i];
 				}
@@ -115,7 +115,7 @@ const char * CTDictionaryValueForKey(const CTDictionary * restrict dict, const c
             return dict->elements[i]->value;
         }
     }
-    return "";
+    return NULL;
 }
 
 unsigned long CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key)

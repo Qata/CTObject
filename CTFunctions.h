@@ -9,4 +9,4 @@
 #pragma once
 #include "CTAllocator.h"
 
-char * stringDuplicate(CTAllocator * alloc, const char * restrict str);
+char * stringDuplicate(CTAllocator * restrict alloc, const char * restrict str);

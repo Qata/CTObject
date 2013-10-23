@@ -10,7 +10,7 @@
 #include "CTFunctions.h"
 #include <string.h>
 
-CTString * CTStringCreate(CTAllocator * alloc, const char * restrict characters)
+CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict characters)
 {
     CTString * string = CTAllocatorAllocate(alloc, sizeof(CTString));
     string->alloc = alloc;
@@ -19,7 +19,7 @@ CTString * CTStringCreate(CTAllocator * alloc, const char * restrict characters)
     return string;
 }
 
-void CTStringPrependCharacters(CTString * string, const char * restrict characters)
+void CTStringPrependCharacters(CTString * restrict string, const char * restrict characters)
 {
     char * result = CTAllocatorAllocate(string->alloc, string->length + strlen(characters) + 1);
     strcat(result, characters);
@@ -30,7 +30,7 @@ void CTStringPrependCharacters(CTString * string, const char * restrict characte
     string->length = string->length + strlen(characters);
 }
 
-void CTStringAppendCharacters(CTString * string, const char * restrict characters)
+void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters)
 {
     char * result = CTAllocatorAllocate(string->alloc, string->length + strlen(characters) + 1);
     strcat(result, string->characters);
@@ -41,14 +41,14 @@ void CTStringAppendCharacters(CTString * string, const char * restrict character
     string->length = string->length + strlen(characters);
 }
 
-void CTStringSet(CTString * string, const char * restrict characters)
+void CTStringSet(CTString * restrict string, const char * restrict characters)
 {
     CTAllocatorDeallocate(string->alloc, string->characters);
     string->characters = stringDuplicate(string->alloc, characters);
     string->length = strlen(characters);
 }
 
-void CTStringRemoveCharactersFromStart(CTString * string, unsigned long count)
+void CTStringRemoveCharactersFromStart(CTString * restrict string, unsigned long count)
 {
     if (count < string->length)
     {
@@ -65,7 +65,7 @@ void CTStringRemoveCharactersFromStart(CTString * string, unsigned long count)
     }
 }
 
-void CTStringRemoveCharactersFromEnd(CTString * string, unsigned long count)
+void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long count)
 {
     if (count < string->length)
     {
@@ -82,7 +82,7 @@ void CTStringRemoveCharactersFromEnd(CTString * string, unsigned long count)
     }
 }
 
-const char * CTStringStringBetween(CTString * string, const char * restrict search1, const char * restrict search2)
+const char * CTStringStringBetween(CTString * restrict string, const char * restrict search1, const char * restrict search2)
 {
 	char * ret1, * ret2;
 	if ((ret1 = strstr(string->characters, search1)) && (ret2 = strstr(string->characters, search2)) && ret1 < ret2)

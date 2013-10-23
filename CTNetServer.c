@@ -15,7 +15,7 @@
 #include <netdb.h>
 #include <string.h>
 
-CTNetServer * CTNetServerOpen(CTAllocator * alloc, const char * address, unsigned short port)
+CTNetServer * CTNetServerOpen(CTAllocator * restrict alloc, const char * restrict address, unsigned short port)
 {
     CTNetServer * server = CTAllocatorAllocate(alloc, sizeof(CTNetServer));
     server->alloc = alloc;
@@ -54,7 +54,7 @@ void CTNetServerClose(const CTNetServer * restrict server)
     close(server->handle);
 }
 
-long CTNetServerSend(const CTNetServer * restrict server, const char * bytes, unsigned long size)
+long CTNetServerSend(const CTNetServer * restrict server, const char * restrict bytes, unsigned long size)
 {
     return send(server->handle, bytes, size, 0);
 }

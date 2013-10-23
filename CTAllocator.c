@@ -19,7 +19,7 @@ CTAllocator * CTAllocatorCreate()
 	return allocator;
 }
 
-void CTAllocatorRelease(CTAllocator * allocator)
+void CTAllocatorRelease(CTAllocator * restrict allocator)
 {
 	for (int i = 0; i < allocator->count; i++)
 	{
@@ -29,7 +29,7 @@ void CTAllocatorRelease(CTAllocator * allocator)
 	free(allocator);
 }
 
-void * CTAllocatorAllocate(CTAllocator * allocator, unsigned long size)
+void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size)
 {
 	if (!(allocator->objects = realloc(allocator->objects, sizeof(void *) * allocator->count + 1)))
 	{
@@ -40,7 +40,7 @@ void * CTAllocatorAllocate(CTAllocator * allocator, unsigned long size)
 	return allocator->objects[allocator->count++] = ptr;
 }
 
-void CTAllocatorDeallocate(CTAllocator * allocator, void * ptr)
+void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 {
     if (allocator->count)
 	{
@@ -73,7 +73,7 @@ void CTAllocatorDeallocate(CTAllocator * allocator, void * ptr)
 	}
 }
 
-void * CTAllocatorReallocate(CTAllocator * allocator, void * ptr, unsigned long size)
+void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, unsigned long size)
 {
     if (ptr)
     {
