@@ -27,6 +27,9 @@
 		23895890181735E500096409 /* CTFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = 2389586C1817317200096409 /* CTFunctions.c */; };
 		23895891181735E500096409 /* CTNetServer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2389586E1817317200096409 /* CTNetServer.c */; };
 		23895892181735E500096409 /* CTString.c in Sources */ = {isa = PBXBuildFile; fileRef = 238958701817317200096409 /* CTString.c */; };
+		2396CA9B18178F7A00B86F0A /* CTObject.c in Sources */ = {isa = PBXBuildFile; fileRef = 2396CA9918178F7A00B86F0A /* CTObject.c */; };
+		2396CA9C18178F7A00B86F0A /* CTObject.c in Sources */ = {isa = PBXBuildFile; fileRef = 2396CA9918178F7A00B86F0A /* CTObject.c */; };
+		2396CA9D18178F7A00B86F0A /* CTObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 2396CA9A18178F7A00B86F0A /* CTObject.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -62,6 +65,8 @@
 		2389588C181731F300096409 /* CTPrelude.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTPrelude.h; sourceTree = "<group>"; usesTabs = 1; };
 		2396CA971817516400B86F0A /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; usesTabs = 1; };
 		2396CA981817516400B86F0A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; usesTabs = 1; };
+		2396CA9918178F7A00B86F0A /* CTObject.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTObject.c; sourceTree = "<group>"; };
+		2396CA9A18178F7A00B86F0A /* CTObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTObject.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +101,8 @@
 				2389586C1817317200096409 /* CTFunctions.c */,
 				2389586D1817317200096409 /* CTNetServer.h */,
 				2389586E1817317200096409 /* CTNetServer.c */,
+				2396CA9A18178F7A00B86F0A /* CTObject.h */,
+				2396CA9918178F7A00B86F0A /* CTObject.c */,
 				2389586F1817317200096409 /* CTString.h */,
 				238958701817317200096409 /* CTString.c */,
 				2396CA971817516400B86F0A /* LICENSE */,
@@ -132,6 +139,7 @@
 			files = (
 				238958711817317200096409 /* CTAllocator.h in Headers */,
 				238958731817317200096409 /* CTArray.h in Headers */,
+				2396CA9D18178F7A00B86F0A /* CTObject.h in Headers */,
 				2389587B1817317200096409 /* CTString.h in Headers */,
 				238958751817317200096409 /* CTDictionary.h in Headers */,
 				238958791817317200096409 /* CTNetServer.h in Headers */,
@@ -209,6 +217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				238958741817317200096409 /* CTArray.c in Sources */,
+				2396CA9B18178F7A00B86F0A /* CTObject.c in Sources */,
 				2389587C1817317200096409 /* CTString.c in Sources */,
 				238958761817317200096409 /* CTDictionary.c in Sources */,
 				238958781817317200096409 /* CTFunctions.c in Sources */,
@@ -222,6 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2389588D181735E500096409 /* CTAllocator.c in Sources */,
+				2396CA9C18178F7A00B86F0A /* CTObject.c in Sources */,
 				2389588E181735E500096409 /* CTArray.c in Sources */,
 				2389588F181735E500096409 /* CTDictionary.c in Sources */,
 				23895890181735E500096409 /* CTFunctions.c in Sources */,
@@ -321,7 +331,9 @@
 		23895888181731AA00096409 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -333,6 +345,7 @@
 		23895889181731AA00096409 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
