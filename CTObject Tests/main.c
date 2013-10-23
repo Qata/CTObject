@@ -17,6 +17,8 @@ int main(int argc, const char * argv[])
     clock_t t = clock();
 #pragma mark - CTAllocator Test Begin
     CTAllocator * allocator = CTAllocatorCreate();
+    /*CTAllocatorRelease(allocator);
+    allocator = CTAllocatorCreate();*/
     
     char ** testStrings = CTAllocatorAllocate(allocator, sizeof(void *) * 0x10);
     char ** testStrings2 = CTAllocatorAllocate(allocator, sizeof(void *) * 0x10);

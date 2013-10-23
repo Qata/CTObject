@@ -1,6 +1,6 @@
 //
 //  CTFunctions.c
-//  WatchBoxCGI
+//  CTObject
 //
 //  Created by Carlo Tortorella on 22/10/13.
 //  Copyright (c) 2013 Carlo Tortorella. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  Dictionary.c
-//  Lefty
+//  CTObject
 //
 //  Created by Carlo Tortorella on 17/09/13.
 //  Copyright (c) 2013 Carlo Tortorella. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  CTAllocator.c
-//  Lefty
+//  CTObject
 //
 //  Created by Carlo Tortorella on 21/10/13.
 //  Copyright (c) 2013 Carlo Tortorella. All rights reserved.

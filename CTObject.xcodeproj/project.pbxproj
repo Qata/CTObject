@@ -44,24 +44,24 @@
 
 /* Begin PBXFileReference section */
 		2389585E1817314600096409 /* libCTObject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCTObject.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		238958651817317200096409 /* CTAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTAllocator.h; sourceTree = "<group>"; };
-		238958661817317200096409 /* CTAllocator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTAllocator.c; sourceTree = "<group>"; };
-		238958671817317200096409 /* CTArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTArray.h; sourceTree = "<group>"; };
-		238958681817317200096409 /* CTArray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTArray.c; sourceTree = "<group>"; };
-		238958691817317200096409 /* CTDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTDictionary.h; sourceTree = "<group>"; };
-		2389586A1817317200096409 /* CTDictionary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTDictionary.c; sourceTree = "<group>"; };
-		2389586B1817317200096409 /* CTFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTFunctions.h; sourceTree = "<group>"; };
-		2389586C1817317200096409 /* CTFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTFunctions.c; sourceTree = "<group>"; };
-		2389586D1817317200096409 /* CTNetServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTNetServer.h; sourceTree = "<group>"; };
-		2389586E1817317200096409 /* CTNetServer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTNetServer.c; sourceTree = "<group>"; };
-		2389586F1817317200096409 /* CTString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTString.h; sourceTree = "<group>"; };
-		238958701817317200096409 /* CTString.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTString.c; sourceTree = "<group>"; };
+		238958651817317200096409 /* CTAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTAllocator.h; sourceTree = "<group>"; usesTabs = 1; };
+		238958661817317200096409 /* CTAllocator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTAllocator.c; sourceTree = "<group>"; usesTabs = 1; };
+		238958671817317200096409 /* CTArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTArray.h; sourceTree = "<group>"; usesTabs = 1; };
+		238958681817317200096409 /* CTArray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTArray.c; sourceTree = "<group>"; usesTabs = 1; };
+		238958691817317200096409 /* CTDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTDictionary.h; sourceTree = "<group>"; usesTabs = 1; };
+		2389586A1817317200096409 /* CTDictionary.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTDictionary.c; sourceTree = "<group>"; usesTabs = 1; };
+		2389586B1817317200096409 /* CTFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTFunctions.h; sourceTree = "<group>"; usesTabs = 1; };
+		2389586C1817317200096409 /* CTFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTFunctions.c; sourceTree = "<group>"; usesTabs = 1; };
+		2389586D1817317200096409 /* CTNetServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTNetServer.h; sourceTree = "<group>"; usesTabs = 1; };
+		2389586E1817317200096409 /* CTNetServer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTNetServer.c; sourceTree = "<group>"; usesTabs = 1; };
+		2389586F1817317200096409 /* CTString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTString.h; sourceTree = "<group>"; usesTabs = 1; };
+		238958701817317200096409 /* CTString.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTString.c; sourceTree = "<group>"; usesTabs = 1; };
 		23895881181731AA00096409 /* CTObject Tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CTObject Tests"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23895883181731AA00096409 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		23895885181731AA00096409 /* CTObject_Tests.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = CTObject_Tests.1; sourceTree = "<group>"; };
-		2389588C181731F300096409 /* CTPrelude.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTPrelude.h; sourceTree = "<group>"; };
-		2396CA971817516400B86F0A /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		2396CA981817516400B86F0A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		2389588C181731F300096409 /* CTPrelude.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTPrelude.h; sourceTree = "<group>"; usesTabs = 1; };
+		2396CA971817516400B86F0A /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; usesTabs = 1; };
+		2396CA981817516400B86F0A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; usesTabs = 1; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
