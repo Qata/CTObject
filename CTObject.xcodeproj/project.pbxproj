@@ -60,6 +60,8 @@
 		23895883181731AA00096409 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		23895885181731AA00096409 /* CTObject_Tests.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = CTObject_Tests.1; sourceTree = "<group>"; };
 		2389588C181731F300096409 /* CTPrelude.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTPrelude.h; sourceTree = "<group>"; };
+		2396CA971817516400B86F0A /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		2396CA981817516400B86F0A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,8 @@
 				2389586E1817317200096409 /* CTNetServer.c */,
 				2389586F1817317200096409 /* CTString.h */,
 				238958701817317200096409 /* CTString.c */,
+				2396CA971817516400B86F0A /* LICENSE */,
+				2396CA981817516400B86F0A /* README.md */,
 				23895882181731AA00096409 /* CTObject Tests */,
 				2389585F1817314600096409 /* Products */,
 			);
