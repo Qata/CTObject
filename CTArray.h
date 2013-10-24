@@ -14,7 +14,7 @@ typedef struct
 {
     CTAllocator * alloc;
     unsigned long count;
-    CTString ** values;
+    CTString ** elements;
 } CTArray;
 
 CTArray * CTArrayCreate(CTAllocator * restrict alloc);

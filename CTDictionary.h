@@ -9,16 +9,16 @@
 #include "CTAllocator.h"
 #include "CTString.h"
 
-typedef struct
+struct CTDictionaryEntry
 {
 	CTString * key;
 	CTString * value;
-} CTDictionaryEntry;
+};
 
 typedef struct
 {
     long count;
-    CTDictionaryEntry ** elements;
+    struct CTDictionaryEntry ** elements;
     CTAllocator * alloc;
 } CTDictionary;
 

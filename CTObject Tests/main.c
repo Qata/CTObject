@@ -48,7 +48,7 @@ int main(int argc, const char * argv[])
     for (int i = 0; i < 0x10; i++)
     {
         assert(CTArrayIndexOfEntry(array, testStrings[i]) == i);
-        assert(strcmp(array->values[i]->characters, testStrings[i]) == 0);
+        assert(strcmp(array->elements[i]->characters, testStrings[i]) == 0);
     }
     
     for (int i = 0xF; i >= 0x0; i--)
@@ -57,7 +57,6 @@ int main(int argc, const char * argv[])
     }
     
     assert(array->count == 0x0);
-#pragma mark - CTArray Test End
     
 #pragma mark - CTDictionary Test Begin
     CTDictionary * dict = CTDictionaryCreate(allocator);
@@ -83,7 +82,6 @@ int main(int argc, const char * argv[])
     }
     
     assert(dict->count == 0x0);
-#pragma mark - CTDictionary Test End
     
 #pragma mark - CTString Test Begin
     char * stringTest = "Test of string";
@@ -98,13 +96,23 @@ int main(int argc, const char * argv[])
     assert(CTStringStringBetween(string, append, prepend) == NULL);
     assert(CTStringStringBetween(string, "not found", "in string") == NULL);
     CTStringRemoveCharactersFromEnd(string, strlen(append));
+    puts(string->characters);
     assert(strcmp(string->characters, "Prepended Characters. Test of string") == 0);
     CTStringRemoveCharactersFromStart(string, strlen(prepend));
     assert(strcmp(string->characters, stringTest) == 0);
-#pragma mark - CTString Test End
+    
+#pragma mark - CTNumber Test Begin
+    CTNumber * number = CTNumberCreateWithLong(allocator, 0xFF);
+    assert((number->value.Int & number->value.UInt & number->value.ULong & number->value.Long) == 0xFF);
+    number->value.Double = 255.5;
+    assert(number->value.Double == 255.5);
+    
+#pragma mark - CTJSON Test Begin
+    CTJSONObject * object = CTJSONParse(allocator, "{ \"hello\":\"Yes\"}");
     
     CTAllocatorRelease(allocator);
 #pragma mark - CTAllocator Test End
+    
     printf("%f seconds (%lu ticks)\n", (clock() - t) / (double)CLOCKS_PER_SEC, clock() - t);
     return 0;
 }

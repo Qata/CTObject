@@ -9,13 +9,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "CTArray.h"
 
 CTArray * CTArrayCreate(CTAllocator * restrict alloc)
 {
     CTArray * array = CTAllocatorAllocate(alloc, sizeof(CTArray));
     array->count = 0;
-    array->values = NULL;
+    array->elements = NULL;
     array->alloc = alloc;
     
     return array;
@@ -25,12 +26,9 @@ void CTArrayAddEntry(CTArray * restrict array, const char * restrict value)
 {
     unsigned long index = array->count++;
     
-    if (!(array->values = CTAllocatorReallocate(array->alloc, array->values, sizeof(CTArray *) * array->count)))
-    {
-        exit(1);
-    }
+	assert((array->elements = CTAllocatorReallocate(array->alloc, array->elements, sizeof(CTArray *) * array->count)));
     
-    array->values[index] = CTStringCreate(array->alloc, value);
+    array->elements[index] = CTStringCreate(array->alloc, value);
 }
 
 void CTArrayDeleteEntry(CTArray * restrict array, unsigned long index)
@@ -42,15 +40,15 @@ void CTArrayDeleteEntry(CTArray * restrict array, unsigned long index)
         {
             if (!(i == index))
             {
-                values[count++] = array->values[i];
+                values[count++] = array->elements[i];
             }
             else
             {
-                CTAllocatorDeallocate(array->alloc, array->values[i]);
+                CTAllocatorDeallocate(array->alloc, array->elements[i]);
             }
         }
-        CTAllocatorDeallocate(array->alloc, array->values);
-        array->values = values;
+        CTAllocatorDeallocate(array->alloc, array->elements);
+        array->elements = values;
         --array->count;
 	}
 }
@@ -59,7 +57,7 @@ unsigned long CTArrayIndexOfEntry(CTArray * restrict array, const char * restric
 {
     for (unsigned long i = 0; i < array->count; i++)
     {
-        if (!strcmp(array->values[i]->characters, value))
+        if (!strcmp(array->elements[i]->characters, value))
         {
             return i;
         }
