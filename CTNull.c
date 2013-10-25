@@ -14,7 +14,7 @@
 CTNull * CTNullCreate(CTAllocator * restrict alloc)
 {
     CTNull * null = CTAllocatorAllocate(alloc, sizeof(CTNull));
-    null->value = NULL;
+    null->value = "null";
     null->alloc = alloc;
     return null;
 }

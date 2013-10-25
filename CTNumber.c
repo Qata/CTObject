@@ -39,7 +39,7 @@ CTNumber * CTNumberCreateWithLong(CTAllocator * restrict alloc, long value)
 CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, double value)
 {
     CTNumber * number = CTAllocatorAllocate(alloc, sizeof(CTNumber));
-    CTNumberSetUnsignedIntValue(number, value);
+    CTNumberSetDoubleValue(number, value);
     return number;
 }
 

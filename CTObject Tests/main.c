@@ -12,6 +12,78 @@
 #include <assert.h>
 #include <time.h>
 
+void recurseJSON(void * obj, int type)
+{
+    switch (type)
+    {
+        case CTJSON_TYPE_OBJECT:
+        {
+            CTJSONObject * object = (CTJSONObject *)obj;
+            for (unsigned long i = 0; i < object->count; i++)
+            {
+                CTString * key = object->elements[i]->key;
+                printf("%lu, %lu\n", object->count, i);
+                void * ptr = object->elements[i]->value->ptr;
+                switch (object->elements[i]->valueType)
+                {
+                    case CTJSON_TYPE_OBJECT:
+                        printf("'%s'\n", key->characters);
+                        recurseJSON(ptr, CTJSON_TYPE_OBJECT);
+                        break;
+                    case CTJSON_TYPE_ARRAY:
+                        printf("'%s'\n", key->characters);
+                        recurseJSON(ptr, CTJSON_TYPE_ARRAY);
+                        break;
+                    case CTJSON_TYPE_STRING:
+                        printf("'%s', '%s'\n", key->characters, ((CTString *)ptr)->characters);
+                        break;
+                    case CTJSON_TYPE_BOOLEAN:
+                        printf("'%s', '%u'\n", key->characters, ((CTNumber *)ptr)->value.UInt);
+                        break;
+                    case CTJSON_TYPE_NUMBER:
+                        printf("'%s', '%f'\n", key->characters, ((CTNumber *)ptr)->value.Double);
+                        break;
+                    case CTJSON_TYPE_NULL:
+                        printf("'%s', '%s'\n", key->characters, ((CTNull *)ptr)->value);
+                        break;
+                }
+            }
+            break;
+        }
+            
+        case CTJSON_TYPE_ARRAY:
+        {
+            CTJSONArray * array = (CTJSONArray *)obj;
+            for (unsigned long i = 0; i < array->count; i++)
+            {
+                void * ptr = array->elements[i]->value->ptr;
+                switch (array->elements[i]->valueType)
+                {
+                    case CTJSON_TYPE_OBJECT:
+                        recurseJSON(ptr, CTJSON_TYPE_OBJECT);
+                        break;
+                    case CTJSON_TYPE_ARRAY:
+                        recurseJSON(ptr, CTJSON_TYPE_ARRAY);
+                        break;
+                    case CTJSON_TYPE_STRING:
+                        printf("'%s'\n", ((CTString *)ptr)->characters);
+                        break;
+                    case CTJSON_TYPE_BOOLEAN:
+                        printf("'%u'\n", ((CTNumber *)ptr)->value.UInt);
+                        break;
+                    case CTJSON_TYPE_NUMBER:
+                        printf("'%f'\n", ((CTNumber *)ptr)->value.Double);
+                        break;
+                    case CTJSON_TYPE_NULL:
+                        printf("'%s'\n", ((CTNull *)ptr)->value);
+                        break;
+                }
+            }
+            break;
+        }
+    }
+}
+
 int main(int argc, const char * argv[])
 {
     clock_t t = clock();
@@ -96,7 +168,6 @@ int main(int argc, const char * argv[])
     assert(CTStringStringBetween(string, append, prepend) == NULL);
     assert(CTStringStringBetween(string, "not found", "in string") == NULL);
     CTStringRemoveCharactersFromEnd(string, strlen(append));
-    puts(string->characters);
     assert(strcmp(string->characters, "Prepended Characters. Test of string") == 0);
     CTStringRemoveCharactersFromStart(string, strlen(prepend));
     assert(strcmp(string->characters, stringTest) == 0);
@@ -108,7 +179,9 @@ int main(int argc, const char * argv[])
     assert(number->value.Double == 255.5);
     
 #pragma mark - CTJSON Test Begin
-    CTJSONObject * object = CTJSONParse(allocator, "{ \"hello\":\"Yes\"}");
+    CTJSONObject * object = CTJSONParse(allocator, "    { \"hello\":\"Yes\",    \"yolo\":\"woo!\", \"real life\":null, \"keyyo\":true, \"keylo\":false, \"another key\":1278.0, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1, true, false, null, \"yes\", {}, []], \"ha\":{}}");
+    
+    recurseJSON(object, CTJSON_TYPE_OBJECT);
     
     CTAllocatorRelease(allocator);
 #pragma mark - CTAllocator Test End
@@ -116,4 +189,3 @@ int main(int argc, const char * argv[])
     printf("%f seconds (%lu ticks)\n", (clock() - t) / (double)CLOCKS_PER_SEC, clock() - t);
     return 0;
 }
-

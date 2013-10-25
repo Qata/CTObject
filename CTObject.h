@@ -14,7 +14,7 @@ typedef struct
 {
     CTAllocator * alloc;
     unsigned long size;
-    void * value;
+    void * ptr;
 } CTObject;
 
 CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, unsigned long size);

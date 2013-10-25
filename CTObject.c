@@ -15,7 +15,7 @@ CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, unsigned lon
 {
     CTObject * object = CTAllocatorAllocate(alloc, sizeof(CTObject));
     object->size = size;
-    object->value = ptr;
+    object->ptr = ptr;
     object->alloc = alloc;
     return object;
 }

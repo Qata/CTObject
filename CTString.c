@@ -30,6 +30,17 @@ void CTStringPrependCharacters(CTString * restrict string, const char * restrict
     string->length = string->length + strlen(characters);
 }
 
+void CTStringPrependCharacter(CTString * restrict string, char character)
+{
+	char * result = CTAllocatorAllocate(string->alloc, string->length + 1 + 1);
+    strcat(result, &character);
+    strcat(result, string->characters);
+    result[string->length + 1] = 0;
+    CTAllocatorDeallocate(string->alloc, string->characters);
+    string->characters = result;
+    string->length = string->length + 1;
+}
+
 void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters)
 {
     char * result = CTAllocatorAllocate(string->alloc, string->length + strlen(characters) + 1);
@@ -39,6 +50,17 @@ void CTStringAppendCharacters(CTString * restrict string, const char * restrict 
     CTAllocatorDeallocate(string->alloc, string->characters);
     string->characters = result;
     string->length = string->length + strlen(characters);
+}
+
+void CTStringAppendCharacter(CTString * restrict string, char character)
+{
+    char * result = CTAllocatorAllocate(string->alloc, string->length + 1 + 1);
+    strcat(result, string->characters);
+    strcat(result, &character);
+    result[string->length + 1] = 0;
+    CTAllocatorDeallocate(string->alloc, string->characters);
+    string->characters = result;
+    string->length = string->length + 1;
 }
 
 void CTStringSet(CTString * restrict string, const char * restrict characters)

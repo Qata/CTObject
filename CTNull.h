@@ -12,7 +12,7 @@
 typedef struct
 {
     CTAllocator * alloc;
-    void * value;
+    char * value;
 } CTNull;
 
 CTNull * CTNullCreate(CTAllocator * restrict alloc);

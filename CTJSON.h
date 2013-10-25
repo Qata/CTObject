@@ -18,7 +18,7 @@ enum
     CTJSON_TYPE_OBJECT,
     CTJSON_TYPE_ARRAY,
     CTJSON_TYPE_STRING,
-    CTJSON_TYPE_INTEGER,
+    CTJSON_TYPE_NUMBER,
     CTJSON_TYPE_BOOLEAN,
     CTJSON_TYPE_NULL
 };
@@ -34,6 +34,13 @@ typedef struct
 typedef struct
 {
     CTAllocator * alloc;
+    CTObject * value;
+    int valueType;
+} CTJSONArrayValueContainer;
+
+typedef struct
+{
+    CTAllocator * alloc;
     CTJSONObjectKeyValuePair ** elements;
     unsigned long count;
 } CTJSONObject;
@@ -41,7 +48,7 @@ typedef struct
 typedef struct
 {
     CTAllocator * alloc;
-    CTObject ** elements;
+    CTJSONArrayValueContainer ** elements;
     unsigned long count;
 } CTJSONArray;
 

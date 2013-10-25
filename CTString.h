@@ -18,7 +18,9 @@ typedef struct
 
 CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict characters);
 void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters);
+void CTStringAppendCharacter(CTString * restrict string, char character);
 void CTStringPrependCharacters(CTString * restrict string, const char * restrict characters);
+void CTStringPrependCharacter(CTString * restrict string, char character);
 void CTStringSet(CTString * restrict string, const char * restrict characters);
 void CTStringRemoveCharactersFromStart(CTString * restrict string, unsigned long count);
 void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long count);
