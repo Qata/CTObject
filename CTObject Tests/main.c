@@ -179,7 +179,7 @@ int main(int argc, const char * argv[])
     assert(number->value.Double == 255.5);
     
 #pragma mark - CTJSON Test Begin
-    CTJSONObject * object = CTJSONParse(allocator, "    { \"hello\":\"Yes\",    \"yolo\":\"woo!\", \"real life\":null, \"keyyo\":true, \"keylo\":false, \"another key\":1278.0, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1, true, false, null, \"yes\", {}, []], \"ha\":{}}");
+    CTJSONObject * object = CTJSONParse(allocator, "    { \"hello\":\"Yes\",    \"parser\":\"yay!\", \"life\":null, \"Heyo\n\":true, \"keylo\":false, \"another key\":1278.0, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1, true, false, null, \"yes\", {}, []], \"ha\":{}}");
     
     recurseJSON(object, CTJSON_TYPE_OBJECT);
     
