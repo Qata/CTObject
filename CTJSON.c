@@ -299,10 +299,7 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                         }
                     }
                     
-                    printf("%se%s\n", numberString->characters, exponentString->characters);
-                    
                     double Double = strtod(numberString->characters, &pEnd);
-                    long Long = strtol(numberString->characters, &pEnd, 0);
                     long exponent = strtol(exponentString->characters, &pEnd, 0);
                     *valueType = CTJSON_TYPE_DOUBLE;
                     if (pEnd != JSON->characters && pEnd)
@@ -318,6 +315,7 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                     }
                     else
                     {
+                        long Long = strtol(numberString->characters, &pEnd, 0);
                         if (exponentString->length)
                         {
                             object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Long * powl(10, exponent)), sizeof(CTNumber));
