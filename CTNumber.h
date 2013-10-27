@@ -24,7 +24,7 @@ union CTNumberValue
     int Int;
     unsigned long ULong;
     long Long;
-    double Double;
+    long double Double;
 };
 
 typedef struct
@@ -39,10 +39,10 @@ CTNumber * CTNumberCreateWithUnsignedInt(CTAllocator * restrict alloc, unsigned 
 CTNumber * CTNumberCreateWithInt(CTAllocator * restrict alloc, int integer);
 CTNumber * CTNumberCreateWithUnsignedLong(CTAllocator * restrict alloc, unsigned long longInteger);
 CTNumber * CTNumberCreateWithLong(CTAllocator * restrict alloc, long longInteger);
-CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, double floatingPoint);
+CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, long double floatingPoint);
 
 void CTNumberSetUnsignedIntValue(CTNumber * restrict number, unsigned int integer);
 void CTNumberSetIntValue(CTNumber * restrict number, int integer);
 void CTNumberSetUnsignedLongValue(CTNumber * restrict number, unsigned long longInteger);
 void CTNumberSetLongValue(CTNumber * restrict number, long longInteger);
-void CTNumberSetDoubleValue(CTNumber * restrict number, double floatingPoint);
+void CTNumberSetDoubleValue(CTNumber * restrict number, long double floatingPoint);

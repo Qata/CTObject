@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end);
 CTString * CTStringFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end);
@@ -276,6 +277,7 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                 {
                     CTAllocator * allocl = CTAllocatorCreate();
                     CTString * numberString = CTStringCreate(allocl, "");
+                    CTString * exponentString = CTStringCreate(allocl, "");
                     char * pEnd;
                     
                     unsigned long startcpy = start;
@@ -284,18 +286,52 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                     {
                         CTStringAppendCharacter(numberString, JSON->characters[startcpy++]);
                     }
+                    if (startcpy < JSON->length && (JSON->characters[startcpy] == 'e' || JSON->characters[startcpy] == 'E'))
+                    {
+                        if (startcpy < JSON->length && (JSON->characters[++startcpy] == '-' || JSON->characters[startcpy] == '+'))
+                        {
+                            CTStringAppendCharacter(exponentString, JSON->characters[startcpy++]);
+                        }
+                        
+                        while (startcpy < JSON->length && ((JSON->characters[startcpy] >= '0' && JSON->characters[startcpy] <= '9')))
+                        {
+                            CTStringAppendCharacter(exponentString, JSON->characters[startcpy++]);
+                        }
+                    }
+                    
+                    printf("%se%s\n", numberString->characters, exponentString->characters);
                     
                     double Double = strtod(numberString->characters, &pEnd);
+                    long Long = strtol(numberString->characters, &pEnd, 0);
+                    long exponent = strtol(exponentString->characters, &pEnd, 0);
+                    *valueType = CTJSON_TYPE_DOUBLE;
                     if (pEnd != JSON->characters && pEnd)
                     {
-                        object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Double), sizeof(CTNumber));
+                        if (exponentString->length)
+                        {
+                            object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Double * powl(10, exponent)), sizeof(CTNumber));
+                        }
+                        else
+                        {
+                            object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Double), sizeof(CTNumber));
+                        }
                     }
                     else
                     {
-                        object = CTObjectCreate(alloc, CTNumberCreateWithLong(alloc, strtol(numberString->characters, &pEnd, 0)), sizeof(CTNumber));
+                        if (exponentString->length)
+                        {
+                            object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Long * powl(10, exponent)), sizeof(CTNumber));
+                        }
+                        else
+                        {
+                            object = CTObjectCreate(alloc, CTNumberCreateWithLong(alloc, Long), sizeof(CTNumber));
+                            *valueType = CTJSON_TYPE_LONG;
+                        }
                     }
-                    *valueType = CTJSON_TYPE_NUMBER;
-                    start += numberString->length;
+                    if (exponentString->length)
+                        start += numberString->length + exponentString->length + 1;
+                    else
+                        start += numberString->length;
                     CTAllocatorRelease(allocl);
                 }
                 else

@@ -36,7 +36,7 @@ CTNumber * CTNumberCreateWithLong(CTAllocator * restrict alloc, long value)
     return number;
 }
 
-CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, double value)
+CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, long double value)
 {
     CTNumber * number = CTAllocatorAllocate(alloc, sizeof(CTNumber));
     CTNumberSetDoubleValue(number, value);
@@ -71,7 +71,7 @@ void CTNumberSetLongValue(CTNumber * restrict number, long value)
     number->type = CTNumber_TYPE_LONG;
 }
 
-void CTNumberSetDoubleValue(CTNumber * restrict number, double value)
+void CTNumberSetDoubleValue(CTNumber * restrict number, long double value)
 {
     number->value.Double = value;
     number->size = sizeof(value);
