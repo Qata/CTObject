@@ -37,6 +37,9 @@
 		2396CAAF1818BA0200B86F0A /* CTNull.c in Sources */ = {isa = PBXBuildFile; fileRef = 2396CAAD1818BA0200B86F0A /* CTNull.c */; };
 		2396CAB01818BA0200B86F0A /* CTNull.c in Sources */ = {isa = PBXBuildFile; fileRef = 2396CAAD1818BA0200B86F0A /* CTNull.c */; };
 		2396CAB11818BA0200B86F0A /* CTNull.h in Headers */ = {isa = PBXBuildFile; fileRef = 2396CAAE1818BA0200B86F0A /* CTNull.h */; };
+		239BF064182C4D4B001F2068 /* CTDNSSDRegister.c in Sources */ = {isa = PBXBuildFile; fileRef = 239BF062182C4D4B001F2068 /* CTDNSSDRegister.c */; };
+		239BF065182C4D4B001F2068 /* CTDNSSDRegister.h in Headers */ = {isa = PBXBuildFile; fileRef = 239BF063182C4D4B001F2068 /* CTDNSSDRegister.h */; };
+		239BF066182C4DAF001F2068 /* CTDNSSDRegister.c in Sources */ = {isa = PBXBuildFile; fileRef = 239BF062182C4D4B001F2068 /* CTDNSSDRegister.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -80,6 +83,8 @@
 		2396CAA71818898600B86F0A /* CTNumber.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTNumber.c; sourceTree = "<group>"; };
 		2396CAAD1818BA0200B86F0A /* CTNull.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTNull.c; sourceTree = "<group>"; };
 		2396CAAE1818BA0200B86F0A /* CTNull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTNull.h; sourceTree = "<group>"; };
+		239BF062182C4D4B001F2068 /* CTDNSSDRegister.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTDNSSDRegister.c; sourceTree = "<group>"; };
+		239BF063182C4D4B001F2068 /* CTDNSSDRegister.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTDNSSDRegister.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +115,8 @@
 				238958681817317200096409 /* CTArray.c */,
 				238958691817317200096409 /* CTDictionary.h */,
 				2389586A1817317200096409 /* CTDictionary.c */,
+				239BF063182C4D4B001F2068 /* CTDNSSDRegister.h */,
+				239BF062182C4D4B001F2068 /* CTDNSSDRegister.c */,
 				2389586B1817317200096409 /* CTFunctions.h */,
 				2389586C1817317200096409 /* CTFunctions.c */,
 				2396CAA21818888700B86F0A /* CTJSON.h */,
@@ -161,6 +168,7 @@
 				238958731817317200096409 /* CTArray.h in Headers */,
 				2396CA9D18178F7A00B86F0A /* CTObject.h in Headers */,
 				2389587B1817317200096409 /* CTString.h in Headers */,
+				239BF065182C4D4B001F2068 /* CTDNSSDRegister.h in Headers */,
 				238958751817317200096409 /* CTDictionary.h in Headers */,
 				238958791817317200096409 /* CTNetServer.h in Headers */,
 				238958771817317200096409 /* CTFunctions.h in Headers */,
@@ -236,16 +244,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2396CAA81818898600B86F0A /* CTNumber.c in Sources */,
 				238958741817317200096409 /* CTArray.c in Sources */,
 				2396CA9B18178F7A00B86F0A /* CTObject.c in Sources */,
 				2396CAA41818889100B86F0A /* CTJSON.c in Sources */,
 				2396CAAF1818BA0200B86F0A /* CTNull.c in Sources */,
-				2389587C1817317200096409 /* CTString.c in Sources */,
 				238958761817317200096409 /* CTDictionary.c in Sources */,
 				238958781817317200096409 /* CTFunctions.c in Sources */,
 				2389587A1817317200096409 /* CTNetServer.c in Sources */,
 				238958721817317200096409 /* CTAllocator.c in Sources */,
-				2396CAA81818898600B86F0A /* CTNumber.c in Sources */,
+				2389587C1817317200096409 /* CTString.c in Sources */,
+				239BF064182C4D4B001F2068 /* CTDNSSDRegister.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,6 +267,7 @@
 				2396CAB01818BA0200B86F0A /* CTNull.c in Sources */,
 				2389588E181735E500096409 /* CTArray.c in Sources */,
 				2389588F181735E500096409 /* CTDictionary.c in Sources */,
+				239BF066182C4DAF001F2068 /* CTDNSSDRegister.c in Sources */,
 				2396CAA51818889100B86F0A /* CTJSON.c in Sources */,
 				23895890181735E500096409 /* CTFunctions.c in Sources */,
 				23895891181735E500096409 /* CTNetServer.c in Sources */,

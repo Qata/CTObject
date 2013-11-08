@@ -43,6 +43,15 @@ CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, long double va
     return number;
 }
 
+
+CTLargeNumber * CTLargeNumberCreate(CTAllocator * restrict alloc, CTNumber * base, CTNumber * exponent)
+{
+    CTLargeNumber * lnumber = CTAllocatorAllocate(alloc, sizeof(CTLargeNumber));
+    lnumber->base = base;
+    lnumber->exponent = exponent;
+    return lnumber;
+}
+
 void CTNumberSetUnsignedIntValue(CTNumber * restrict number, unsigned int value)
 {
     number->value.UInt = value;

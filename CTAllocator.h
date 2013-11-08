@@ -7,13 +7,14 @@
 //
 
 #pragma once
+#include <stdint.h>
 
 /**
  * An object that acts as a front to malloc, realloc and free in order to keep track of allocated memory.
  **/
 typedef struct
 {
-	unsigned long count;
+	uint64_t count;
 	void ** objects;
 } CTAllocator;
 

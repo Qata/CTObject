@@ -14,6 +14,28 @@
 #include <stdio.h>
 #include <math.h>
 
+size_t highestOneBitPosition(uint32_t a)
+{
+    size_t bits=0;
+    while (a!=0) {
+        ++bits;
+        a>>=1;
+    };
+    return bits;
+}
+
+int exponentiation_is_safe(uint32_t a, uint32_t b)
+{
+    size_t a_bits = highestOneBitPosition(a);
+    return (a_bits * b <= sizeof(long double) * 8);
+}
+
+int multiplication_is_safe(uint32_t a, uint32_t b)
+{
+    size_t a_bits = highestOneBitPosition(a), b_bits = highestOneBitPosition(b);
+    return (a_bits + b_bits <= sizeof(long double) * 8);
+}
+
 CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end);
 CTString * CTStringFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end);
 CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end, int * valueType);
@@ -113,6 +135,7 @@ CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restri
                 case '"':
                 {
                     CTString * string = CTStringFromJSON(alloc, JSON, start, &start);
+                    while (start < JSON->length && JSON->characters[start] == ' ') ++start;
                     if (JSON->characters[start] == ':')
                     {
                         int type = 0;
@@ -229,7 +252,7 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
     CTObject * object = NULL;
     assert(end && valueType);
     int loop = 1;
-    while (loop)
+    while (loop && start < JSON->length)
     {
         loop = 0;
         switch (JSON->characters[start])
@@ -306,7 +329,15 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                     {
                         if (exponentString->length)
                         {
-                            object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Double * powl(10, exponent)), sizeof(CTNumber));
+                            if (exponent <= 15 && exponent >= -6)
+                            {
+                                object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Double * powl(10, exponent)), sizeof(CTNumber));
+                            }
+                            else
+                            {
+                                *valueType = CTJSON_TYPE_LARGE_NUMBER;
+                                object = CTObjectCreate(alloc, CTLargeNumberCreate(alloc, CTNumberCreateWithDouble(alloc, Double), CTNumberCreateWithLong(alloc, exponent)), sizeof(CTLargeNumber));
+                            }
                         }
                         else
                         {
@@ -318,7 +349,15 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                         long Long = strtol(numberString->characters, &pEnd, 0);
                         if (exponentString->length)
                         {
-                            object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Long * powl(10, exponent)), sizeof(CTNumber));
+                            if (exponent <= 15 && exponent >= -6)
+                            {
+                                object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Long * powl(10, exponent)), sizeof(CTNumber));
+                            }
+                            else
+                            {
+                                *valueType = CTJSON_TYPE_LARGE_NUMBER;
+                                object = CTObjectCreate(alloc, CTLargeNumberCreate(alloc, CTNumberCreateWithLong(alloc, Long), CTNumberCreateWithLong(alloc, exponent)), sizeof(CTLargeNumber));
+                            }
                         }
                         else
                         {
@@ -340,6 +379,7 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                 
             case ' ':
                 loop = 1;
+                ++start;
                 break;
             case 0:
                 break;

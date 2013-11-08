@@ -20,6 +20,7 @@ enum
     CTJSON_TYPE_STRING,
     CTJSON_TYPE_DOUBLE,
     CTJSON_TYPE_LONG,
+    CTJSON_TYPE_LARGE_NUMBER,
     CTJSON_TYPE_BOOLEAN,
     CTJSON_TYPE_NULL
 };
@@ -29,28 +30,28 @@ typedef struct
     CTAllocator * alloc;
     CTString * key;
     CTObject * value;
-    int valueType;
+    int8_t valueType;
 } CTJSONObjectKeyValuePair;
 
 typedef struct
 {
     CTAllocator * alloc;
     CTObject * value;
-    int valueType;
+    int8_t valueType;
 } CTJSONArrayValueContainer;
 
 typedef struct
 {
     CTAllocator * alloc;
     CTJSONObjectKeyValuePair ** elements;
-    unsigned long count;
+    uint64_t count;
 } CTJSONObject;
 
 typedef struct
 {
     CTAllocator * alloc;
     CTJSONArrayValueContainer ** elements;
-    unsigned long count;
+    uint64_t count;
 } CTJSONArray;
 
 CTJSONObject * CTJSONParse(CTAllocator * alloc, const char * JSON);

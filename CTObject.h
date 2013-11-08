@@ -13,7 +13,7 @@
 typedef struct
 {
     CTAllocator * alloc;
-    unsigned long size;
+    uint64_t size;
     void * ptr;
 } CTObject;
 

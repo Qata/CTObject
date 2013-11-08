@@ -17,7 +17,7 @@ struct CTDictionaryEntry
 
 typedef struct
 {
-    long count;
+    uint64_t count;
     struct CTDictionaryEntry ** elements;
     CTAllocator * alloc;
 } CTDictionary;

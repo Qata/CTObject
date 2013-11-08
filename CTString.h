@@ -12,7 +12,7 @@
 typedef struct
 {
     CTAllocator * alloc;
-    unsigned long length;
+    uint64_t length;
     char * characters;
 } CTString;
 

@@ -13,7 +13,7 @@
 typedef struct
 {
     CTAllocator * alloc;
-    unsigned long count;
+    uint64_t count;
     CTString ** elements;
 } CTArray;
 

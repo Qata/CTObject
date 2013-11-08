@@ -35,11 +35,19 @@ typedef struct
     int type;
 } CTNumber;
 
+typedef struct
+{
+    CTNumber * base;
+    CTNumber * exponent;
+} CTLargeNumber;
+
 CTNumber * CTNumberCreateWithUnsignedInt(CTAllocator * restrict alloc, unsigned int integer);
 CTNumber * CTNumberCreateWithInt(CTAllocator * restrict alloc, int integer);
 CTNumber * CTNumberCreateWithUnsignedLong(CTAllocator * restrict alloc, unsigned long longInteger);
 CTNumber * CTNumberCreateWithLong(CTAllocator * restrict alloc, long longInteger);
 CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, long double floatingPoint);
+
+CTLargeNumber * CTLargeNumberCreate(CTAllocator * restrict alloc, CTNumber * base, CTNumber * exponent);
 
 void CTNumberSetUnsignedIntValue(CTNumber * restrict number, unsigned int integer);
 void CTNumberSetIntValue(CTNumber * restrict number, int integer);
