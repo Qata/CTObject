@@ -12,6 +12,7 @@
 #include "CTObject.h"
 #include "CTNumber.h"
 #include "CTNull.h"
+#include "CTError.h"
 
 enum
 {
@@ -54,4 +55,4 @@ typedef struct
     uint64_t count;
 } CTJSONArray;
 
-CTJSONObject * CTJSONParse(CTAllocator * alloc, const char * JSON);
+CTJSONObject * CTJSONParse(CTAllocator * alloc, const char * JSON, CTError ** error);

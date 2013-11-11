@@ -199,9 +199,16 @@ int main(int argc, const char * argv[])
     assert(number->value.Double == 255.5);
     
 #pragma mark - CTJSON Test Begin
-    CTJSONObject * object = CTJSONParse(allocator, "    { \"hello\":  \"Yes\",    \"parser\":\"yay!\", \"life\":null, \"Heyo\":true, \"keylo\":false, \"another key\":1278e-2, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1E8, true, false, null, \"yes\", {}, []], \"ha\":[[[[[[[[[[{\"So you found me\":\"congratulations\"}]]]]]]]]]]}");
-    
-    recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
+    CTError * error = NULL;
+    CTJSONObject * object = CTJSONParse(allocator, "    { \"hello\":  \"Yes\",    \"parser\":\"yay!\", \"life\":null, \"Heyo\":true, \"keylo\":false, \"another key\":1278e-2, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1E8, 12e1, true, false, null, \"yes\", {}, []], \"ha\":[[[[[[[[[[{\"So you found me\":\"congratulations\"}]]]]]]]]]]}", &error);
+    if (error)
+    {
+        printf("%s, %i\n", error->error->characters, error->code);
+    }
+    else
+    {
+        recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
+    }
     
     CTArrayAddEntry(array, "hello");
     CTArrayAddEntry(array, "parser");

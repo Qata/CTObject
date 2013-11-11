@@ -40,6 +40,8 @@
 		239BF064182C4D4B001F2068 /* CTDNSSDRegister.c in Sources */ = {isa = PBXBuildFile; fileRef = 239BF062182C4D4B001F2068 /* CTDNSSDRegister.c */; };
 		239BF065182C4D4B001F2068 /* CTDNSSDRegister.h in Headers */ = {isa = PBXBuildFile; fileRef = 239BF063182C4D4B001F2068 /* CTDNSSDRegister.h */; };
 		239BF066182C4DAF001F2068 /* CTDNSSDRegister.c in Sources */ = {isa = PBXBuildFile; fileRef = 239BF062182C4D4B001F2068 /* CTDNSSDRegister.c */; };
+		23A4EFE2183057D700A435C1 /* CTError.c in Sources */ = {isa = PBXBuildFile; fileRef = 23A4EFE1183057D700A435C1 /* CTError.c */; };
+		23A4EFE3183057D700A435C1 /* CTError.c in Sources */ = {isa = PBXBuildFile; fileRef = 23A4EFE1183057D700A435C1 /* CTError.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -85,6 +87,8 @@
 		2396CAAE1818BA0200B86F0A /* CTNull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTNull.h; sourceTree = "<group>"; };
 		239BF062182C4D4B001F2068 /* CTDNSSDRegister.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTDNSSDRegister.c; sourceTree = "<group>"; };
 		239BF063182C4D4B001F2068 /* CTDNSSDRegister.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTDNSSDRegister.h; sourceTree = "<group>"; };
+		23A4EFE0183057B600A435C1 /* CTError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTError.h; sourceTree = "<group>"; };
+		23A4EFE1183057D700A435C1 /* CTError.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTError.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +121,8 @@
 				2389586A1817317200096409 /* CTDictionary.c */,
 				239BF063182C4D4B001F2068 /* CTDNSSDRegister.h */,
 				239BF062182C4D4B001F2068 /* CTDNSSDRegister.c */,
+				23A4EFE0183057B600A435C1 /* CTError.h */,
+				23A4EFE1183057D700A435C1 /* CTError.c */,
 				2389586B1817317200096409 /* CTFunctions.h */,
 				2389586C1817317200096409 /* CTFunctions.c */,
 				2396CAA21818888700B86F0A /* CTJSON.h */,
@@ -255,6 +261,7 @@
 				238958721817317200096409 /* CTAllocator.c in Sources */,
 				2389587C1817317200096409 /* CTString.c in Sources */,
 				239BF064182C4D4B001F2068 /* CTDNSSDRegister.c in Sources */,
+				23A4EFE2183057D700A435C1 /* CTError.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,6 +271,7 @@
 			files = (
 				2389588D181735E500096409 /* CTAllocator.c in Sources */,
 				2396CA9C18178F7A00B86F0A /* CTObject.c in Sources */,
+				23A4EFE3183057D700A435C1 /* CTError.c in Sources */,
 				2396CAB01818BA0200B86F0A /* CTNull.c in Sources */,
 				2389588E181735E500096409 /* CTArray.c in Sources */,
 				2389588F181735E500096409 /* CTDictionary.c in Sources */,

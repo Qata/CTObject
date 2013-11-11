@@ -14,31 +14,9 @@
 #include <stdio.h>
 #include <math.h>
 
-size_t highestOneBitPosition(uint32_t a)
-{
-    size_t bits=0;
-    while (a!=0) {
-        ++bits;
-        a>>=1;
-    };
-    return bits;
-}
-
-int exponentiation_is_safe(uint32_t a, uint32_t b)
-{
-    size_t a_bits = highestOneBitPosition(a);
-    return (a_bits * b <= sizeof(long double) * 8);
-}
-
-int multiplication_is_safe(uint32_t a, uint32_t b)
-{
-    size_t a_bits = highestOneBitPosition(a), b_bits = highestOneBitPosition(b);
-    return (a_bits + b_bits <= sizeof(long double) * 8);
-}
-
-CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end);
-CTString * CTStringFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end);
-CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end, int * valueType);
+CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end, CTError ** error);
+CTString * CTStringFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end, CTError ** error);
+CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end, int * valueType, CTError ** error);
 
 CTJSONObject * CTJSONObjectCreate(CTAllocator * alloc)
 {
@@ -94,7 +72,7 @@ void CTJSONArrayAddValueContainer(CTJSONArray * array, CTObject * value, int val
     array->elements[index]->valueType = valueType;
 }
 
-CTJSONObject * CTJSONParse(CTAllocator * alloc, const char * JSON)
+CTJSONObject * CTJSONParse(CTAllocator * alloc, const char * JSON, CTError ** error)
 {
     CTJSONObject * object = CTJSONObjectCreate(alloc);
     CTString * JSONString = CTStringCreate(alloc, JSON);
@@ -113,13 +91,17 @@ CTJSONObject * CTJSONParse(CTAllocator * alloc, const char * JSON)
         if (lastChar == '{')
         {
             unsigned long end = 0;
-            object = CTJSONObjectFromJSONObject(alloc, JSONString, strchr(JSONString->characters, '{') - JSONString->characters, &end);
+            object = CTJSONObjectFromJSONObject(alloc, JSONString, strchr(JSONString->characters, '{') - JSONString->characters, &end, error);
+        }
+        else
+        {
+            *error = CTErrorCreate(alloc, "Valid JSON needs to be within the scope of a single object.", 0);
         }
     }
-    return lastChar == '{' ? object : NULL;
+    return error ? object : NULL;
 }
 
-CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end)
+CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end, CTError ** error)
 {
     CTJSONObject * object = CTJSONObjectCreate(alloc);
     if (JSON->characters[start++] == '{')
@@ -134,12 +116,12 @@ CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restri
                     break;
                 case '"':
                 {
-                    CTString * string = CTStringFromJSON(alloc, JSON, start, &start);
+                    CTString * string = CTStringFromJSON(alloc, JSON, start, &start, error);
                     while (start < JSON->length && JSON->characters[start] == ' ') ++start;
                     if (JSON->characters[start] == ':')
                     {
                         int type = 0;
-                        CTJSONObjectAddKeyValuePair(object, string, CTObjectFromJSON(alloc, JSON, start + 1, &start, &type), type);
+                        CTJSONObjectAddKeyValuePair(object, string, CTObjectFromJSON(alloc, JSON, start + 1, &start, &type, error), type);
                         unsigned long startcopy;
                         for (startcopy = start; startcopy < JSON->length && JSON->characters[startcopy] != ','; startcopy++)
                         {
@@ -152,8 +134,13 @@ CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restri
                                     return object;
                                     break;
                                 default:
-                                    printf("Incorrectly formatted JSON: %s, parsing anyway. You monster.\n", &JSON->characters[startcopy]);
+                                {
+                                    char str[0x100];
+                                    memset(str, 0, 0x100);
+                                    sprintf(str, "Incorrectly formatted JSON: %s, parsing anyway.", &JSON->characters[startcopy]);
+                                    *error = CTErrorCreate(alloc, str, 0);
                                     break;
+                                }
                             }
                         }
                     }
@@ -166,9 +153,14 @@ CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restri
                 case ' ':
                     break;
                 default:
-                    printf("Extraneous '%c' in JSON: '%s'\n", JSON->characters[start], &JSON->characters[start]);
+                {
+                    char str[0x100];
+                    memset(str, 0, 0x100);
+                    sprintf(str, "Extraneous character '%c' in JSON: %s.", JSON->characters[start], &JSON->characters[start]);
+                    *error = CTErrorCreate(alloc, str, 0);
                     return object;
                     break;
+                }
             }
         }
     }
@@ -176,7 +168,7 @@ CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restri
     return object;
 }
 
-CTJSONArray * CTJSONArrayFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end)
+CTJSONArray * CTJSONArrayFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end, CTError ** error)
 {
     CTJSONArray * array = CTJSONArrayCreate(alloc);
     int type;
@@ -194,7 +186,7 @@ CTJSONArray * CTJSONArrayFromJSON(CTAllocator * alloc, CTString * restrict JSON,
                     return array;
                     break;
                 default:
-                    CTJSONArrayAddValueContainer(array, CTObjectFromJSON(alloc, JSON, start, &start, &type), type);
+                    CTJSONArrayAddValueContainer(array, CTObjectFromJSON(alloc, JSON, start, &start, &type, error), type);
                     unsigned long startcopy;
                     for (startcopy = start; startcopy < JSON->length && JSON->characters[startcopy] != ','; startcopy++)
                     {
@@ -207,8 +199,13 @@ CTJSONArray * CTJSONArrayFromJSON(CTAllocator * alloc, CTString * restrict JSON,
                                 return array;
                                 break;
                             default:
-                                printf("Incorrectly formatted JSON: %s, parsing anyway. You monster.\n", &JSON->characters[startcopy]);
+                            {
+                                char str[0x100];
+                                memset(str, 0, 0x100);
+                                sprintf(str, "Incorrectly formatted JSON: %s, parsing anyway.", &JSON->characters[startcopy]);
+                                *error = CTErrorCreate(alloc, str, 0);
                                 break;
+                            }
                         }
                     }
                     break;
@@ -219,13 +216,13 @@ CTJSONArray * CTJSONArrayFromJSON(CTAllocator * alloc, CTString * restrict JSON,
     return array;
 }
 
-CTString * CTStringFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end)
+CTString * CTStringFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end, CTError ** error)
 {
     CTString * string = CTStringCreate(alloc, "");
-    if (JSON->characters[start++] == '"')
+    if (JSON->characters[start] == '"')
     {
         assert(end);
-        for (; JSON->characters[start] != '"' && JSON->characters[start] != 0; start++)
+        for (++start; JSON->characters[start] != '"' && JSON->characters[start] != 0; start++)
         {
             char character[3];
             memset(character, 0, sizeof(character));
@@ -247,7 +244,7 @@ CTString * CTStringFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
     return string;
 }
 
-CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end, int * valueType)
+CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsigned long start, unsigned long * end, int * valueType, CTError ** error)
 {
     CTObject * object = NULL;
     assert(end && valueType);
@@ -258,15 +255,15 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
         switch (JSON->characters[start])
         {
             case '"':
-                object = CTObjectCreate(alloc, CTStringFromJSON(alloc, JSON, start, &start), sizeof(CTString));
+                object = CTObjectCreate(alloc, CTStringFromJSON(alloc, JSON, start, &start, error), sizeof(CTString));
                 *valueType = CTJSON_TYPE_STRING;
                 break;
             case '{':
-                object = CTObjectCreate(alloc, CTJSONObjectFromJSONObject(alloc, JSON, start, &start), sizeof(CTJSONObject));
+                object = CTObjectCreate(alloc, CTJSONObjectFromJSONObject(alloc, JSON, start, &start, error), sizeof(CTJSONObject));
                 *valueType = CTJSON_TYPE_OBJECT;
                 break;
             case '[':
-                object = CTObjectCreate(alloc, CTJSONArrayFromJSON(alloc, JSON, start, &start), sizeof(CTJSONArray));
+                object = CTObjectCreate(alloc, CTJSONArrayFromJSON(alloc, JSON, start, &start, error), sizeof(CTJSONArray));
                 *valueType = CTJSON_TYPE_ARRAY;
                 break;
             case 't':
@@ -296,7 +293,7 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                 break;
                 
             default:
-                if (JSON->characters[start] == '-' || (JSON->characters[start] >= '0' && JSON->characters[start] <= '9'))
+                if (JSON->characters[start] == '-' || JSON->characters[start] == '+' || (JSON->characters[start] >= '0' && JSON->characters[start] <= '9'))
                 {
                     CTAllocator * allocl = CTAllocatorCreate();
                     CTString * numberString = CTStringCreate(allocl, "");
@@ -319,6 +316,16 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                         while (startcpy < JSON->length && ((JSON->characters[startcpy] >= '0' && JSON->characters[startcpy] <= '9')))
                         {
                             CTStringAppendCharacter(exponentString, JSON->characters[startcpy++]);
+                        }
+                        
+                        if (startcpy < JSON->length && JSON->characters[startcpy] == '.')
+                        {
+                            *error = CTErrorCreate(alloc, "E notation cannot be a floating point number", 0);
+                            while (startcpy < JSON->length && JSON->characters[startcpy] != ',' && JSON->characters[startcpy] != ']' && JSON->characters[startcpy] != '}')
+                            {
+                                ++startcpy;
+                                ++start;
+                            }
                         }
                     }
                     
@@ -373,7 +380,10 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                 }
                 else
                 {
-                    puts("Incorrectly formatted JSON literal");
+                    char str[0x100];
+                    memset(str, 0, 0x100);
+                    sprintf(str, "Incorrectly formatted JSON literal: %s", &JSON->characters[start]);
+                    *error = CTErrorCreate(alloc, str, 0);
                 }
                 break;
                 
