@@ -200,7 +200,7 @@ int main(int argc, const char * argv[])
     
 #pragma mark - CTJSON Test Begin
     CTError * error = NULL;
-    CTJSONObject * object = CTJSONParse(allocator, "    { \"hello\":  \"Yes\",    \"parser\":\"yay!\", \"life\":null, \"Heyo\":true, \"keylo\":false, \"another key\":1278e-2, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1E8, 12e1, true, false, null, \"yes\", {}, []], \"ha\":[[[[[[[[[[{\"So you found me\":\"congratulations\"}]]]]]]]]]]}", &error);
+    CTJSONObject * object = CTJSONParse(allocator, "    { \"hello\":  \"Yes\",    \"parser\":\"yay!\", \"life\":null, \"Heyo\":true, \"keylo\":false, \"another key\":1278e-2, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1E8, 12e1, \"\\u0012\", true, false, null, \"yes\", {}, []], \"ha\":[[[[[[[[[[{\"So you found me\":\"congratulations\"}]]]]]]]]]]}", &error);
     if (error)
     {
         printf("%s, %i\n", error->error->characters, error->code);

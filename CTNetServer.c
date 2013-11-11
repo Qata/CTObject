@@ -1,77 +1,72 @@
 //
-//  CTDNSSDRegister.c
+//  CTNetServer.c
 //  CTObject
 //
-//  Created by Carlo Tortorella on 08/11/13.
+//  Created by Carlo Tortorella on 22/10/13.
 //  Copyright (c) 2013 Carlo Tortorella. All rights reserved.
 //
 
-#include "CTDNSSDRegister.h"
-#include <stdlib.h>
+#include "CTNetServer.h"
+#include "CTFunctions.h"
 #include <stdio.h>
-#include <string.h>
-#include <math.h>
 #include <unistd.h>
-#include <signal.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <fcntl.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <string.h>
 
-unsigned netUDPResolveAddress(const char * address)
+CTNetServer * CTNetServerOpen(CTAllocator * restrict alloc, const char * restrict address, unsigned short port)
 {
-    char * c_address = malloc(strlen(address) + 1);
-    strncpy(c_address, address, strlen(address));
-    c_address[strlen(address)] = 0;
-    unsigned int addressIntegers[4];
-    sscanf(strtok(c_address, "."), "%d", &addressIntegers[0]);
-    
-    for(int i = 1; i < 4; i++)
+    CTNetServer * server = CTAllocatorAllocate(alloc, sizeof(CTNetServer));
+    server->alloc = alloc;
+    if ((server->handle = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
-        sscanf(strtok(NULL, "."), "%d", &addressIntegers[i]);
+        close(server->handle);
+        printf("Failed to create socket.\n");
+        return NULL;
     }
     
-    unsigned int dest_addr = 0;
-    for(int i = 0; i < 4; i++)
+    server->socketAddress.sin_family = AF_INET;
+    struct hostent * he;
+    if (address && (he = gethostbyname(address)))
     {
-        //Bit shift the integers to make it into a computer-friendly address.
-        dest_addr |= addressIntegers[i] << (8 * (3 - i));
+        server->address = stringDuplicate(alloc, address);
+        memcpy(&server->socketAddress.sin_addr, he->h_addr_list[0], he->h_length);
     }
+    else
+    {
+        server->address = NULL;
+        server->socketAddress.sin_addr.s_addr = INADDR_ANY;
+    }
+    server->socketAddress.sin_port = htons(port);
     
-    free(c_address);
-    
-    return dest_addr;
+    if (connect(server->handle, (const struct sockaddr *)&server->socketAddress, sizeof(server->socketAddress)) < 0)
+    {
+        close(server->handle);
+        printf("Failed to connect to socket.\n");
+        return NULL;
+    }
+    return server;
 }
 
-void CTDNSSDRegister(CTDNSSDEntry * entry)
+void CTNetServerClose(const CTNetServer * restrict server)
 {
-    int handle;
-    if ((handle = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP )) < 0)
-    {
-        close(handle);
-        printf("Failed to create socket.");
-    }
-    
-    struct sockaddr_in address;
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons((unsigned short) 0);
-    
-    if ( bind( handle, (const struct sockaddr*) &address, sizeof(address) ) < 0 )
-    {
-        close(handle);
-        printf("Failed to bind socket.\n");
-    }
-    if ( fcntl( handle, F_SETFL, O_NONBLOCK, 1 ) == -1 )
-    {
-        close(handle);
-        printf("Failed to set non-blocking socket.\n");
-    }
-    
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = htonl(netUDPResolveAddress("224.0.0.251"));
-    address.sin_port = htons(5353);
-    
-    printf("%li\n", sendto(handle, "", 0, 0, (struct sockaddr *)&address, sizeof(struct sockaddr_in)));
-    
-    close(handle);
+    close(server->handle);
+}
+
+long CTNetServerSend(const CTNetServer * restrict server, const char * restrict bytes, unsigned long size)
+{
+    return send(server->handle, bytes, size, 0);
+}
+
+const char * CTNetServerReceive(const CTNetServer * restrict server, unsigned long size)
+{
+    CTAllocator * alloc = CTAllocatorCreate();
+    char * receive = CTAllocatorAllocate(alloc, size);
+    long receivedLength = recv(server->handle, receive, size, 0);
+    char * retVal = CTAllocatorAllocate(server->alloc, receivedLength + 1);
+    memcpy(retVal, receive, receivedLength);
+    retVal[receivedLength] = 0;
+    CTAllocatorRelease(alloc);
+    return retVal;
 }

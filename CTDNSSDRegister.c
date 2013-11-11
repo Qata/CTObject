@@ -7,7 +7,6 @@
 //
 
 #include "CTDNSSDRegister.h"
-#include <malloc/malloc.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -62,17 +61,11 @@ void CTDNSSDRegister(CTDNSSDEntry * entry)
         close(handle);
         printf("Failed to bind socket.\n");
     }
-    
-    //For non-blocking IO
-    int nonBlocking = 1;
-    if ( fcntl( handle, F_SETFL, O_NONBLOCK, nonBlocking ) == -1 )
+    if ( fcntl( handle, F_SETFL, O_NONBLOCK, 1 ) == -1 )
     {
         close(handle);
         printf("Failed to set non-blocking socket.\n");
     }
-    
-    int set = 1;
-    setsockopt(handle, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
     
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = htonl(netUDPResolveAddress("224.0.0.251"));
