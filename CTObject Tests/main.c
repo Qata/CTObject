@@ -217,9 +217,11 @@ int main(int argc, const char * argv[])
     assert(error);
     
     error = NULL;
-    CTJSONParse(allocator, "{\"r\":{\"ip\":\"203.12.147.98\", \"st\": \"2013-11-13 16:01:27\", \"d\":{\"s\":{\"a\":\"0090c24082ae\",\"lt\":\"2013-11-13 18:28:54\",\"c\":[{\"cp\":1,\"d\":[{\"i\":39,\"e\":{\"s\":\"c\",\"c\":254,\"d\":29,\"b\":11,\"t\":72,\"r\":45,\"m\":\"2\",\"f\":\"b\",\"x\":\"82\"}}]}]}}\"e\":0,\"l\":254,\"f\":0,\"p\":0,\"le\":0,\"li\":4,\"lt\":\"2013-11-13 18:27:03\"},\"e\":{\"s\":\"0\",\"c\":254,\"d\":14,\"b\":51,\"t\":52,\"r\":45,\"m\":\"20\",\"f\":\"b\",\"x\":\"2\"}}]}]}}}}", &error);
-    assert(error);error = NULL;
-    CTJSONParse(allocator, "{\"howdy\":{ \"hello\":  \"Yes\"}'}", &error);
+    object = CTJSONParse(allocator, "    { \"hello\":  \"Yes\"\"e\",    \"parser\":\"yay!\", \"life\":null, \"Heyo\":true, \"keylo\":false, \"another key\":1278e-2, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1E8, 12e1, \"\\u0012\", true, false, null, \"yes\", {}, []], \"ha\":[[[[[[[[[[{\"So you found me\":\"congratulations\"}]]]]]]]]]\"e\"]}", &error);
+    assert(error);
+    
+    error = NULL;
+    CTJSONParse(allocator, "{\"howdy\":{ \"hello\":  \"Yes\"}\"}", &error);
     assert(error);
     
     CTAllocatorRelease(allocator);

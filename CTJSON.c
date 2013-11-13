@@ -137,7 +137,7 @@ CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restri
                                 {
                                     char str[0x100];
                                     memset(str, 0, 0x100);
-                                    sprintf(str, "Incorrectly formatted JSON, %s", &JSON->characters[startcopy]);
+                                    sprintf(str, "Incorrect character in JSON: '%c' at %lu", JSON->characters[startcopy], startcopy);
                                     *error = CTErrorCreate(alloc, str, 0);
                                     *end = startcopy + 1;
                                     return object;
@@ -204,8 +204,10 @@ CTJSONArray * CTJSONArrayFromJSON(CTAllocator * alloc, CTString * restrict JSON,
                             {
                                 char str[0x100];
                                 memset(str, 0, 0x100);
-                                sprintf(str, "Incorrectly formatted JSON: %s, parsing anyway.", &JSON->characters[startcopy]);
+                                sprintf(str, "Incorrect character in JSON: '%c' at %lu", JSON->characters[startcopy], startcopy);
                                 *error = CTErrorCreate(alloc, str, 0);
+                                *end = startcopy + 1;
+                                return array;
                                 break;
                             }
                         }
@@ -384,7 +386,7 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                 {
                     char str[0x100];
                     memset(str, 0, 0x100);
-                    sprintf(str, "Incorrectly formatted JSON literal: %s", &JSON->characters[start]);
+                    sprintf(str, "Incorrectly formatted JSON: '%c' at %lu", JSON->characters[start], start);
                     *error = CTErrorCreate(alloc, str, 0);
                 }
                 break;
