@@ -116,3 +116,8 @@ const char * CTStringStringBetween(CTString * restrict string, const char * rest
 	}
 	return NULL;
 }
+
+int CTStringContainsString(CTString * restrict string, const char * restrict search)
+{
+	return (int)strstr(string->characters, search);
+}

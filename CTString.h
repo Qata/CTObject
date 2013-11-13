@@ -25,3 +25,4 @@ void CTStringSet(CTString * restrict string, const char * restrict characters);
 void CTStringRemoveCharactersFromStart(CTString * restrict string, unsigned long count);
 void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long count);
 const char * CTStringStringBetween(CTString * restrict string, const char * restrict search1, const char * restrict search2);
+int CTStringContainsString(CTString * restrict string, const char * restrict search);

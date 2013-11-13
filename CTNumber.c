@@ -22,17 +22,17 @@ CTNumber * CTNumberCreateWithInt(CTAllocator * restrict alloc, int value)
     return number;
 }
 
-CTNumber * CTNumberCreateWithUnsignedLong(CTAllocator * restrict alloc, unsigned long value)
+CTNumber * CTNumberCreateWithUnsignedLong(CTAllocator * restrict alloc, uint64_t value)
 {
     CTNumber * number = CTAllocatorAllocate(alloc, sizeof(CTNumber));
     CTNumberSetUnsignedLongValue(number, value);
     return number;
 }
 
-CTNumber * CTNumberCreateWithLong(CTAllocator * restrict alloc, long value)
+CTNumber * CTNumberCreateWithLong(CTAllocator * restrict alloc, int64_t value)
 {
     CTNumber * number = CTAllocatorAllocate(alloc, sizeof(CTNumber));
-    CTNumberSetUnsignedLongValue(number, value);
+    CTNumberSetLongValue(number, value);
     return number;
 }
 
@@ -66,14 +66,14 @@ void CTNumberSetIntValue(CTNumber * restrict number, int value)
     number->type = CTNumber_TYPE_INT;
 }
 
-void CTNumberSetUnsignedLongValue(CTNumber * restrict number, unsigned long value)
+void CTNumberSetUnsignedLongValue(CTNumber * restrict number, uint64_t value)
 {
     number->value.ULong = value;
     number->size = sizeof(value);
     number->type = CTNumber_TYPE_ULONG;
 }
 
-void CTNumberSetLongValue(CTNumber * restrict number, long value)
+void CTNumberSetLongValue(CTNumber * restrict number, int64_t value)
 {
     number->value.Long = value;
     number->size = sizeof(value);

@@ -8,6 +8,7 @@
 
 #pragma once
 #include "CTAllocator.h"
+#include <stdint.h>
 
 enum
 {
@@ -22,8 +23,8 @@ union CTNumberValue
 {
     unsigned int UInt;
     int Int;
-    unsigned long ULong;
-    long Long;
+    uint64_t ULong;
+    int64_t Long;
     long double Double;
 };
 
@@ -31,7 +32,7 @@ typedef struct
 {
     CTAllocator * alloc;
     union CTNumberValue value;
-    unsigned long size;
+    uint64_t size;
     int type;
 } CTNumber;
 
@@ -43,14 +44,14 @@ typedef struct
 
 CTNumber * CTNumberCreateWithUnsignedInt(CTAllocator * restrict alloc, unsigned int integer);
 CTNumber * CTNumberCreateWithInt(CTAllocator * restrict alloc, int integer);
-CTNumber * CTNumberCreateWithUnsignedLong(CTAllocator * restrict alloc, unsigned long longInteger);
-CTNumber * CTNumberCreateWithLong(CTAllocator * restrict alloc, long longInteger);
+CTNumber * CTNumberCreateWithUnsignedLong(CTAllocator * restrict alloc, uint64_t longInteger);
+CTNumber * CTNumberCreateWithLong(CTAllocator * restrict alloc, int64_t longInteger);
 CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, long double floatingPoint);
 
 CTLargeNumber * CTLargeNumberCreate(CTAllocator * restrict alloc, CTNumber * base, CTNumber * exponent);
 
 void CTNumberSetUnsignedIntValue(CTNumber * restrict number, unsigned int integer);
 void CTNumberSetIntValue(CTNumber * restrict number, int integer);
-void CTNumberSetUnsignedLongValue(CTNumber * restrict number, unsigned long longInteger);
-void CTNumberSetLongValue(CTNumber * restrict number, long longInteger);
+void CTNumberSetUnsignedLongValue(CTNumber * restrict number, uint64_t longInteger);
+void CTNumberSetLongValue(CTNumber * restrict number, int64_t longInteger);
 void CTNumberSetDoubleValue(CTNumber * restrict number, long double floatingPoint);

@@ -56,3 +56,4 @@ typedef struct
 } CTJSONArray;
 
 CTJSONObject * CTJSONParse(CTAllocator * alloc, const char * JSON, CTError ** error);
+CTString * CTJSONSerialise(CTAllocator * alloc, CTJSONObject * JSON, CTError ** error);

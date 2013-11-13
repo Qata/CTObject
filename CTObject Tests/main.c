@@ -48,10 +48,13 @@ void recurseJSON(void * obj, int type, int indentation)
                         printf("'%s' = '%Lf'\n", key->characters, ((CTNumber *)ptr)->value.Double);
                         break;
                     case CTJSON_TYPE_LONG:
-                        printf("'%s' = '%li'\n", key->characters, ((CTNumber *)ptr)->value.Long);
+                        printf("'%s' = '%lli'\n", key->characters, ((CTNumber *)ptr)->value.Long);
                         break;
                     case CTJSON_TYPE_NULL:
                         printf("'%s' = %s\n", key->characters, ((CTNull *)ptr)->value);
+                        break;
+                    case CTJSON_TYPE_LARGE_NUMBER:
+                        printf("'%s' = %Lfe%lli\n", key->characters, ((CTLargeNumber *)ptr)->base->value.Double, ((CTLargeNumber *)ptr)->exponent->value.Long);
                         break;
                 }
             }
@@ -89,7 +92,7 @@ void recurseJSON(void * obj, int type, int indentation)
                         printf("'%Lf'\n", ((CTNumber *)ptr)->value.Double);
                         break;
                     case CTJSON_TYPE_LONG:
-                        printf("'%li'\n", ((CTNumber *)ptr)->value.Long);
+                        printf("'%lli'\n", ((CTNumber *)ptr)->value.Long);
                         break;
                     case CTJSON_TYPE_NULL:
                         printf("'%s'\n", ((CTNull *)ptr)->value);
@@ -199,11 +202,6 @@ int main(int argc, const char * argv[])
     assert(number->value.Double == 255.5);
     
 #pragma mark - CTJSON Test Begin
-    CTError * error = NULL;
-    CTJSONObject * object = CTJSONParse(allocator, "    { \"hello\":  \"Yes\",    \"parser\":\"yay!\", \"life\":null, \"Heyo\":true, \"keylo\":false, \"another key\":1278e-2, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1E8, 12e1, \"\\u0012\", true, false, null, \"yes\", {}, []], \"ha\":[[[[[[[[[[{\"So you found me\":\"congratulations\"}]]]]]]]]]]}", &error);
-    assert(!error);
-    recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
-
 	CTArrayAddEntry(array, "{}");
 	CTArrayAddEntry(array, "{ \"v\":\"1\"}");
 	CTArrayAddEntry(array, "{ \"v\":\"1\"\r\n}");
@@ -224,10 +222,11 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "{ \"a\":false}");
 	CTArrayAddEntry(array, "{ \"a\" : true }");
 	CTArrayAddEntry(array, "{ \"v\":1.7976931348623157E308}");
-
+    
+    CTJSONObject * object = NULL;
+    CTError * error = NULL;
 	for (int i = 0; i < array->count; i++)
 	{
-		error = NULL;
 		object = CTJSONParse(allocator, array->elements[i]->characters, &error);
 		assert(!error);
 		recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
@@ -236,17 +235,25 @@ int main(int argc, const char * argv[])
     {
         CTArrayDeleteEntry(array, i);
     }
-
+    
+	CTArrayAddEntry(array, "");
 	CTArrayAddEntry(array, "{'X':'s");
-	CTArrayAddEntry(array, "{'X");
+	CTArrayAddEntry(array, "{{\"k\":\"v\"}\"e\"}");
+	CTArrayAddEntry(array, "[]");
+	CTArrayAddEntry(array, "{\"k\":[]\"}");
 	for (int i = 0; i < array->count; i++)
 	{
 		error = NULL;
 		CTJSONParse(allocator, array->elements[i]->characters, &error);
 		assert(error);
+        printf("%s\n", error->error->characters);
 	}
-
-
+    
+    CTAllocatorRelease(allocator);
+    
+    allocator = CTAllocatorCreate();
+    
+    printf("%s\n", CTJSONSerialise(allocator, CTJSONParse(allocator, "{\"r\":{\"ip\":\"203.12.147.98\", \"st\": \"2013-11-14 10:13:28\", \"d\":{\"s\":{\"a\":\"0090c2406c2b\",\"lt\":\"2013-11-14 12:40:43\",\"c\":[{\"cp\":1,\"d\":[{\"t\":\"1\",\"i\":39,\"g\":\"0000\",\"gt\":\"000002c0fb4c\",\"bs\":\"0002d235\",\"fv\":\"0106\",\"id\":\"2f3294fa12ae2d40affa\",\"s\":{\"e\":0,\"l\":0,\"f\":0,\"p\":0,\"le\":0,\"li\":461,\"lt\":\"2013-11-14 12:40:17\"},\"e\":{\"s\":\"4\",\"c\":0,\"d\":25,\"b\":10,\"t\":1,\"r\":45,\"m\":\"2\",\"f\":\"9\",\"x\":\"82\"}}]}]}}}}", &error), &error)->characters);
     
     CTAllocatorRelease(allocator);
 #pragma mark - CTAllocator Test End
