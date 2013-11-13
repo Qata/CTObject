@@ -79,15 +79,23 @@ CTJSONObject * CTJSONParse(CTAllocator * alloc, const char * JSON, CTError ** er
     char lastChar = 0;
     if (JSONString && JSONString->length)
     {
-        switch (JSONString->characters[0])
-        {
-            case ' ':
-                sscanf(JSONString->characters, "%*[ ]%c", &lastChar);
-                break;
-            case '{':
-                sscanf(JSONString->characters, "%c", &lastChar);
-                break;
-        }
+		int loop = 1;
+		int index = 0;
+		while (loop && index < JSONString->length)
+		{
+			loop = 0;
+			switch (JSONString->characters[index++])
+			{
+				case ' ':
+				case '\r':
+				case '\n':
+					loop = 1;
+					break;
+				case '{':
+					lastChar = '{';
+					break;
+			}
+		}
         if (lastChar == '{')
         {
             unsigned long end = 0;
@@ -98,6 +106,10 @@ CTJSONObject * CTJSONParse(CTAllocator * alloc, const char * JSON, CTError ** er
             *error = CTErrorCreate(alloc, "Valid JSON needs to be within the scope of a single object.", 0);
         }
     }
+	else
+	{
+		*error = CTErrorCreate(alloc, "The passed string can neither be NULL nor empty.", 0);
+	}
     return error ? object : NULL;
 }
 
@@ -128,6 +140,8 @@ CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restri
                             switch (JSON->characters[startcopy])
                             {
                                 case ' ':
+                                case '\r':
+                                case '\n':
                                     break;
                                 case '}':
                                     *end = startcopy + 1;
@@ -152,7 +166,9 @@ CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restri
                     }
                     break;
                 }
-                case ' ':
+				case ' ':
+				case '\r':
+				case '\n':
                     break;
                 default:
                 {
@@ -181,7 +197,9 @@ CTJSONArray * CTJSONArrayFromJSON(CTAllocator * alloc, CTString * restrict JSON,
         {
             switch (JSON->characters[start])
             {
-                case ' ':
+				case ' ':
+				case '\r':
+				case '\n':
                     break;
                 case ']':
                     *end = start + 1;
@@ -194,7 +212,9 @@ CTJSONArray * CTJSONArrayFromJSON(CTAllocator * alloc, CTString * restrict JSON,
                     {
                         switch (JSON->characters[startcopy])
                         {
-                            case ' ':
+							case ' ':
+							case '\r':
+							case '\n':
                                 break;
                             case ']':
                                 *end = startcopy + 1;
@@ -390,8 +410,10 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                     *error = CTErrorCreate(alloc, str, 0);
                 }
                 break;
-                
-            case ' ':
+
+			case ' ':
+			case '\r':
+			case '\n':
                 loop = 1;
                 ++start;
                 break;

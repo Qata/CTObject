@@ -203,26 +203,50 @@ int main(int argc, const char * argv[])
     CTJSONObject * object = CTJSONParse(allocator, "    { \"hello\":  \"Yes\",    \"parser\":\"yay!\", \"life\":null, \"Heyo\":true, \"keylo\":false, \"another key\":1278e-2, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1E8, 12e1, \"\\u0012\", true, false, null, \"yes\", {}, []], \"ha\":[[[[[[[[[[{\"So you found me\":\"congratulations\"}]]]]]]]]]]}", &error);
     assert(!error);
     recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
-    
-    error = NULL;
-    CTJSONParse(allocator, "{ \"hello\":  \"Yes\"'}", &error);
-    assert(error);
-    
-    error = NULL;
-    CTJSONParse(allocator, "{ \"hello\":;  \"Yes\"}", &error);
-    assert(error);
-    
-    error = NULL;
-    CTJSONParse(allocator, "{ \"hello\":  \"Yes\"'}", &error);
-    assert(error);
-    
-    error = NULL;
-    object = CTJSONParse(allocator, "    { \"hello\":  \"Yes\"\"e\",    \"parser\":\"yay!\", \"life\":null, \"Heyo\":true, \"keylo\":false, \"another key\":1278e-2, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1E8, 12e1, \"\\u0012\", true, false, null, \"yes\", {}, []], \"ha\":[[[[[[[[[[{\"So you found me\":\"congratulations\"}]]]]]]]]]\"e\"]}", &error);
-    assert(error);
-    
-    error = NULL;
-    CTJSONParse(allocator, "{\"howdy\":{ \"hello\":  \"Yes\"}\"}", &error);
-    assert(error);
+
+	CTArrayAddEntry(array, "{}");
+	CTArrayAddEntry(array, "{ \"v\":\"1\"}");
+	CTArrayAddEntry(array, "{ \"v\":\"1\"\r\n}");
+	CTArrayAddEntry(array, "{ \"v\":1}");
+	CTArrayAddEntry(array, "{ \"v\":\"ab'c\"}");
+	CTArrayAddEntry(array, "{ \"PI\":3.141E-10}");
+	CTArrayAddEntry(array, "{ \"PI\":3.1413e-10}");
+	CTArrayAddEntry(array, "{ \"v\":12345123456789}");
+	CTArrayAddEntry(array, "{ \"v\":123456789123456789123456789}");
+	CTArrayAddEntry(array, "{ \"v\":[ 1,2,3,4]}");
+	CTArrayAddEntry(array, "{ \"v\":[ \"1\",\"2\",\"3\",\"4\"]}");
+	CTArrayAddEntry(array, "{ \"v\":[ { }, { },[]]}");
+	CTArrayAddEntry(array, "{ \"v\":\"\u2000\u20ff\"}");
+	CTArrayAddEntry(array, "{ \"v\":\"\u2000\u20FF\"}");
+	CTArrayAddEntry(array, "{ \"a\":\"hp://foo\"}");
+	CTArrayAddEntry(array, "{ \"a\":null}");
+	CTArrayAddEntry(array, "{ \"a\":true}");
+	CTArrayAddEntry(array, "{ \"a\":false}");
+	CTArrayAddEntry(array, "{ \"a\" : true }");
+	CTArrayAddEntry(array, "{ \"v\":1.7976931348623157E308}");
+
+	for (int i = 0; i < array->count; i++)
+	{
+		error = NULL;
+		object = CTJSONParse(allocator, array->elements[i]->characters, &error);
+		assert(!error);
+		recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
+	}
+	for (long long i = array->count; i >= 0x0; i--)
+    {
+        CTArrayDeleteEntry(array, i);
+    }
+
+	CTArrayAddEntry(array, "{'X':'s");
+	CTArrayAddEntry(array, "{'X");
+	for (int i = 0; i < array->count; i++)
+	{
+		error = NULL;
+		CTJSONParse(allocator, array->elements[i]->characters, &error);
+		assert(error);
+	}
+
+
     
     CTAllocatorRelease(allocator);
 #pragma mark - CTAllocator Test End
