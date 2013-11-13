@@ -137,8 +137,10 @@ CTJSONObject * CTJSONObjectFromJSONObject(CTAllocator * alloc, CTString * restri
                                 {
                                     char str[0x100];
                                     memset(str, 0, 0x100);
-                                    sprintf(str, "Incorrectly formatted JSON: %s, parsing anyway.", &JSON->characters[startcopy]);
+                                    sprintf(str, "Incorrectly formatted JSON, %s", &JSON->characters[startcopy]);
                                     *error = CTErrorCreate(alloc, str, 0);
+                                    *end = startcopy + 1;
+                                    return object;
                                     break;
                                 }
                             }

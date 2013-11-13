@@ -19,11 +19,10 @@
 
 unsigned netUDPResolveAddress(const char * address)
 {
-    char * c_address = malloc(strlen(address) + 1);
-    strncpy(c_address, address, strlen(address));
-    c_address[strlen(address)] = 0;
+    CTAllocator * alloc = CTAllocatorCreate();
+    CTString * string = CTStringCreate(alloc, address);
     unsigned int addressIntegers[4];
-    sscanf(strtok(c_address, "."), "%d", &addressIntegers[0]);
+    sscanf(strtok(string->characters, "."), "%d", &addressIntegers[0]);
     
     for(int i = 1; i < 4; i++)
     {
@@ -37,8 +36,7 @@ unsigned netUDPResolveAddress(const char * address)
         dest_addr |= addressIntegers[i] << (8 * (3 - i));
     }
     
-    free(c_address);
-    
+    CTAllocatorRelease(alloc);
     return dest_addr;
 }
 

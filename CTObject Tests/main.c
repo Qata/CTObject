@@ -201,32 +201,26 @@ int main(int argc, const char * argv[])
 #pragma mark - CTJSON Test Begin
     CTError * error = NULL;
     CTJSONObject * object = CTJSONParse(allocator, "    { \"hello\":  \"Yes\",    \"parser\":\"yay!\", \"life\":null, \"Heyo\":true, \"keylo\":false, \"another key\":1278e-2, \"a.key\":{\"nested, yo\":\"yes\"}, \"can I help you?\":\"Yes\", \"keyvalueyo\":[1E8, 12e1, \"\\u0012\", true, false, null, \"yes\", {}, []], \"ha\":[[[[[[[[[[{\"So you found me\":\"congratulations\"}]]]]]]]]]]}", &error);
-    if (error)
-    {
-        printf("%s, %i\n", error->error->characters, error->code);
-    }
-    else
-    {
-        recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
-    }
+    assert(!error);
+    recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
     
-    CTArrayAddEntry(array, "hello");
-    CTArrayAddEntry(array, "parser");
-    CTArrayAddEntry(array, "life");
-    CTArrayAddEntry(array, "Heyo");
-    CTArrayAddEntry(array, "keylo");
-    CTArrayAddEntry(array, "another key");
-    CTArrayAddEntry(array, "a.key");
-    CTArrayAddEntry(array, "can I help you?");
-    CTArrayAddEntry(array, "keyvalueyo");
+    error = NULL;
+    CTJSONParse(allocator, "{ \"hello\":  \"Yes\"'}", &error);
+    assert(error);
     
-    for (unsigned long i = 0; i < array->count; i++)
-    {
-        assert(!strcmp(object->elements[i]->key->characters, array->elements[i]->characters));
-    }
+    error = NULL;
+    CTJSONParse(allocator, "{ \"hello\":;  \"Yes\"}", &error);
+    assert(error);
     
-    assert(((CTNumber *)object->elements[5]->value)->value.Double == 12.78);
-    assert(((CTNumber *)((CTJSONArray *)object->elements[8]->value->ptr)->elements[0]->value->ptr)->value.Double == 100000000);
+    error = NULL;
+    CTJSONParse(allocator, "{ \"hello\":  \"Yes\"'}", &error);
+    assert(error);
+    
+    error = NULL;
+    CTJSONParse(allocator, "{\"r\":{\"ip\":\"203.12.147.98\", \"st\": \"2013-11-13 16:01:27\", \"d\":{\"s\":{\"a\":\"0090c24082ae\",\"lt\":\"2013-11-13 18:28:54\",\"c\":[{\"cp\":1,\"d\":[{\"i\":39,\"e\":{\"s\":\"c\",\"c\":254,\"d\":29,\"b\":11,\"t\":72,\"r\":45,\"m\":\"2\",\"f\":\"b\",\"x\":\"82\"}}]}]}}\"e\":0,\"l\":254,\"f\":0,\"p\":0,\"le\":0,\"li\":4,\"lt\":\"2013-11-13 18:27:03\"},\"e\":{\"s\":\"0\",\"c\":254,\"d\":14,\"b\":51,\"t\":52,\"r\":45,\"m\":\"20\",\"f\":\"b\",\"x\":\"2\"}}]}]}}}}", &error);
+    assert(error);error = NULL;
+    CTJSONParse(allocator, "{\"howdy\":{ \"hello\":  \"Yes\"}'}", &error);
+    assert(error);
     
     CTAllocatorRelease(allocator);
 #pragma mark - CTAllocator Test End
