@@ -15,19 +15,19 @@
 void recurseJSON(void * obj, int type, int indentation)
 {
     for (int i = 0; i < indentation; i++)
-        printf("\t");
+        puts("\t");
     switch (type)
     {
         case CTJSON_TYPE_OBJECT:
         {
-            printf ("{\n");
+            puts("{\n");
             CTJSONObject * object = (CTJSONObject *)obj;
             for (unsigned long i = 0; i < object->count; i++)
             {
                 CTString * key = object->elements[i]->key;
                 void * ptr = object->elements[i]->value->ptr;
                 for (int i = 0; i < indentation + 1; i++)
-                    printf("\t");
+                    puts("\t");
                 switch (object->elements[i]->valueType)
                 {
                     case CTJSON_TYPE_OBJECT:
@@ -59,8 +59,8 @@ void recurseJSON(void * obj, int type, int indentation)
                 }
             }
             for (int i = 0; i < indentation; i++)
-                printf("\t");
-            printf ("}\n");
+                puts("\t");
+            puts("}\n");
             break;
         }
             
@@ -72,7 +72,7 @@ void recurseJSON(void * obj, int type, int indentation)
             {
                 if (array->elements[i]->valueType != CTJSON_TYPE_OBJECT && array->elements[i]->valueType != CTJSON_TYPE_ARRAY)
                     for (int i = 0; i < indentation + 1; i++)
-                        printf("\t");
+                        puts("\t");
                 void * ptr = array->elements[i]->value->ptr;
                 switch (array->elements[i]->valueType)
                 {
@@ -100,8 +100,8 @@ void recurseJSON(void * obj, int type, int indentation)
                 }
             }
             for (int i = 0; i < indentation; i++)
-                printf("\t");
-            printf ("]\n");
+                puts("\t");
+            puts("]\n");
             break;
         }
     }
@@ -221,15 +221,16 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "{ \"a\":true}");
 	CTArrayAddEntry(array, "{ \"a\":false}");
 	CTArrayAddEntry(array, "{ \"a\" : true }");
-	CTArrayAddEntry(array, "{ \"v\":1.7976931348623157E308}");
+	CTArrayAddEntry(array, "{ \"v\":1.797693134E308}");
     
-    CTJSONObject * object = NULL;
     CTError * error = NULL;
+    CTJSONObject * object = NULL;
 	for (int i = 0; i < array->count; i++)
 	{
 		object = CTJSONParse(allocator, array->elements[i]->characters, &error);
 		assert(!error);
-		recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
+        //Uncomment this line to see the output, be warned that this can cause a memory leak according to the Xcode instruments when using certain input values
+        //recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
 	}
 	for (long long i = array->count; i >= 0x0; i--)
     {
@@ -249,15 +250,16 @@ int main(int argc, const char * argv[])
         printf("%s\n", error->error->characters);
 	}
     
-    CTAllocatorRelease(allocator);
+    error = NULL;
+    object = CTJSONParse(allocator, "{\"r\":{\"ip\":\"203.12.147.98\", \"st\": \"2013-11-14 10:13:28\", \"d\":{\"s\":{\"a\":\"0090c2406c2b\",\"lt\":\"2013-11-14 12:40:43\",\"c\":[{\"cp\":1,\"d\":[{\"t\":\"1\",\"i\":39,\"g\":\"0000\",\"gt\":\"000002c0fb4c\",\"bs\":\"0002d235\",\"fv\":\"0106\",\"id\":\"2f3294fa12ae2d40affa\",\"s\":{\"e\":0,\"l\":0,\"f\":0,\"p\":0,\"le\":0,\"li\":461,\"lt\":\"2013-11-14 12:40:17\"},\"e\":{\"s\":\"4\",\"c\":0,\"d\":25,\"b\":10,\"t\":1,\"r\":45,\"m\":\"2\",\"f\":\"9\",\"x\":\"82\"}}]}]}}}}", &error);
+    assert(!error);
     
-    allocator = CTAllocatorCreate();
-    
-    printf("%s\n", CTJSONSerialise(allocator, CTJSONParse(allocator, "{\"r\":{\"ip\":\"203.12.147.98\", \"st\": \"2013-11-14 10:13:28\", \"d\":{\"s\":{\"a\":\"0090c2406c2b\",\"lt\":\"2013-11-14 12:40:43\",\"c\":[{\"cp\":1,\"d\":[{\"t\":\"1\",\"i\":39,\"g\":\"0000\",\"gt\":\"000002c0fb4c\",\"bs\":\"0002d235\",\"fv\":\"0106\",\"id\":\"2f3294fa12ae2d40affa\",\"s\":{\"e\":0,\"l\":0,\"f\":0,\"p\":0,\"le\":0,\"li\":461,\"lt\":\"2013-11-14 12:40:17\"},\"e\":{\"s\":\"4\",\"c\":0,\"d\":25,\"b\":10,\"t\":1,\"r\":45,\"m\":\"2\",\"f\":\"9\",\"x\":\"82\"}}]}]}}}}", &error), &error)->characters);
+    //Uncomment this line to see the output, be warned that this causes a memory leak according to the Xcode instruments
+    //puts(CTJSONSerialise(allocator, object, &error)->characters);
     
     CTAllocatorRelease(allocator);
 #pragma mark - CTAllocator Test End
     
-    printf("%f seconds (%lu ticks)\n", (clock() - t) / (double)CLOCKS_PER_SEC, clock() - t);
+    //printf("%f seconds (%lu ticks)\n", (clock() - t) / (double)CLOCKS_PER_SEC, clock() - t);
     return 0;
 }

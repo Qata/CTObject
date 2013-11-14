@@ -341,6 +341,7 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                     {
                         CTStringAppendCharacter(numberString, JSON->characters[startcpy++]);
                     }
+                    
                     if (startcpy < JSON->length && (JSON->characters[startcpy] == 'e' || JSON->characters[startcpy] == 'E'))
                     {
                         if (startcpy < JSON->length && (JSON->characters[++startcpy] == '-' || JSON->characters[startcpy] == '+'))
@@ -411,9 +412,13 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                         }
                     }
                     if (exponentString->length)
+                    {
                         start += numberString->length + exponentString->length + 1;
+                    }
                     else
+                    {
                         start += numberString->length;
+                    }
                     CTAllocatorRelease(allocl);
                 }
                 else
@@ -447,133 +452,101 @@ CTString * CTJSONSerialise(CTAllocator * alloc, CTJSONObject * JSON, CTError ** 
 CTString * CTJSONSerialiseRecursive(CTAllocator * alloc, void * obj, int type, CTError ** error)
 {
     CTString * returnString = CTStringCreate(alloc, "");
-    switch (type)
+    CTJSONObject * object = (CTJSONObject *)obj;
+    CTJSONArray * array = (CTJSONArray *)obj;
+    uint64_t count = 0;
+    int valueType = 0;
+    void * ptr = NULL;
+    
+    if (type == CTJSON_TYPE_OBJECT)
     {
-        case CTJSON_TYPE_OBJECT:
+        count = object->count;
+        CTStringAppendCharacter(returnString, '{');
+    }
+    else if (type == CTJSON_TYPE_ARRAY)
+    {
+        count = array->count;
+        CTStringAppendCharacter(returnString, '[');
+    }
+    for (unsigned long i = 0; i < count; i++)
+    {
+        if (type == CTJSON_TYPE_OBJECT)
         {
-            CTStringAppendCharacter(returnString, '{');
-            CTJSONObject * object = (CTJSONObject *)obj;
-            for (unsigned long i = 0; i < object->count; i++)
-            {
-                CTString * key = object->elements[i]->key;
-                void * ptr = object->elements[i]->value->ptr;
-                
-                CTStringAppendCharacter(returnString, '"');
-                CTStringAppendCharacters(returnString, key->characters);
-                CTStringAppendCharacter(returnString, '"');
-                CTStringAppendCharacter(returnString, ':');
-                
-                switch (object->elements[i]->valueType)
-                {
-                    case CTJSON_TYPE_OBJECT:
-                    case CTJSON_TYPE_ARRAY:
-                    {
-                        CTAllocator * allocl = CTAllocatorCreate();
-                        CTStringAppendCharacters(returnString, CTJSONSerialiseRecursive(allocl, ptr, object->elements[i]->valueType, error)->characters);
-                        CTAllocatorRelease(allocl);
-                        break;
-                    }
-                    case CTJSON_TYPE_STRING:
-                        CTStringAppendCharacter(returnString, '"');
-                        CTStringAppendCharacters(returnString, ((CTString *)ptr)->characters);
-                        CTStringAppendCharacter(returnString, '"');
-                        break;
-                    case CTJSON_TYPE_BOOLEAN:
-                        CTStringAppendCharacters(returnString, ((CTNumber *)ptr)->value.UInt ? "true" : "false");
-                        break;
-                    case CTJSON_TYPE_DOUBLE:
-                    {
-                        char * str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTNumber *)ptr)->value.Double)) + 7) * sizeof(char)));
-                        sprintf(str, "%Lf", ((CTNumber *)ptr)->value.Double);
-                        CTStringAppendCharacters(returnString, str);
-                        CTAllocatorDeallocate(alloc, str);
-                        break;
-                    }
-                    case CTJSON_TYPE_LONG:
-                    {
-                        char * str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTNumber *)ptr)->value.Long)) + 1) * sizeof(char)));
-                        sprintf(str, "%lli", ((CTNumber *)ptr)->value.Long);
-                        CTStringAppendCharacters(returnString, str);
-                        CTAllocatorDeallocate(alloc, str);
-                        break;
-                    }
-                    case CTJSON_TYPE_NULL:
-                        CTStringAppendCharacters(returnString, ((CTNull *)ptr)->value);
-                        break;
-                    case CTJSON_TYPE_LARGE_NUMBER:
-                    {
-                        char * str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTLargeNumber *)ptr)->base->value.Double)) + 7) * sizeof(char)) + (int)((ceil(log10(((CTLargeNumber *)ptr)->exponent->value.Long)) + 1) * sizeof(char)));
-                        sprintf(str, "%Lfe%lli", ((CTLargeNumber *)ptr)->base->value.Double, ((CTLargeNumber *)ptr)->exponent->value.Long);
-                        CTStringAppendCharacters(returnString, str);
-                        CTAllocatorDeallocate(alloc, str);
-                        break;
-                    }
-                }
-                if (i < object->count - 1)
-                {
-                    CTStringAppendCharacter(returnString, ',');
-                }
-            }
-            CTStringAppendCharacter(returnString, '}');
-            break;
+            CTString * key = object->elements[i]->key;
+            CTStringAppendCharacter(returnString, '"');
+            CTStringAppendCharacters(returnString, key->characters);
+            CTStringAppendCharacters(returnString, "\":");
         }
-            
-        case CTJSON_TYPE_ARRAY:
+        if (type == CTJSON_TYPE_OBJECT)
         {
-            CTStringAppendCharacter(returnString, '[');
-            CTJSONArray * array = (CTJSONArray *)obj;
-            for (unsigned long i = 0; i < array->count; i++)
-            {
-                void * ptr = array->elements[i]->value->ptr;
-                switch (array->elements[i]->valueType)
-                {
-                    case CTJSON_TYPE_OBJECT:
-                    {
-                        CTAllocator * allocl = CTAllocatorCreate();
-                        CTStringAppendCharacters(returnString, CTJSONSerialiseRecursive(allocl, ptr, array->elements[i]->valueType, error)->characters);
-                        CTAllocatorRelease(allocl);
-                        break;
-                    }
-                    case CTJSON_TYPE_STRING:
-                        CTStringAppendCharacter(returnString, '"');
-                        CTStringAppendCharacters(returnString, ((CTString *)ptr)->characters);
-                        CTStringAppendCharacter(returnString, '"');
-                        break;
-                    case CTJSON_TYPE_BOOLEAN:
-                        CTStringAppendCharacters(returnString, ((CTNumber *)ptr)->value.UInt ? "true" : "false");
-                        break;
-                    case CTJSON_TYPE_DOUBLE:
-                    {
-                        char * str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTNumber *)ptr)->value.Double)) + 7) * sizeof(char)));
-                        sprintf(str, "%Lf", ((CTNumber *)ptr)->value.Double);
-                        CTStringAppendCharacters(returnString, str);
-                        CTAllocatorDeallocate(alloc, str);
-                        break;
-                    }
-                    case CTJSON_TYPE_LONG:
-                    {
-                        char * str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTNumber *)ptr)->value.Long)) + 1) * sizeof(char)));
-                        sprintf(str, "%lli", ((CTNumber *)ptr)->value.Long);
-                        CTStringAppendCharacters(returnString, str);
-                        CTAllocatorDeallocate(alloc, str);
-                        break;
-                    }
-                    case CTJSON_TYPE_NULL:
-                        CTStringAppendCharacters(returnString, ((CTNull *)ptr)->value);
-                        break;
-                    case CTJSON_TYPE_LARGE_NUMBER:
-                    {
-                        char * str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTLargeNumber *)ptr)->base->value.Double)) + 7) * sizeof(char)) + (int)((ceil(log10(((CTLargeNumber *)ptr)->exponent->value.Long)) + 1) * sizeof(char)));
-                        sprintf(str, "%Lfe%lli", ((CTLargeNumber *)ptr)->base->value.Double, ((CTLargeNumber *)ptr)->exponent->value.Long);
-                        CTStringAppendCharacters(returnString, str);
-                        CTAllocatorDeallocate(alloc, str);
-                        break;
-                    }
-                }
-            }
-            CTStringAppendCharacter(returnString, ']');
-            break;
+            ptr = object->elements[i]->value->ptr;
+            valueType = object->elements[i]->valueType;
         }
+        else if (type == CTJSON_TYPE_ARRAY)
+        {
+            ptr = array->elements[i]->value->ptr;
+            valueType = array->elements[i]->valueType;
+        }
+        
+        switch (valueType)
+        {
+            case CTJSON_TYPE_OBJECT:
+            case CTJSON_TYPE_ARRAY:
+            {
+                CTAllocator * allocl = CTAllocatorCreate();
+                CTStringAppendCharacters(returnString, CTJSONSerialiseRecursive(allocl, ptr, valueType, error)->characters);
+                CTAllocatorRelease(allocl);
+                break;
+            }
+            case CTJSON_TYPE_STRING:
+                CTStringAppendCharacter(returnString, '"');
+                CTStringAppendCharacters(returnString, ((CTString *)ptr)->characters);
+                CTStringAppendCharacter(returnString, '"');
+                break;
+            case CTJSON_TYPE_BOOLEAN:
+                CTStringAppendCharacters(returnString, ((CTNumber *)ptr)->value.UInt ? "true" : "false");
+                break;
+            case CTJSON_TYPE_DOUBLE:
+            {
+                char * str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTNumber *)ptr)->value.Double)) + 7) * sizeof(char)));
+                sprintf(str, "%Lf", ((CTNumber *)ptr)->value.Double);
+                CTStringAppendCharacters(returnString, str);
+                CTAllocatorDeallocate(alloc, str);
+                break;
+            }
+            case CTJSON_TYPE_LONG:
+            {
+                char * str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTNumber *)ptr)->value.Long)) + 1) * sizeof(char)));
+                sprintf(str, "%lli", ((CTNumber *)ptr)->value.Long);
+                CTStringAppendCharacters(returnString, str);
+                CTAllocatorDeallocate(alloc, str);
+                break;
+            }
+            case CTJSON_TYPE_NULL:
+                CTStringAppendCharacters(returnString, ((CTNull *)ptr)->value);
+                break;
+            case CTJSON_TYPE_LARGE_NUMBER:
+            {
+                char * str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTLargeNumber *)ptr)->base->value.Double)) + 7) * sizeof(char)) + (int)((ceil(log10(((CTLargeNumber *)ptr)->exponent->value.Long)) + 1) * sizeof(char)));
+                sprintf(str, "%Lfe%lli", ((CTLargeNumber *)ptr)->base->value.Double, ((CTLargeNumber *)ptr)->exponent->value.Long);
+                CTStringAppendCharacters(returnString, str);
+                CTAllocatorDeallocate(alloc, str);
+                break;
+            }
+        }
+        if (i < count - 1)
+        {
+            CTStringAppendCharacter(returnString, ',');
+        }
+    }
+    
+    if (type == CTJSON_TYPE_OBJECT)
+    {
+        CTStringAppendCharacter(returnString, '}');
+    }
+    else if (type == CTJSON_TYPE_ARRAY)
+    {
+        CTStringAppendCharacter(returnString, ']');
     }
     return returnString;
 }
