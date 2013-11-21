@@ -9,6 +9,7 @@
 #include "CTString.h"
 #include "CTFunctions.h"
 #include <string.h>
+#include <stdio.h>
 
 CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict characters)
 {
@@ -56,11 +57,11 @@ void CTStringAppendCharacter(CTString * restrict string, char character)
 {
     char * result = CTAllocatorAllocate(string->alloc, string->length + 1 + 1);
     strcat(result, string->characters);
-    strcat(result, &character);
-    result[string->length + 1] = 0;
+	strncat(result, &character, 1);
+    string->length = string->length + 1;
+    result[string->length] = 0;
     CTAllocatorDeallocate(string->alloc, string->characters);
     string->characters = result;
-    string->length = string->length + 1;
 }
 
 void CTStringSet(CTString * restrict string, const char * restrict characters)
@@ -106,13 +107,28 @@ void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long c
 
 const char * CTStringStringBetween(CTString * restrict string, const char * restrict search1, const char * restrict search2)
 {
-	char * ret1, * ret2;
-	if ((ret1 = strstr(string->characters, search1)) && (ret2 = strstr(string->characters, search2)) && ret1 < ret2)
+	uint64_t index = 0;
+	char * ret1 = NULL, * ret2 = NULL;
+	
+	while ((!ret1 && !ret2) || ret1 >= ret2)
 	{
-		char * retVal = CTAllocatorAllocate(string->alloc, ret2 - (ret1 + strlen(search1)));
-		strncpy(retVal, ret1 + strlen(search1), ret2 - (ret1 + strlen(search1)));
-		retVal[ret2 - ret1 + 1] = 0;
-		return retVal;
+		if (index + strlen(search1) < string->length && (ret1 = strstr(string->characters + index, search1)) && (ret2 = strstr(string->characters + index + strlen(search1), search2)))
+		{
+			if (ret1 < ret2)
+			{
+				char * retVal = CTAllocatorAllocate(string->alloc, ret2 - (ret1 + strlen(search1)));
+				strncpy(retVal, ret1 + strlen(search1), ret2 - (ret1 + strlen(search1)));
+				retVal[ret2 - ret1 + 1] = 0;
+				return retVal;
+			}
+			index = ret1 - string->characters;
+			if (index >= string->length)
+				return NULL;
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 	return NULL;
 }
