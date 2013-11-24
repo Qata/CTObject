@@ -18,6 +18,7 @@ typedef struct
 } CTArray;
 
 CTArray * CTArrayCreate(CTAllocator * restrict alloc);
+void CTArrayRelease(CTArray * array);
 void CTArrayAddEntry(CTArray * restrict array, const char * restrict value);
 void CTArrayDeleteEntry(CTArray * restrict array, unsigned long index);
 unsigned long CTArrayIndexOfEntry(CTArray * restrict array, const char * restrict value);

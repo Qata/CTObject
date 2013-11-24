@@ -19,8 +19,14 @@ typedef struct
 } CTAllocator;
 
 /**
+ * Get the CTAllocator used by the entire program for allocation and destruction of smaller objects.
+ * @return	Returns the program's CTAllocator that can be used to allocate and deallocate memory.
+ **/
+CTAllocator * CTAllocatorGetDefault();
+
+/**
  * Create a CTAllocator to use in allocation and destruction of memory.
- * @return	Returns an initialised CTAllocator and can be used to allocate and deallocate memory.
+ * @return	Returns an initialised CTAllocator that can be used to allocate and deallocate memory.
  **/
 CTAllocator * CTAllocatorCreate();
 /**

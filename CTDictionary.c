@@ -31,6 +31,17 @@ CTDictionary * CTDictionaryCreate(CTAllocator * alloc)
     return dict;
 }
 
+void CTDictionaryRelease(CTDictionary * dict)
+{
+	for (uint64_t i = 0; i < dict->count; i++)
+    {
+        CTStringRelease(dict->elements[i]->key);
+        CTStringRelease(dict->elements[i]->value);
+    }
+	CTAllocatorDeallocate(dict->alloc, dict->elements);
+	CTAllocatorDeallocate(dict->alloc, dict);
+}
+
 void CTDictionaryAddEntriesFromQueryString(CTDictionary * restrict dict, const char * restrict query)
 {
     if (query)

@@ -49,6 +49,13 @@ CTNetServer * CTNetServerOpen(CTAllocator * restrict alloc, const char * restric
     return server;
 }
 
+void CTNetServerRelease(CTNetServer * server)
+{
+	CTNetServerClose(server);
+    CTAllocatorDeallocate(server->alloc, server->address);
+    CTAllocatorDeallocate(server->alloc, server);
+}
+
 void CTNetServerClose(const CTNetServer * restrict server)
 {
     close(server->handle);

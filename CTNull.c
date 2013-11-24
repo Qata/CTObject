@@ -18,3 +18,8 @@ CTNull * CTNullCreate(CTAllocator * restrict alloc)
     null->alloc = alloc;
     return null;
 }
+
+void CTNullRelease(CTNull * null)
+{
+    CTAllocatorDeallocate(null->alloc, null);
+}

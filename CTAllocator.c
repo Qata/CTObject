@@ -11,6 +11,37 @@
 #include <string.h>
 #include "CTAllocator.h"
 
+static CTAllocator * defaultAllocator;
+
+void CTAllocatorReleasePrivate(CTAllocator * restrict allocator)
+{
+	for (int i = 0; i < allocator->count; i++)
+	{
+		free(allocator->objects[i]);
+	}
+    free(allocator->objects);
+	free(allocator);
+}
+
+void CTAllocatorReleaseDefaultAllocator()
+{
+	CTAllocatorReleasePrivate(defaultAllocator);
+}
+
+CTAllocator * CTAllocatorGetDefault()
+{
+	static int initialized = 0;
+	
+	if (!initialized)
+	{
+		defaultAllocator = CTAllocatorCreate();
+		atexit(CTAllocatorReleaseDefaultAllocator);
+		initialized = 1;
+	}
+	
+	return defaultAllocator;
+}
+
 CTAllocator * CTAllocatorCreate()
 {
 	CTAllocator * allocator = malloc(sizeof(CTAllocator));
@@ -21,12 +52,14 @@ CTAllocator * CTAllocatorCreate()
 
 void CTAllocatorRelease(CTAllocator * restrict allocator)
 {
-	for (int i = 0; i < allocator->count; i++)
+	if (allocator != defaultAllocator)
 	{
-		free(allocator->objects[i]);
+		CTAllocatorReleasePrivate(allocator);
 	}
-    free(allocator->objects);
-	free(allocator);
+	else
+	{
+		puts("Please do not attempt to release the default allocator");
+	}
 }
 
 void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size)

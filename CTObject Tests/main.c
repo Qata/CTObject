@@ -235,7 +235,7 @@ int main(int argc, const char * argv[])
 		object = CTJSONParse(allocator, array->elements[i]->characters, &error);
 		assert(!error);
         //Comment this line if you don't want to see the output and/or do not want the memory leak associated with it.
-        recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
+        //recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
 	}
 	for (long long i = array->count; i >= 0x0; i--)
     {
@@ -251,11 +251,15 @@ int main(int argc, const char * argv[])
 	for (int i = 0; i < array->count; i++)
 	{
 		error = NULL;
-		CTJSONParse(allocator, array->elements[i]->characters, &error);
+		CTJSONParse(CTAllocatorGetDefault(), array->elements[i]->characters, &error);
 		assert(error);
         printf("%s\n", error->error->characters);
+        CTErrorRelease(error);
 	}
-    puts("");
+    
+    CTArrayRelease(array);
+    
+    CTAllocatorRelease(CTAllocatorGetDefault());
     CTAllocatorRelease(allocator);
 #pragma mark - CTAllocator Test End
     

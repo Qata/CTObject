@@ -16,3 +16,4 @@ typedef struct
 } CTNull;
 
 CTNull * CTNullCreate(CTAllocator * restrict alloc);
+void CTNullRelease(CTNull * null);

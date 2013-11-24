@@ -17,3 +17,9 @@ CTError * CTErrorCreate(CTAllocator * alloc, const char * restrict error, int co
     
     return retVal;
 }
+
+void CTErrorRelease(CTError * error)
+{
+    CTStringRelease(error->error);
+    CTAllocatorDeallocate(error->alloc, error);
+}

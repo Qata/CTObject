@@ -13,12 +13,13 @@
 typedef struct
 {
     CTAllocator * alloc;
-    const char * address;
+    char * address;
     struct sockaddr_in socketAddress;
     int handle;
 } CTNetServer;
 
 CTNetServer * CTNetServerOpen(CTAllocator * restrict alloc, const char * restrict address, unsigned short port);
+void CTNetServerRelease(CTNetServer * server);
 void CTNetServerClose(const CTNetServer * restrict server);
 long CTNetServerSend(const CTNetServer * restrict server, const char * restrict bytes, unsigned long size);
 const char * CTNetServerReceive(const CTNetServer * restrict server, unsigned long size);

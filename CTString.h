@@ -17,6 +17,8 @@ typedef struct
 } CTString;
 
 CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict characters);
+void CTStringRelease(CTString * string);
+
 void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters);
 void CTStringAppendCharacter(CTString * restrict string, char character);
 void CTStringPrependCharacters(CTString * restrict string, const char * restrict characters);

@@ -17,3 +17,4 @@ typedef struct
 } CTError;
 
 CTError * CTErrorCreate(CTAllocator * alloc, const char * restrict error, int code);
+void CTErrorRelease(CTError * error);

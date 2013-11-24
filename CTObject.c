@@ -19,3 +19,8 @@ CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, unsigned lon
     object->alloc = alloc;
     return object;
 }
+
+void CTObjectRelease(CTObject * object)
+{
+    CTAllocatorDeallocate(object->alloc, object);
+}

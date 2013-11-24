@@ -262,7 +262,7 @@ CTString * CTStringFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
             return string;
         }
         
-        for (++start; start < JSON->length && JSON->characters[start] != '"' && JSON->characters[start] != 0; start++)
+        for (++start; JSON->characters[start] != '"' && JSON->characters[start] != 0; start++)
         {
             char character[3];
             memset(character, 0, sizeof(character));

@@ -18,8 +18,17 @@ CTArray * CTArrayCreate(CTAllocator * restrict alloc)
     array->count = 0;
     array->elements = NULL;
     array->alloc = alloc;
-    
     return array;
+}
+
+void CTArrayRelease(CTArray * array)
+{
+	for (uint64_t i = 0; i < array->count; i++)
+    {
+        CTStringRelease(array->elements[i]);
+    }
+	CTAllocatorDeallocate(array->alloc, array->elements);
+	CTAllocatorDeallocate(array->alloc, array);
 }
 
 void CTArrayAddEntry(CTArray * restrict array, const char * restrict value)

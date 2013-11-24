@@ -23,6 +23,7 @@ typedef struct
 } CTDictionary;
 
 CTDictionary * CTDictionaryCreate(CTAllocator * restrict alloc);
+void CTDictionaryRelease(CTDictionary * dict);
 
 void CTDictionaryAddEntriesFromQueryString(CTDictionary * restrict dict, const char * restrict query);
 

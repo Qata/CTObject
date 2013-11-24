@@ -20,6 +20,12 @@ CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict ch
     return string;
 }
 
+void CTStringRelease(CTString * string)
+{
+    CTAllocatorDeallocate(string->alloc, string->characters);
+    CTAllocatorDeallocate(string->alloc, string);
+}
+
 void CTStringPrependCharacters(CTString * restrict string, const char * restrict characters)
 {
     char * result = CTAllocatorAllocate(string->alloc, string->length + strlen(characters) + 1);

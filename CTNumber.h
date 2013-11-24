@@ -47,6 +47,7 @@ CTNumber * CTNumberCreateWithInt(CTAllocator * restrict alloc, int integer);
 CTNumber * CTNumberCreateWithUnsignedLong(CTAllocator * restrict alloc, uint64_t longInteger);
 CTNumber * CTNumberCreateWithLong(CTAllocator * restrict alloc, int64_t longInteger);
 CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, long double floatingPoint);
+void CTNumberRelease(CTNumber * number);
 
 CTLargeNumber * CTLargeNumberCreate(CTAllocator * restrict alloc, CTNumber * base, CTNumber * exponent);
 

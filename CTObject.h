@@ -18,3 +18,4 @@ typedef struct
 } CTObject;
 
 CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, unsigned long size);
+void CTObjectRelease(CTObject * object);
