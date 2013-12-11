@@ -124,7 +124,7 @@ CTNumber * CTBencodeExtractInteger(CTAllocator * alloc, CTString * bencodedStrin
 {
     ++*start;
     char * p = NULL;
-    long double value = strtold(CTStringUTF8String(bencodedString) + *start, &p);
+    double value = strtod(CTStringUTF8String(bencodedString) + *start, &p);
     *start += p - CTStringUTF8String(bencodedString) - *start + 1;
     return CTNumberCreateWithDouble(alloc, value);
 }

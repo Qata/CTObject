@@ -346,7 +346,8 @@ int main(int argc, const char * argv[])
 	{
         uint64_t start = 0;
 		error = NULL;
-        recurseBencode(CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error), 0);
+        CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error);
+        //recurseBencode(CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error), 0);
 		assert(!error);
 	}
     
@@ -371,8 +372,6 @@ int main(int argc, const char * argv[])
     CTAllocatorRelease(allocator);
     
 #pragma mark - CTAllocator Test End
-    
-    //Comment this line if you don't want the 160 byte memory leak to show in your Memory Leak Instrument
-    //printf("%f seconds (%lu ticks)\n", (clock() - t) / (double)CLOCKS_PER_SEC, clock() - t);
+    printf("%lu ticks\n", clock() - t);
     return 0;
 }
