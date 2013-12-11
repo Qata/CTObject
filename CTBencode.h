@@ -22,7 +22,7 @@ enum
 typedef struct
 {
     CTAllocator * alloc;
-    CTObject * value;
+    void * value;
     int8_t valueType;
 } CTBencodeValueContainer;
 

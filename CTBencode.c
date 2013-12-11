@@ -49,13 +49,6 @@ CTBencodeList * CTBencodeListCreate(CTAllocator * alloc)
     return array;
 }
 
-CTBencodeValueContainer * CTBencodeListCreateEntry(CTAllocator * alloc)
-{
-    CTBencodeValueContainer * retVal = CTAllocatorAllocate(alloc, sizeof(CTBencodeValueContainer));
-    retVal->value = NULL;
-    return retVal;
-}
-
 void CTBencodeListAddValueContainer(CTBencodeList * array, CTBencodeValueContainer * value)
 {
     unsigned long index = array->count++;
@@ -64,7 +57,7 @@ void CTBencodeListAddValueContainer(CTBencodeList * array, CTBencodeValueContain
     array->elements[index] = value;
 }
 
-CTBencodeValueContainer * CTBencodeValueContainerCreate(CTAllocator * alloc, CTObject * value, int valueType)
+CTBencodeValueContainer * CTBencodeValueContainerCreate(CTAllocator * alloc, void * value, int valueType)
 {
     CTBencodeValueContainer * container = CTAllocatorAllocate(alloc, sizeof(CTBencodeValueContainer));
     container->alloc = alloc;
@@ -84,8 +77,8 @@ CTString * CTBencodeExtractString(CTAllocator * alloc, CTString * bencodedString
     if (*start + length <= CTStringLength(bencodedString))
     {
         CTStringAppendCharacters(retVal, CTStringUTF8String(bencodedString) + *start, length);
-        *start += length;
     }
+    *start += length;
     return retVal;
 }
 
@@ -93,9 +86,9 @@ CTBencodeDictionary * CTBencodeExtractDictionary(CTAllocator * alloc, CTString *
 {
     ++*start;
     CTBencodeDictionary * dict = CTBencodeDictionaryCreate(alloc);
-    while (*start < CTStringLength(bencodedString) && CTStringUTF8String(bencodedString)[*start] != 'e')
+    while (*start < CTStringLength(bencodedString) && CTStringUTF8String(bencodedString)[*start] != 'e' && !*error)
     {
-        CTString * string = CTBencodeParse(alloc, CTStringUTF8String(bencodedString), start, error)->value->ptr;
+        CTString * string = CTBencodeParse(alloc, CTStringUTF8String(bencodedString), start, error)->value;
         CTBencodeValueContainer * value = CTBencodeParse(alloc, CTStringUTF8String(bencodedString), start, error);
         
         if (string && value)
@@ -119,7 +112,7 @@ CTBencodeList * CTBencodeExtractList(CTAllocator * alloc, CTString * bencodedStr
 {
     ++*start;
     CTBencodeList * list = CTBencodeListCreate(alloc);
-    while (CTStringUTF8String(bencodedString)[*start] != 'e')
+    while (CTStringUTF8String(bencodedString)[*start] != 'e' && !*error)
     {
         CTBencodeListAddValueContainer(list, CTBencodeParse(alloc, CTStringUTF8String(bencodedString), start, error));
     }
@@ -131,10 +124,9 @@ CTNumber * CTBencodeExtractInteger(CTAllocator * alloc, CTString * bencodedStrin
 {
     ++*start;
     char * p = NULL;
-    long value = strtol(CTStringUTF8String(bencodedString) + *start, &p, 10);
-    
+    long double value = strtold(CTStringUTF8String(bencodedString) + *start, &p);
     *start += p - CTStringUTF8String(bencodedString) - *start + 1;
-    return CTNumberCreateWithLong(alloc, value);
+    return CTNumberCreateWithDouble(alloc, value);
 }
 
 CTBencodeValueContainer * CTBencodeParse(CTAllocator * alloc, const char * bencoded, uint64_t * start, CTError ** error)
@@ -150,13 +142,13 @@ CTBencodeValueContainer * CTBencodeParse(CTAllocator * alloc, const char * benco
             switch (bencoded[*start])
             {
                 case 'd':
-                    retVal = CTBencodeValueContainerCreate(alloc, CTObjectCreate(alloc, CTBencodeExtractDictionary(alloc, bencodedString, start, error), sizeof(CTBencodeDictionary)), CTBENCODE_TYPE_DICTIONARY);
+                    retVal = CTBencodeValueContainerCreate(alloc, CTBencodeExtractDictionary(alloc, bencodedString, start, error), CTBENCODE_TYPE_DICTIONARY);
                     break;
                 case 'l':
-                    retVal = CTBencodeValueContainerCreate(alloc, CTObjectCreate(alloc, CTBencodeExtractList(alloc, bencodedString, start, error), sizeof(CTBencodeList)), CTBENCODE_TYPE_LIST);
+                    retVal = CTBencodeValueContainerCreate(alloc, CTBencodeExtractList(alloc, bencodedString, start, error), CTBENCODE_TYPE_LIST);
                     break;
                 case 'i':
-                    retVal = CTBencodeValueContainerCreate(alloc, CTObjectCreate(alloc, CTBencodeExtractInteger(alloc, bencodedString, start, error), sizeof(CTNumber)), CTBENCODE_TYPE_INTEGER);
+                    retVal = CTBencodeValueContainerCreate(alloc, CTBencodeExtractInteger(alloc, bencodedString, start, error), CTBENCODE_TYPE_INTEGER);
                     break;
                 case '0':
                 case '1':
@@ -168,7 +160,7 @@ CTBencodeValueContainer * CTBencodeParse(CTAllocator * alloc, const char * benco
                 case '7':
                 case '8':
                 case '9':
-                    retVal = CTBencodeValueContainerCreate(alloc, CTObjectCreate(alloc, CTBencodeExtractString(alloc, bencodedString,start, error), sizeof(CTString)), CTBENCODE_TYPE_STRING);
+                    retVal = CTBencodeValueContainerCreate(alloc, CTBencodeExtractString(alloc, bencodedString,start, error), CTBENCODE_TYPE_STRING);
                     break;
             }
         }

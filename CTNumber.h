@@ -12,17 +12,17 @@
 
 enum
 {
-    CTNumber_TYPE_UINT,
-    CTNumber_TYPE_INT,
-    CTNumber_TYPE_ULONG,
-    CTNumber_TYPE_LONG,
-    CTNumber_TYPE_DOUBLE,
+    CTNUMBER_TYPE_UINT,
+    CTNUMBER_TYPE_INT,
+    CTNUMBER_TYPE_ULONG,
+    CTNUMBER_TYPE_LONG,
+    CTNUMBER_TYPE_DOUBLE,
 };
 
 union CTNumberValue
 {
-    unsigned int UInt;
-    int Int;
+    uint32_t UInt;
+    int32_t Int;
     uint64_t ULong;
     int64_t Long;
     long double Double;
@@ -33,7 +33,7 @@ typedef struct
     CTAllocator * alloc;
     union CTNumberValue value;
     uint64_t size;
-    int type;
+    uint8_t type;
 } CTNumber;
 
 typedef struct
@@ -51,8 +51,14 @@ void CTNumberRelease(CTNumber * number);
 
 CTLargeNumber * CTLargeNumberCreate(CTAllocator * restrict alloc, CTNumber * base, CTNumber * exponent);
 
-void CTNumberSetUnsignedIntValue(CTNumber * restrict number, unsigned int integer);
-void CTNumberSetIntValue(CTNumber * restrict number, int integer);
+void CTNumberSetUnsignedIntValue(CTNumber * restrict number, uint32_t integer);
+void CTNumberSetIntValue(CTNumber * restrict number, int32_t integer);
 void CTNumberSetUnsignedLongValue(CTNumber * restrict number, uint64_t longInteger);
 void CTNumberSetLongValue(CTNumber * restrict number, int64_t longInteger);
 void CTNumberSetDoubleValue(CTNumber * restrict number, long double floatingPoint);
+
+uint32_t CTNumberGetUnsignedIntValue(CTNumber * restrict number);
+int32_t CTNumberGetIntValue(CTNumber * restrict number);
+uint64_t CTNumberGetUnsignedLongValue(CTNumber * restrict number);
+int64_t CTNumberGetLongValue(CTNumber * restrict number);
+long double CTNumberGetDoubleValue(CTNumber * restrict number);

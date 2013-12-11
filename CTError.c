@@ -23,3 +23,8 @@ void CTErrorRelease(CTError * error)
     CTStringRelease(error->error);
     CTAllocatorDeallocate(error->alloc, error);
 }
+
+const CTString * CTErrorGetError(CTError * restrict error)
+{
+    return error->error;
+}

@@ -116,11 +116,11 @@ void recurseBencode(CTBencodeValueContainer * obj, int indentation)
         case CTBENCODE_TYPE_DICTIONARY:
         {
             printf("{\n");
-            CTBencodeDictionary * object = obj->value->ptr;
+            CTBencodeDictionary * object = obj->value;
             for (unsigned long i = 0; i < object->count; i++)
             {
                 CTString * key = object->elements[i]->key;
-                void * ptr = object->elements[i]->value->value->ptr;
+                void * ptr = object->elements[i]->value->value;
                 for (int i = 0; i < indentation + 1; i++)
                     printf("\t");
                 switch (object->elements[i]->value->valueType)
@@ -147,13 +147,13 @@ void recurseBencode(CTBencodeValueContainer * obj, int indentation)
         case CTBENCODE_TYPE_LIST:
         {
             printf ("[\n");
-            CTBencodeList * array = obj->value->ptr;
+            CTBencodeList * array = obj->value;
             for (unsigned long i = 0; i < array->count; i++)
             {
                 if (array->elements[i]->valueType != CTBENCODE_TYPE_DICTIONARY && array->elements[i]->valueType != CTBENCODE_TYPE_LIST)
                     for (int i = 0; i < indentation + 1; i++)
                         printf("\t");
-                void * ptr = array->elements[i]->value->ptr;
+                void * ptr = array->elements[i]->value;
                 switch (array->elements[i]->valueType)
                 {
                     case CTBENCODE_TYPE_DICTIONARY:
@@ -175,13 +175,13 @@ void recurseBencode(CTBencodeValueContainer * obj, int indentation)
         }
         case CTBENCODE_TYPE_STRING:
         {
-            printf("'%s'\n", CTStringUTF8String(((CTString *)obj->value->ptr)));
+            printf("'%s'\n", CTStringUTF8String(obj->value));
             break;
         }
             
         case CTBENCODE_TYPE_INTEGER:
         {
-            printf("'%i'\n", ((CTNumber *)obj->value->ptr)->value.Int);
+            printf("'%lli'\n", CTNumberGetLongValue(obj->value));
             break;
         }
     }
@@ -278,7 +278,7 @@ int main(int argc, const char * argv[])
 #pragma mark - CTNumber Test Begin
     CTNumber * number = CTNumberCreateWithLong(allocator, 0xFF);
     assert((number->value.Int & number->value.UInt & number->value.ULong & number->value.Long) == 0xFF);
-    number->value.Double = 255.5;
+    CTNumberSetDoubleValue(number, 255.5);
     assert(number->value.Double == 255.5);
     
 #pragma mark - CTJSON Test Begin
@@ -298,7 +298,7 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "{ \"v\":123456789123456789123456789}");
 	CTArrayAddEntry(array, "{ \"v\":[ 1,2,3,4]}");
 	CTArrayAddEntry(array, "{ \"v\":[ \"1\",\"2\",\"3\",\"4\"]}");
-	CTArrayAddEntry(array, "{ \"v\":[ { }, { },[]]}");
+	CTArrayAddEntry(array, "{ \"v\":[ { \n}, { },[]]}");
 	CTArrayAddEntry(array, "{ \"v\":\"\u03bc\u00bf\"}");
 	CTArrayAddEntry(array, "{ \"v\":\"\u00B1\u00B6\"}");
 	CTArrayAddEntry(array, "{ \"a\":\"hp://foo\"}");
@@ -330,7 +330,7 @@ int main(int argc, const char * argv[])
 		error = NULL;
 		CTJSONParse(CTAllocatorGetDefault(), CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &error);
 		assert(error);
-        printf("%s\n", CTStringUTF8String(error->error));
+        printf("%s\n", CTStringUTF8String(CTErrorGetError(error)));
         CTErrorRelease(error);
 	}
 #pragma mark - CTBencode Test Begin
@@ -338,9 +338,9 @@ int main(int argc, const char * argv[])
     CTArrayEmpty(array);
     CTArrayAddEntry(array, "de");
     CTArrayAddEntry(array, "li7483ee");
-	CTArrayAddEntry(array, "d4:yololee");
-	CTArrayAddEntry(array, "d4:yololi3eee");
-	CTArrayAddEntry(array, "i-3240e");
+	CTArrayAddEntry(array, "d4:yololllleeeleli720eeli-230eld4:hulli-233eeeeee");
+	CTArrayAddEntry(array, "d4:yoloi3ee");
+	CTArrayAddEntry(array, "i-3240.0e");
     CTArrayAddEntry(array, "l0:e");
 	for (int i = 0; i < array->count; i++)
 	{
@@ -360,7 +360,7 @@ int main(int argc, const char * argv[])
 		error = NULL;
         CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error);
 		assert(error);
-        printf("%s\n", CTStringUTF8String(error->error));
+        printf("%s\n", CTStringUTF8String(CTErrorGetError(error)));
         CTErrorRelease(error);
 	}
     
@@ -369,6 +369,7 @@ int main(int argc, const char * argv[])
     CTArrayRelease(array);
     CTAllocatorRelease(CTAllocatorGetDefault());
     CTAllocatorRelease(allocator);
+    
 #pragma mark - CTAllocator Test End
     
     //Comment this line if you don't want the 160 byte memory leak to show in your Memory Leak Instrument
