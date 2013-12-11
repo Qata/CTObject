@@ -110,8 +110,7 @@ void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, unsig
 {
     if (ptr)
     {
-        int i;
-        for (i = 0; i < allocator->count; i++)
+        for (int i = 0; i < allocator->count; i++)
         {
             if (allocator->objects[i] == ptr)
             {

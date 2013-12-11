@@ -20,5 +20,7 @@ typedef struct
 CTArray * CTArrayCreate(CTAllocator * restrict alloc);
 void CTArrayRelease(CTArray * array);
 void CTArrayAddEntry(CTArray * restrict array, const char * restrict value);
-void CTArrayDeleteEntry(CTArray * restrict array, unsigned long index);
-unsigned long CTArrayIndexOfEntry(CTArray * restrict array, const char * restrict value);
+void CTArrayDeleteEntry(CTArray * restrict array, uint64_t index);
+void CTArrayEmpty(CTArray * restrict array);
+CTString * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index);
+uint64_t CTArrayIndexOfEntry(CTArray * restrict array, const char * restrict value);

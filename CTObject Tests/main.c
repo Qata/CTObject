@@ -31,30 +31,30 @@ void recurseJSON(void * obj, int type, int indentation)
                 switch (object->elements[i]->valueType)
                 {
                     case CTJSON_TYPE_OBJECT:
-                        printf("'%s' = \n", key->characters);
+                        printf("'%s' = \n", CTStringUTF8String(key));
                         recurseJSON(ptr, CTJSON_TYPE_OBJECT, indentation + 1);
                         break;
                     case CTJSON_TYPE_ARRAY:
-                        printf("'%s' = \n", key->characters);
+                        printf("'%s' = \n", CTStringUTF8String(key));
                         recurseJSON(ptr, CTJSON_TYPE_ARRAY, indentation + 1);
                         break;
                     case CTJSON_TYPE_STRING:
-                        printf("'%s' = '%s'\n", key->characters, ((CTString *)ptr)->characters);
+                        printf("'%s' = '%s'\n", CTStringUTF8String(key), ((CTString *)ptr)->characters);
                         break;
                     case CTJSON_TYPE_BOOLEAN:
-                        printf("'%s' = '%u'\n", key->characters, ((CTNumber *)ptr)->value.UInt);
+                        printf("'%s' = '%u'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.UInt);
                         break;
                     case CTJSON_TYPE_DOUBLE:
-                        printf("'%s' = '%Lf'\n", key->characters, ((CTNumber *)ptr)->value.Double);
+                        printf("'%s' = '%Lf'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.Double);
                         break;
                     case CTJSON_TYPE_LONG:
-                        printf("'%s' = '%lli'\n", key->characters, (long long)((CTNumber *)ptr)->value.Long);
+                        printf("'%s' = '%lli'\n", CTStringUTF8String(key), (long long)((CTNumber *)ptr)->value.Long);
                         break;
                     case CTJSON_TYPE_NULL:
-                        printf("'%s' = %s\n", key->characters, ((CTNull *)ptr)->value);
+                        printf("'%s' = %s\n", CTStringUTF8String(key), ((CTNull *)ptr)->value);
                         break;
                     case CTJSON_TYPE_LARGE_NUMBER:
-                        printf("'%s' = %Lfe%lli\n", key->characters, ((CTLargeNumber *)ptr)->base->value.Double, (long long)((CTLargeNumber *)ptr)->exponent->value.Long);
+                        printf("'%s' = %Lfe%lli\n", CTStringUTF8String(key), ((CTLargeNumber *)ptr)->base->value.Double, (long long)((CTLargeNumber *)ptr)->exponent->value.Long);
                         break;
                 }
             }
@@ -102,6 +102,86 @@ void recurseJSON(void * obj, int type, int indentation)
             for (int i = 0; i < indentation; i++)
                 printf("\t");
             printf("]\n");
+            break;
+        }
+    }
+}
+
+void recurseBencode(CTBencodeValueContainer * obj, int indentation)
+{
+    for (int i = 0; i < indentation; i++)
+        printf("\t");
+    switch (obj->valueType)
+    {
+        case CTBENCODE_TYPE_DICTIONARY:
+        {
+            printf("{\n");
+            CTBencodeDictionary * object = obj->value->ptr;
+            for (unsigned long i = 0; i < object->count; i++)
+            {
+                CTString * key = object->elements[i]->key;
+                void * ptr = object->elements[i]->value->value->ptr;
+                for (int i = 0; i < indentation + 1; i++)
+                    printf("\t");
+                switch (object->elements[i]->value->valueType)
+                {
+                    case CTBENCODE_TYPE_DICTIONARY:
+                    case CTBENCODE_TYPE_LIST:
+                        printf("'%s' = \n", CTStringUTF8String(key));
+                        recurseBencode(object->elements[i]->value, indentation + 1);
+                        break;
+                    case CTBENCODE_TYPE_STRING:
+                        printf("'%s' = '%s'\n", CTStringUTF8String(key), ((CTString *)ptr)->characters);
+                        break;
+                    case CTBENCODE_TYPE_INTEGER:
+                        printf("'%s' = '%i'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.Int);
+                        break;
+                }
+            }
+            for (int i = 0; i < indentation; i++)
+                printf("\t");
+            printf("}\n");
+            break;
+        }
+            
+        case CTBENCODE_TYPE_LIST:
+        {
+            printf ("[\n");
+            CTBencodeList * array = obj->value->ptr;
+            for (unsigned long i = 0; i < array->count; i++)
+            {
+                if (array->elements[i]->valueType != CTBENCODE_TYPE_DICTIONARY && array->elements[i]->valueType != CTBENCODE_TYPE_LIST)
+                    for (int i = 0; i < indentation + 1; i++)
+                        printf("\t");
+                void * ptr = array->elements[i]->value->ptr;
+                switch (array->elements[i]->valueType)
+                {
+                    case CTBENCODE_TYPE_DICTIONARY:
+                    case CTBENCODE_TYPE_LIST:
+                        recurseBencode(array->elements[i], indentation + 1);
+                        break;
+                    case CTBENCODE_TYPE_STRING:
+                        printf("'%s'\n", ((CTString *)ptr)->characters);
+                        break;
+                    case CTBENCODE_TYPE_INTEGER:
+                        printf("'%i'\n", ((CTNumber *)ptr)->value.Int);
+                        break;
+                }
+            }
+            for (int i = 0; i < indentation; i++)
+                printf("\t");
+            printf("]\n");
+            break;
+        }
+        case CTBENCODE_TYPE_STRING:
+        {
+            printf("'%s'\n", CTStringUTF8String(((CTString *)obj->value->ptr)));
+            break;
+        }
+            
+        case CTBENCODE_TYPE_INTEGER:
+        {
+            printf("'%i'\n", ((CTNumber *)obj->value->ptr)->value.Int);
             break;
         }
     }
@@ -184,16 +264,16 @@ int main(int argc, const char * argv[])
     char * append = ". Appended Characters";
     
     CTString * string = CTStringCreate(allocator, stringTest);
-    CTStringAppendCharacters(string, append);
-    CTStringPrependCharacters(string, prepend);
-    assert(strcmp(string->characters, "Prepended Characters. Test of string. Appended Characters") == 0);
+    CTStringAppendCharacters(string, append, -1);
+    CTStringPrependCharacters(string, prepend, -1);
+    assert(strcmp(CTStringUTF8String(string), "Prepended Characters. Test of string. Appended Characters") == 0);
     assert(strcmp(CTStringStringBetween(string, prepend, append), "Test of string") == 0);
     assert(CTStringStringBetween(string, append, prepend) == NULL);
     assert(CTStringStringBetween(string, "not found", "in string") == NULL);
     CTStringRemoveCharactersFromEnd(string, strlen(append));
-    assert(strcmp(string->characters, "Prepended Characters. Test of string") == 0);
+    assert(strcmp(CTStringUTF8String(string), "Prepended Characters. Test of string") == 0);
     CTStringRemoveCharactersFromStart(string, strlen(prepend));
-    assert(strcmp(string->characters, stringTest) == 0);
+    assert(strcmp(CTStringUTF8String(string), stringTest) == 0);
     
 #pragma mark - CTNumber Test Begin
     CTNumber * number = CTNumberCreateWithLong(allocator, 0xFF);
@@ -237,10 +317,7 @@ int main(int argc, const char * argv[])
         //Comment this line if you don't want to see the output and/or do not want the memory leak associated with it.
         //recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
 	}
-	for (long long i = array->count; i >= 0x0; i--)
-    {
-        CTArrayDeleteEntry(array, i);
-    }
+    CTArrayEmpty(array);
     
 	CTArrayAddEntry(array, "");
 	CTArrayAddEntry(array, "{'X':'s");
@@ -251,14 +328,45 @@ int main(int argc, const char * argv[])
 	for (int i = 0; i < array->count; i++)
 	{
 		error = NULL;
-		CTJSONParse(CTAllocatorGetDefault(), array->elements[i]->characters, &error);
+		CTJSONParse(CTAllocatorGetDefault(), CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &error);
 		assert(error);
-        printf("%s\n", error->error->characters);
+        printf("%s\n", CTStringUTF8String(error->error));
+        CTErrorRelease(error);
+	}
+#pragma mark - CTBencode Test Begin
+    
+    CTArrayEmpty(array);
+    CTArrayAddEntry(array, "de");
+    CTArrayAddEntry(array, "li7483ee");
+	CTArrayAddEntry(array, "d4:yololee");
+	CTArrayAddEntry(array, "d4:yololi3eee");
+	CTArrayAddEntry(array, "i-3240e");
+    CTArrayAddEntry(array, "l0:e");
+	for (int i = 0; i < array->count; i++)
+	{
+        uint64_t start = 0;
+		error = NULL;
+        recurseBencode(CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error), 0);
+		assert(!error);
+	}
+    
+    CTArrayEmpty(array);
+    CTArrayAddEntry(array, "");
+    CTArrayAddEntry(array, "d");
+    CTArrayAddEntry(array, "di0ee");
+    for (int i = 0; i < array->count; i++)
+	{
+        uint64_t start = 0;
+		error = NULL;
+        CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error);
+		assert(error);
+        printf("%s\n", CTStringUTF8String(error->error));
         CTErrorRelease(error);
 	}
     
-    CTArrayRelease(array);
+#pragma mark - CTBencode Test End
     
+    CTArrayRelease(array);
     CTAllocatorRelease(CTAllocatorGetDefault());
     CTAllocatorRelease(allocator);
 #pragma mark - CTAllocator Test End

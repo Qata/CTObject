@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		232B28871857E643000C93F1 /* CTBencode.h in Headers */ = {isa = PBXBuildFile; fileRef = 232B28861857E643000C93F1 /* CTBencode.h */; };
+		232B28891857E64F000C93F1 /* CTBencode.c in Sources */ = {isa = PBXBuildFile; fileRef = 232B28881857E64F000C93F1 /* CTBencode.c */; };
+		232B288A1857E64F000C93F1 /* CTBencode.c in Sources */ = {isa = PBXBuildFile; fileRef = 232B28881857E64F000C93F1 /* CTBencode.c */; };
 		238958711817317200096409 /* CTAllocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 238958651817317200096409 /* CTAllocator.h */; };
 		238958721817317200096409 /* CTAllocator.c in Sources */ = {isa = PBXBuildFile; fileRef = 238958661817317200096409 /* CTAllocator.c */; };
 		238958731817317200096409 /* CTArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 238958671817317200096409 /* CTArray.h */; };
@@ -55,6 +58,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		232B28861857E643000C93F1 /* CTBencode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTBencode.h; sourceTree = "<group>"; };
+		232B28881857E64F000C93F1 /* CTBencode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; lineEnding = 0; path = CTBencode.c; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		2389585E1817314600096409 /* libCTObject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCTObject.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		238958651817317200096409 /* CTAllocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTAllocator.h; sourceTree = "<group>"; usesTabs = 1; };
 		238958661817317200096409 /* CTAllocator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTAllocator.c; sourceTree = "<group>"; usesTabs = 1; };
@@ -67,7 +72,7 @@
 		2389586D1817317200096409 /* CTNetServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTNetServer.h; sourceTree = "<group>"; usesTabs = 1; };
 		2389586E1817317200096409 /* CTNetServer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTNetServer.c; sourceTree = "<group>"; usesTabs = 1; };
 		2389586F1817317200096409 /* CTString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTString.h; sourceTree = "<group>"; usesTabs = 1; };
-		238958701817317200096409 /* CTString.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTString.c; sourceTree = "<group>"; usesTabs = 1; };
+		238958701817317200096409 /* CTString.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; lineEnding = 0; path = CTString.c; sourceTree = "<group>"; usesTabs = 1; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		23895881181731AA00096409 /* CTObject Tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CTObject Tests"; sourceTree = BUILT_PRODUCTS_DIR; };
 		23895883181731AA00096409 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		23895885181731AA00096409 /* CTObject_Tests.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = CTObject_Tests.1; sourceTree = "<group>"; };
@@ -77,7 +82,7 @@
 		2396CA9918178F7A00B86F0A /* CTObject.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTObject.c; sourceTree = "<group>"; };
 		2396CA9A18178F7A00B86F0A /* CTObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTObject.h; sourceTree = "<group>"; };
 		2396CAA21818888700B86F0A /* CTJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTJSON.h; sourceTree = "<group>"; };
-		2396CAA31818889100B86F0A /* CTJSON.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTJSON.c; sourceTree = "<group>"; };
+		2396CAA31818889100B86F0A /* CTJSON.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; lineEnding = 0; path = CTJSON.c; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		2396CAA61818897F00B86F0A /* CTNumber.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTNumber.h; sourceTree = "<group>"; };
 		2396CAA71818898600B86F0A /* CTNumber.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTNumber.c; sourceTree = "<group>"; };
 		2396CAAD1818BA0200B86F0A /* CTNull.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTNull.c; sourceTree = "<group>"; };
@@ -112,6 +117,8 @@
 				238958661817317200096409 /* CTAllocator.c */,
 				238958671817317200096409 /* CTArray.h */,
 				238958681817317200096409 /* CTArray.c */,
+				232B28861857E643000C93F1 /* CTBencode.h */,
+				232B28881857E64F000C93F1 /* CTBencode.c */,
 				238958691817317200096409 /* CTDictionary.h */,
 				2389586A1817317200096409 /* CTDictionary.c */,
 				23A4EFE0183057B600A435C1 /* CTError.h */,
@@ -165,6 +172,7 @@
 				2396CAB11818BA0200B86F0A /* CTNull.h in Headers */,
 				238958711817317200096409 /* CTAllocator.h in Headers */,
 				238958731817317200096409 /* CTArray.h in Headers */,
+				232B28871857E643000C93F1 /* CTBencode.h in Headers */,
 				2396CA9D18178F7A00B86F0A /* CTObject.h in Headers */,
 				2389587B1817317200096409 /* CTString.h in Headers */,
 				238958751817317200096409 /* CTDictionary.h in Headers */,
@@ -245,6 +253,7 @@
 				2396CAA81818898600B86F0A /* CTNumber.c in Sources */,
 				238958741817317200096409 /* CTArray.c in Sources */,
 				2396CA9B18178F7A00B86F0A /* CTObject.c in Sources */,
+				232B28891857E64F000C93F1 /* CTBencode.c in Sources */,
 				2396CAA41818889100B86F0A /* CTJSON.c in Sources */,
 				2396CAAF1818BA0200B86F0A /* CTNull.c in Sources */,
 				238958761817317200096409 /* CTDictionary.c in Sources */,
@@ -265,6 +274,7 @@
 				23A4EFE3183057D700A435C1 /* CTError.c in Sources */,
 				2396CAB01818BA0200B86F0A /* CTNull.c in Sources */,
 				2389588E181735E500096409 /* CTArray.c in Sources */,
+				232B288A1857E64F000C93F1 /* CTBencode.c in Sources */,
 				2389588F181735E500096409 /* CTDictionary.c in Sources */,
 				2396CAA51818889100B86F0A /* CTJSON.c in Sources */,
 				23895890181735E500096409 /* CTFunctions.c in Sources */,

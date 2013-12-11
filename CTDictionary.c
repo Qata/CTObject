@@ -88,7 +88,7 @@ void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict
 		int countOfKeys = 0;
 		for (unsigned long i = 0; i < dict->count; i++)
 		{
-			if (!strcmp(dict->elements[i]->key->characters, key))
+			if (!strcmp(CTStringUTF8String(dict->elements[i]->key), key))
 			{
 				++countOfKeys;
 			}
@@ -98,7 +98,7 @@ void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict
 			struct CTDictionaryEntry ** retVal = CTAllocatorAllocate(dict->alloc, sizeof(struct CTDictionaryEntry *) * dict->count - countOfKeys);
 			for (unsigned long i = 0, count = 0; i < dict->count; i++)
 			{
-				if (strcmp(dict->elements[i]->key->characters, key))
+				if (strcmp(CTStringUTF8String(dict->elements[i]->key), key))
 				{
 					retVal[count++] = dict->elements[i];
 				}
@@ -118,7 +118,7 @@ const CTString * CTDictionaryValueForKey(const CTDictionary * restrict dict, con
 {
     for (unsigned long i = 0; i < dict->count; i++)
     {
-        if (!strcmp(dict->elements[i]->key->characters, key))
+        if (!strcmp(CTStringUTF8String(dict->elements[i]->key), key))
         {
             return dict->elements[i]->value;
         }
@@ -130,7 +130,7 @@ unsigned long CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const
 {
     for (unsigned long i = 0; i < dict->count; i++)
     {
-        if (!strcmp(dict->elements[i]->key->characters, key))
+        if (!strcmp(CTStringUTF8String(dict->elements[i]->key), key))
         {
             return i;
         }

@@ -16,7 +16,7 @@ CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict ch
     CTString * string = CTAllocatorAllocate(alloc, sizeof(CTString));
     string->alloc = alloc;
     string->characters = stringDuplicate(alloc, characters);
-    string->length = strlen(characters);
+    CTStringSetLength(string, strlen(characters));
     return string;
 }
 
@@ -26,46 +26,75 @@ void CTStringRelease(CTString * string)
     CTAllocatorDeallocate(string->alloc, string);
 }
 
-void CTStringPrependCharacters(CTString * restrict string, const char * restrict characters)
+const char * CTStringUTF8String(const CTString * restrict string)
 {
-    char * result = CTAllocatorAllocate(string->alloc, string->length + strlen(characters) + 1);
+	return string->characters;
+}
+
+uint64_t CTStringLength(const CTString * restrict string)
+{
+	return string->length;
+}
+
+void CTStringSetLength(CTString * restrict string, uint64_t length)
+{
+	string->length = length;
+}
+
+void CTStringPrependCharacters(CTString * restrict string, const char * restrict characters, int64_t limit)
+{
+    char * result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + strlen(characters) + 1);
     strcat(result, characters);
-    strcat(result, string->characters);
-    result[string->length + strlen(characters)] = 0;
+    strcat(result, CTStringUTF8String(string));
+    result[CTStringLength(string) + strlen(characters)] = 0;
     CTAllocatorDeallocate(string->alloc, string->characters);
     string->characters = result;
-    string->length = string->length + strlen(characters);
+    CTStringSetLength(string, CTStringLength(string) + strlen(characters));
 }
 
 void CTStringPrependCharacter(CTString * restrict string, char character)
 {
-	char * result = CTAllocatorAllocate(string->alloc, string->length + 1 + 1);
+	char * result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + 1 + 1);
     strcat(result, &character);
-    strcat(result, string->characters);
-    result[string->length + 1] = 0;
+    strcat(result, CTStringUTF8String(string));
+    result[CTStringLength(string) + 1] = 0;
     CTAllocatorDeallocate(string->alloc, string->characters);
     string->characters = result;
-    string->length = string->length + 1;
+    CTStringSetLength(string, CTStringLength(string) + 1);
 }
 
-void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters)
+void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters, int64_t limit)
 {
-    char * result = CTAllocatorAllocate(string->alloc, string->length + strlen(characters) + 1);
-    strcat(result, string->characters);
-    strcat(result, characters);
-    result[string->length + strlen(characters)] = 0;
-    CTAllocatorDeallocate(string->alloc, string->characters);
-    string->characters = result;
-    string->length = string->length + strlen(characters);
+	char * result = NULL;
+	if (limit < 0)
+	{
+		result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + strlen(characters) + 1);
+		strcat(result, CTStringUTF8String(string));
+		strcat(result, characters);
+		result[CTStringLength(string) + strlen(characters)] = 0;
+		CTAllocatorDeallocate(string->alloc, string->characters);
+		string->characters = result;
+		CTStringSetLength(string, CTStringLength(string) + strlen(characters));
+	}
+	else
+	{
+		result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + limit + 1);
+		strcat(result, CTStringUTF8String(string));
+		strncat(result, characters, limit);
+		result[CTStringLength(string) + limit] = 0;
+		CTAllocatorDeallocate(string->alloc, string->characters);
+		string->characters = result;
+		CTStringSetLength(string, CTStringLength(string) + limit);
+	}
 }
 
 void CTStringAppendCharacter(CTString * restrict string, char character)
 {
-    char * result = CTAllocatorAllocate(string->alloc, string->length + 1 + 1);
-    strcat(result, string->characters);
+    char * result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + 1 + 1);
+    strcat(result, CTStringUTF8String(string));
 	strncat(result, &character, 1);
-    string->length = string->length + 1;
-    result[string->length] = 0;
+    CTStringSetLength(string, CTStringLength(string) + 1);
+    result[CTStringLength(string)] = 0;
     CTAllocatorDeallocate(string->alloc, string->characters);
     string->characters = result;
 }
@@ -74,40 +103,40 @@ void CTStringSet(CTString * restrict string, const char * restrict characters)
 {
     CTAllocatorDeallocate(string->alloc, string->characters);
     string->characters = stringDuplicate(string->alloc, characters);
-    string->length = strlen(characters);
+    CTStringSetLength(string, strlen(characters));
 }
 
 void CTStringRemoveCharactersFromStart(CTString * restrict string, unsigned long count)
 {
-    if (count < string->length)
+    if (count < CTStringLength(string))
     {
-        char * new = CTAllocatorAllocate(string->alloc, string->length - count + 1);
-        memcpy(new, string->characters + count, string->length - count);
+        char * new = CTAllocatorAllocate(string->alloc, CTStringLength(string) - count + 1);
+        memcpy(new, CTStringUTF8String(string) + count, CTStringLength(string) - count);
         CTAllocatorDeallocate(string->alloc, string->characters);
         string->characters = new;
-        string->length = string->length - count + 1;
+        CTStringSetLength(string, CTStringLength(string) - count + 1);
     }
     else
     {
         string->characters = "";
-        string->length = 0;
+        CTStringSetLength(string, 0);
     }
 }
 
 void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long count)
 {
-    if (count < string->length)
+    if (count < CTStringLength(string))
     {
-        char * new = CTAllocatorAllocate(string->alloc, string->length - count + 1);
-        memcpy(new, string->characters, string->length - count);
+        char * new = CTAllocatorAllocate(string->alloc, CTStringLength(string) - count + 1);
+        memcpy(new, CTStringUTF8String(string), CTStringLength(string) - count);
         CTAllocatorDeallocate(string->alloc, string->characters);
         string->characters = new;
-        string->length = string->length - count + 1;
+        CTStringSetLength(string, CTStringLength(string) - count + 1);
     }
     else
     {
         string->characters = "";
-        string->length = 0;
+        CTStringSetLength(string, 0);
     }
 }
 
@@ -118,7 +147,7 @@ const char * CTStringStringBetween(CTString * restrict string, const char * rest
 	
 	while ((!ret1 && !ret2) || ret1 >= ret2)
 	{
-		if (index + strlen(search1) < string->length && (ret1 = strstr(string->characters + index, search1)) && (ret2 = strstr(string->characters + index + strlen(search1), search2)))
+		if (index + strlen(search1) < CTStringLength(string) && (ret1 = strstr(CTStringUTF8String(string) + index, search1)) && (ret2 = strstr(CTStringUTF8String(string) + index + strlen(search1), search2)))
 		{
 			if (ret1 < ret2)
 			{
@@ -127,8 +156,8 @@ const char * CTStringStringBetween(CTString * restrict string, const char * rest
 				retVal[ret2 - ret1 + 1] = 0;
 				return retVal;
 			}
-			index = ret1 - string->characters;
-			if (index >= string->length)
+			index = ret1 - CTStringUTF8String(string);
+			if (index >= CTStringLength(string))
 				return NULL;
 		}
 		else
@@ -141,5 +170,5 @@ const char * CTStringStringBetween(CTString * restrict string, const char * rest
 
 int CTStringContainsString(CTString * restrict string, const char * restrict search)
 {
-	return (int)strstr(string->characters, search);
+	return (int)strstr(CTStringUTF8String(string), search);
 }
