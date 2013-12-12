@@ -314,8 +314,6 @@ int main(int argc, const char * argv[])
 	{
 		object = CTJSONParse(allocator, array->elements[i]->characters, &error);
 		assert(!error);
-        //Comment this line if you don't want to see the output and/or do not want the memory leak associated with it.
-        //recurseJSON(object, CTJSON_TYPE_OBJECT, 0);
 	}
     CTArrayEmpty(array);
     
@@ -342,12 +340,11 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "d4:yoloi3ee");
 	CTArrayAddEntry(array, "i-3240.0e");
     CTArrayAddEntry(array, "l0:e");
+    error = NULL;
 	for (int i = 0; i < array->count; i++)
 	{
         uint64_t start = 0;
-		error = NULL;
         CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error);
-        //recurseBencode(CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error), 0);
 		assert(!error);
 	}
     

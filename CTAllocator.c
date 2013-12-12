@@ -44,15 +44,12 @@ CTAllocator * CTAllocatorGetDefault()
 
 CTAllocator * CTAllocatorCreate()
 {
-	CTAllocator * allocator = malloc(sizeof(CTAllocator));
-	allocator->count = 0;
-	allocator->objects = NULL;
-	return allocator;
+	return calloc(1, sizeof(CTAllocator));
 }
 
 void CTAllocatorRelease(CTAllocator * restrict allocator)
 {
-	if (allocator != defaultAllocator)
+	if (allocator != CTAllocatorGetDefault())
 	{
 		CTAllocatorReleasePrivate(allocator);
 	}
@@ -68,9 +65,7 @@ void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size)
 	{
 		return NULL;
 	}
-    void * ptr = malloc(size);
-    memset(ptr, 0, size);
-	return allocator->objects[allocator->count++] = ptr;
+	return allocator->objects[allocator->count++] = calloc(1, size);
 }
 
 void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
