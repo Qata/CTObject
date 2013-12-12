@@ -16,8 +16,6 @@
 CTBencodeDictionary * CTBencodeDictionaryCreate(CTAllocator * alloc)
 {
     CTBencodeDictionary * object = CTAllocatorAllocate(alloc, sizeof(CTBencodeDictionary));
-    object->count = 0;
-    object->elements = NULL;
     object->alloc = alloc;
     return object;
 }
@@ -25,8 +23,6 @@ CTBencodeDictionary * CTBencodeDictionaryCreate(CTAllocator * alloc)
 CTBencodeDictionaryKeyValuePair * CTBencodeDictionaryCreateEntry(CTAllocator * alloc)
 {
     CTBencodeDictionaryKeyValuePair * retVal = CTAllocatorAllocate(alloc, sizeof(CTBencodeDictionaryKeyValuePair));
-    retVal->key = NULL;
-    retVal->value = NULL;
     return retVal;
 }
 
@@ -43,8 +39,6 @@ void CTBencodeDictionaryAddKeyValuePair(CTBencodeDictionary * object, CTString *
 CTBencodeList * CTBencodeListCreate(CTAllocator * alloc)
 {
     CTBencodeList * array = CTAllocatorAllocate(alloc, sizeof(CTBencodeList));
-    array->count = 0;
-    array->elements = NULL;
     array->alloc = alloc;
     return array;
 }

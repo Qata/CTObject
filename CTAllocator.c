@@ -49,7 +49,7 @@ CTAllocator * CTAllocatorCreate()
 
 void CTAllocatorRelease(CTAllocator * restrict allocator)
 {
-	if (allocator != CTAllocatorGetDefault())
+	if (allocator != CTAllocatorGetDefault() && allocator)
 	{
 		CTAllocatorReleasePrivate(allocator);
 	}
@@ -61,6 +61,7 @@ void CTAllocatorRelease(CTAllocator * restrict allocator)
 
 void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size)
 {
+	allocator = !allocator ? CTAllocatorGetDefault() : allocator;
 	if (!(allocator->objects = realloc(allocator->objects, sizeof(void *) * allocator->count + 1)))
 	{
 		return NULL;
@@ -70,6 +71,7 @@ void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size)
 
 void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 {
+	allocator = !allocator ? CTAllocatorGetDefault() : allocator;
     if (allocator->count)
 	{
 		int countOfKeys = 0;
@@ -103,6 +105,7 @@ void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 
 void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, unsigned long size)
 {
+	allocator = !allocator ? CTAllocatorGetDefault() : allocator;
     if (ptr)
     {
         for (int i = 0; i < allocator->count; i++)

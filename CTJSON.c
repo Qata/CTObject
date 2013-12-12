@@ -22,8 +22,6 @@ void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, 
 CTJSONObject * CTJSONObjectCreate(CTAllocator * alloc)
 {
     CTJSONObject * object = CTAllocatorAllocate(alloc, sizeof(CTJSONObject));
-    object->count = 0;
-    object->elements = NULL;
     object->alloc = alloc;
     return object;
 }
@@ -50,8 +48,6 @@ void CTJSONObjectAddKeyValuePair(CTJSONObject * object, CTString * key, CTObject
 CTJSONArray * CTJSONArrayCreate(CTAllocator * alloc)
 {
     CTJSONArray * array = CTAllocatorAllocate(alloc, sizeof(CTJSONArray));
-    array->count = 0;
-    array->elements = NULL;
     array->alloc = alloc;
     return array;
 }
@@ -59,7 +55,6 @@ CTJSONArray * CTJSONArrayCreate(CTAllocator * alloc)
 CTJSONArrayValueContainer * CTJSONArrayCreateEntry(CTAllocator * alloc)
 {
     CTJSONArrayValueContainer * retVal = CTAllocatorAllocate(alloc, sizeof(CTJSONArrayValueContainer));
-    retVal->value = NULL;
     return retVal;
 }
 

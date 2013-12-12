@@ -17,16 +17,12 @@
 struct CTDictionaryEntry * CTDictionaryCreateEntry(CTAllocator * restrict alloc)
 {
     struct CTDictionaryEntry * retVal = CTAllocatorAllocate(alloc, sizeof(struct CTDictionaryEntry));
-    retVal->key = NULL;
-    retVal->value = NULL;
     return retVal;
 }
 
 CTDictionary * CTDictionaryCreate(CTAllocator * alloc)
 {
     CTDictionary * dict = CTAllocatorAllocate(alloc, sizeof(CTDictionary));
-    dict->count = 0;
-    dict->elements = NULL;
     dict->alloc = alloc;
     return dict;
 }

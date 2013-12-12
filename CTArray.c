@@ -15,8 +15,6 @@
 CTArray * CTArrayCreate(CTAllocator * restrict alloc)
 {
     CTArray * array = CTAllocatorAllocate(alloc, sizeof(CTArray));
-    array->count = 0;
-    array->elements = NULL;
     array->alloc = alloc;
     return array;
 }
