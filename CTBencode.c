@@ -106,9 +106,13 @@ CTBencodeList * CTBencodeExtractList(CTAllocator * alloc, CTString * bencodedStr
 {
     ++*start;
     CTBencodeList * list = CTBencodeListCreate(alloc);
-    while (CTStringUTF8String(bencodedString)[*start] != 'e' && !*error)
+    while (*start < CTStringLength(bencodedString) && CTStringUTF8String(bencodedString)[*start] != 'e' && !*error)
     {
         CTBencodeListAddValueContainer(list, CTBencodeParse(alloc, CTStringUTF8String(bencodedString), start, error));
+    }
+    if (CTStringUTF8String(bencodedString)[*start] != 'e')
+    {
+        *error = CTErrorCreate(alloc, "No terminating e found for list", 0);
     }
     ++*start;
     return list;

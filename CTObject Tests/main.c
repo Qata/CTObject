@@ -319,8 +319,9 @@ int main(int argc, const char * argv[])
     
 	CTArrayAddEntry(array, "");
 	CTArrayAddEntry(array, "{'X':'s");
-	CTArrayAddEntry(array, "{{\"k\":\"v\"}\"e\"}");
+	CTArrayAddEntry(array, "{{\"k\":\"v\"}}");
 	CTArrayAddEntry(array, "[]");
+	CTArrayAddEntry(array, "{\"l\":[\"e\",\"]}");
 	CTArrayAddEntry(array, "{\"k\":[]\"}");
 	CTArrayAddEntry(array, "{\"k\":[\"\", \"]\"}");
 	for (int i = 0; i < array->count; i++)
@@ -351,6 +352,7 @@ int main(int argc, const char * argv[])
     CTArrayEmpty(array);
     CTArrayAddEntry(array, "");
     CTArrayAddEntry(array, "d");
+    CTArrayAddEntry(array, "l");
     CTArrayAddEntry(array, "di0ee");
     for (int i = 0; i < array->count; i++)
 	{
