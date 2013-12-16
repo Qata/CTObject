@@ -121,9 +121,15 @@ CTBencodeList * CTBencodeExtractList(CTAllocator * alloc, CTString * bencodedStr
 CTNumber * CTBencodeExtractInteger(CTAllocator * alloc, CTString * bencodedString, uint64_t * start, CTError ** error)
 {
     ++*start;
-    char * p = NULL;
-    double value = strtod(CTStringUTF8String(bencodedString) + *start, &p);
-    *start += p - CTStringUTF8String(bencodedString) - *start + 1;
+    CTString * string = CTStringCreate(alloc, "");
+    
+    while ((CTStringUTF8String(bencodedString)[*start] >= '0' && CTStringUTF8String(bencodedString)[*start] <= '9' ) || CTStringUTF8String(bencodedString)[*start] == '.' || CTStringUTF8String(bencodedString)[*start] == '-' || CTStringUTF8String(bencodedString)[*start] == '+')
+    {
+        CTStringAppendCharacter(string, CTStringUTF8String(bencodedString)[*start]);
+        ++*start;
+    }
+    ++*start;
+    double value = strtod(CTStringUTF8String(string), NULL);
     return CTNumberCreateWithDouble(alloc, value);
 }
 

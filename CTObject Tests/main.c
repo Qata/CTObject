@@ -345,7 +345,7 @@ int main(int argc, const char * argv[])
 	for (int i = 0; i < array->count; i++)
 	{
         uint64_t start = 0;
-        CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error);
+        recurseBencode(CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error), 0);
 		assert(!error);
 	}
     
