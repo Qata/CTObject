@@ -214,7 +214,7 @@ int main(int argc, const char * argv[])
     
     for (int i = 0; i < 0x10; i++)
     {
-        CTArrayAddEntry(array, CTObjectCreate(allocator, testStrings[i], CTOBJECT_NOT_AN_OBJECT));
+        CTArrayAddEntry(array, testStrings[i], CTOBJECT_NOT_AN_OBJECT);
     }
     
     assert(array->count == 0x10);
@@ -286,26 +286,26 @@ int main(int argc, const char * argv[])
     allocator = CTAllocatorCreate();
     
     array = CTArrayCreate(allocator);
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":\"1\"}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":\"1\"\r\n}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":1}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":\"ab'c\"}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"PI\":3.141E-10}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"PI\":3.1413e-10}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":12345123456789}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":123456789123456789123456789}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":[ 1,2,3,4]}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":[ \"1\",\"2\",\"3\",\"4\"]}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":[ { \n}, { },[]]}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":\"\u03bc\u00bf\"}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":\"\u00B1\u00B6\"}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"a\":\"hp://foo\"}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"a\":null}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"a\":true}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"a\":false}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"a\" : true }", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":1.797693134E308}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, "{}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":\"1\"}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":\"1\"\r\n}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":1}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":\"ab'c\"}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"PI\":3.141E-10}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"PI\":3.1413e-10}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":12345123456789}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":123456789123456789123456789}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":[ 1,2,3,4]}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":[ \"1\",\"2\",\"3\",\"4\"]}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":[ { \n}, { },[]]}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":\"\u03bc\u00bf\"}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":\"\u00B1\u00B6\"}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"a\":\"hp://foo\"}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"a\":null}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"a\":true}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"a\":false}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"a\" : true }", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":1.797693134E308}", CTOBJECT_NOT_AN_OBJECT);
     
     CTError * error = NULL;
     CTJSONObject * object = NULL;
@@ -316,13 +316,13 @@ int main(int argc, const char * argv[])
 	}
     CTArrayEmpty(array);
     
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{'X':'s", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{{\"k\":\"v\"}}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "[]", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{\"l\":[\"e\",\"]}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{\"k\":[]\"}", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "{\"k\":[\"\", \"]\"}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, "", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{'X':'s", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{{\"k\":\"v\"}}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "[]", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{\"l\":[\"e\",\"]}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{\"k\":[]\"}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{\"k\":[\"\", \"]\"}", CTOBJECT_NOT_AN_OBJECT);
 	for (int i = 0; i < array->count; i++)
 	{
 		error = NULL;
@@ -335,31 +335,31 @@ int main(int argc, const char * argv[])
     
     CTArrayEmpty(array);
 	
-    CTArrayAddEntry(array, CTObjectCreate(allocator, "de", CTOBJECT_NOT_AN_OBJECT));
-    CTArrayAddEntry(array, CTObjectCreate(allocator, "li7483ee", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "d4:yololllleeeleli720eeli-230eld4:hulli-233eeeeee", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "d4:yoloi3ee", CTOBJECT_NOT_AN_OBJECT));
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "i-3240.0e", CTOBJECT_NOT_AN_OBJECT));
-    CTArrayAddEntry(array, CTObjectCreate(allocator, "l0:e", CTOBJECT_NOT_AN_OBJECT));
+    CTArrayAddEntry(array, "de", CTOBJECT_NOT_AN_OBJECT);
+    CTArrayAddEntry(array, "li7483ee", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "d4:yololllleeeleli720eeli-230eld4:hulli-233eeeeee", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "d4:yoloi3ee", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "i-3240.0e", CTOBJECT_NOT_AN_OBJECT);
+    CTArrayAddEntry(array, "l0:e", CTOBJECT_NOT_AN_OBJECT);
 	
     error = NULL;
 	for (int i = 0; i < array->count; i++)
 	{
-        uint64_t start = 0;
-        printf("%s\n", CTStringUTF8String(CTBencodeSerialise(allocator, CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &start, &error), &error)));
+		CTObject * obj = CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &error);
+		assert(!error);
+        CTBencodeSerialise(allocator, obj, &error);
 		assert(!error);
 	}
     
     CTArrayEmpty(array);
-	CTArrayAddEntry(array, CTObjectCreate(allocator, "", CTOBJECT_NOT_AN_OBJECT));
-    CTArrayAddEntry(array, CTObjectCreate(allocator, "d", CTOBJECT_NOT_AN_OBJECT));
-    CTArrayAddEntry(array, CTObjectCreate(allocator, "l", CTOBJECT_NOT_AN_OBJECT));
-    CTArrayAddEntry(array, CTObjectCreate(allocator, "di0ee", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, "", CTOBJECT_NOT_AN_OBJECT);
+    CTArrayAddEntry(array, "d", CTOBJECT_NOT_AN_OBJECT);
+    CTArrayAddEntry(array, "l", CTOBJECT_NOT_AN_OBJECT);
+    CTArrayAddEntry(array, "di0ee", CTOBJECT_NOT_AN_OBJECT);
     for (int i = 0; i < array->count; i++)
 	{
-        uint64_t start = 0;
 		error = NULL;
-        CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &start, &error);
+        CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &error);
 		assert(error);
         printf("%s\n", CTStringUTF8String(CTErrorGetError(error)));
         CTErrorRelease(error);

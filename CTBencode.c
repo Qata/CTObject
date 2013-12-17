@@ -36,8 +36,8 @@ CTDictionary * CTBencodeExtractDictionary(CTAllocator * alloc, CTString * bencod
     CTDictionary * dict = CTDictionaryCreate(alloc);
     while (*start < CTStringLength(bencodedString) && CTStringUTF8String(bencodedString)[*start] != 'e' && !*error)
     {
-        CTString * string = CTBencodeParse(alloc, CTStringUTF8String(bencodedString), start, error)->ptr;
-        CTObject * value = CTBencodeParse(alloc, CTStringUTF8String(bencodedString), start, error);
+        CTString * string = CTBencodeParse2(alloc, CTStringUTF8String(bencodedString), start, error)->ptr;
+        CTObject * value = CTBencodeParse2(alloc, CTStringUTF8String(bencodedString), start, error);
         
         if (string && value)
         {
@@ -62,7 +62,7 @@ CTArray * CTBencodeExtractList(CTAllocator * alloc, CTString * bencodedString, u
     CTArray * list = CTArrayCreate(alloc);
     while (*start < CTStringLength(bencodedString) && CTStringUTF8String(bencodedString)[*start] != 'e' && !*error)
     {
-        CTArrayAddEntry(list, CTBencodeParse(alloc, CTStringUTF8String(bencodedString), start, error));
+        CTArrayAddEntry2(list, CTBencodeParse2(alloc, CTStringUTF8String(bencodedString), start, error));
     }
     if (CTStringUTF8String(bencodedString)[*start] != 'e')
     {
@@ -87,9 +87,15 @@ CTNumber * CTBencodeExtractInteger(CTAllocator * alloc, CTString * bencodedStrin
     return CTNumberCreateWithDouble(alloc, value);
 }
 
-CTObject * CTBencodeParse(CTAllocator * alloc, const char * bencoded, uint64_t * start, CTError ** error)
+CTObject * CTBencodeParse(CTAllocator * alloc, const char * bencoded, CTError ** error)
 {
-    CTObject * retVal = NULL;
+    uint64_t start = 0;
+	return CTBencodeParse2(alloc, bencoded, &start, error);
+}
+
+CTObject * CTBencodeParse2(CTAllocator * alloc, const char * bencoded, uint64_t * start, CTError ** error)
+{
+	CTObject * retVal = NULL;
     CTAllocator * lalloc = CTAllocatorCreate();
     CTString * bencodedString = CTStringCreate(lalloc, bencoded);
     

@@ -9,7 +9,9 @@
 #pragma once
 #include "CTAllocator.h"
 #include "CTObject.h"
-
+/**
+ * An object that keeps an array of type independent elements.
+ **/
 typedef struct
 {
     CTAllocator * alloc;
@@ -17,10 +19,74 @@ typedef struct
     CTObject ** elements;
 } CTArray;
 
+/**
+ * Create an array with the specified allocator.
+ * @param alloc	A properly initialised CTAllocator that was created with CTAllocatorCreate.
+ * @return		Returns an initialised CTArray with a count of zero.
+ **/
 CTArray * CTArrayCreate(CTAllocator * restrict alloc);
+
+/**
+ * Release an allocated array and all objects within.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate.
+ * @return		A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
+ **/
 void CTArrayRelease(CTArray * restrict array);
-void CTArrayAddEntry(CTArray * restrict array, CTObject * restrict value);
+
+/**
+ * Add a CTObject to the end of the array.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate.
+ * @param value	A void pointer to be used in the creation of a CTObject.
+ * @param type	An 8 bit integer used to identify the type of the object being created.
+ * @return		A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
+ * @see CTObjectCreate
+ **/
+void CTArrayAddEntry(CTArray * restrict array, void * value, uint8_t type);
+
+/**
+ * Add a CTObject to the end of the array.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate.
+ * @param value	A properly initialised CTObject that was created with CTObjectCreate.
+ * @return		A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
+ * @see CTObjectCreate
+ **/
+void CTArrayAddEntry2(CTArray * restrict array, CTObject * restrict value);
+
+/**
+ * Delete the CTObject at the specified index.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate.
+ * @param index	The index of the object to be deleted.
+ * @return		A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
+ **/
 void CTArrayDeleteEntry(CTArray * restrict array, uint64_t index);
+
+/**
+ * Delete every CTObject in the specified array.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate.
+ * @return		A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
+ **/
 void CTArrayEmpty(CTArray * restrict array);
+
+/**
+ * Return the CTObject at the specified index.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate.
+ * @param index	The index of the object to be returned.
+ * @return		The CTObject to be found at the specified index, if the index is beyond the bounds of the array, NULL is returned.
+ **/
 CTObject * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index);
+
+/**
+ * Return the index of the CTObject * in the array.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate.
+ * @param value	The CTObject pointer to search for in the array.
+ * @return		The index of the CTObject, if not found, NULL is returned.
+ **/
 uint64_t CTArrayIndexOfEntry(CTArray * restrict array, CTObject * value);
+
+
+/**
+ * Return the count of the array.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate.
+ * @return		The count of the CTArray. The result is identical to using array->count.
+ **/
+uint64_t CTArrayCount(CTArray * restrict array);

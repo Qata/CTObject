@@ -29,7 +29,12 @@ void CTArrayRelease(CTArray * restrict array)
 	CTAllocatorDeallocate(array->alloc, array);
 }
 
-void CTArrayAddEntry(CTArray * restrict array, CTObject * restrict value)
+void CTArrayAddEntry(CTArray * restrict array, void * value, uint8_t type)
+{
+	CTArrayAddEntry2(array, CTObjectCreate(array->alloc, value, type));
+}
+
+void CTArrayAddEntry2(CTArray * restrict array, CTObject * restrict value)
 {
     uint64_t index = array->count++;
     
@@ -83,4 +88,9 @@ void CTArrayEmpty(CTArray * restrict array)
 CTObject * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index)
 {
 	return index < array->count ? array->elements[index] : NULL;
+}
+
+uint64_t CTArrayCount(CTArray * restrict array)
+{
+	return array->count;
 }
