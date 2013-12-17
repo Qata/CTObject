@@ -107,33 +107,33 @@ void recurseJSON(void * obj, int type, int indentation)
     }
 }
 
-void recurseBencode(CTBencodeValueContainer * obj, int indentation)
+void recurseBencode(CTObject * obj, int indentation)
 {
     for (int i = 0; i < indentation; i++)
         printf("\t");
-    switch (obj->valueType)
+    switch (obj->type)
     {
-        case CTBENCODE_TYPE_DICTIONARY:
+        case CTOBJECT_TYPE_DICTIONARY:
         {
             printf("{\n");
-            CTBencodeDictionary * object = obj->value;
+            CTDictionary * object = obj->ptr;
             for (unsigned long i = 0; i < object->count; i++)
             {
                 CTString * key = object->elements[i]->key;
-                void * ptr = object->elements[i]->value->value;
+                void * ptr = object->elements[i]->value->ptr;
                 for (int i = 0; i < indentation + 1; i++)
                     printf("\t");
-                switch (object->elements[i]->value->valueType)
+                switch (object->elements[i]->value->type)
                 {
-                    case CTBENCODE_TYPE_DICTIONARY:
-                    case CTBENCODE_TYPE_LIST:
+                    case CTOBJECT_TYPE_DICTIONARY:
+                    case CTOBJECT_TYPE_ARRAY:
                         printf("'%s' = \n", CTStringUTF8String(key));
                         recurseBencode(object->elements[i]->value, indentation + 1);
                         break;
-                    case CTBENCODE_TYPE_STRING:
+                    case CTOBJECT_TYPE_STRING:
                         printf("'%s' = '%s'\n", CTStringUTF8String(key), ((CTString *)ptr)->characters);
                         break;
-                    case CTBENCODE_TYPE_INTEGER:
+                    case CTOBJECT_TYPE_NUMBER:
                         printf("'%s' = '%i'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.Int);
                         break;
                 }
@@ -144,26 +144,26 @@ void recurseBencode(CTBencodeValueContainer * obj, int indentation)
             break;
         }
             
-        case CTBENCODE_TYPE_LIST:
+        case CTOBJECT_TYPE_ARRAY:
         {
             printf ("[\n");
-            CTBencodeList * array = obj->value;
+            CTArray * array = obj->ptr;
             for (unsigned long i = 0; i < array->count; i++)
             {
-                if (array->elements[i]->valueType != CTBENCODE_TYPE_DICTIONARY && array->elements[i]->valueType != CTBENCODE_TYPE_LIST)
+                if (array->elements[i]->type != CTOBJECT_TYPE_DICTIONARY && array->elements[i]->type != CTOBJECT_TYPE_ARRAY)
                     for (int i = 0; i < indentation + 1; i++)
                         printf("\t");
-                void * ptr = array->elements[i]->value;
-                switch (array->elements[i]->valueType)
+                void * ptr = array->elements[i]->ptr;
+                switch (array->elements[i]->type)
                 {
-                    case CTBENCODE_TYPE_DICTIONARY:
-                    case CTBENCODE_TYPE_LIST:
+                    case CTOBJECT_TYPE_DICTIONARY:
+                    case CTOBJECT_TYPE_ARRAY:
                         recurseBencode(array->elements[i], indentation + 1);
                         break;
-                    case CTBENCODE_TYPE_STRING:
+                    case CTOBJECT_TYPE_STRING:
                         printf("'%s'\n", ((CTString *)ptr)->characters);
                         break;
-                    case CTBENCODE_TYPE_INTEGER:
+                    case CTOBJECT_TYPE_NUMBER:
                         printf("'%i'\n", ((CTNumber *)ptr)->value.Int);
                         break;
                 }
@@ -173,15 +173,15 @@ void recurseBencode(CTBencodeValueContainer * obj, int indentation)
             printf("]\n");
             break;
         }
-        case CTBENCODE_TYPE_STRING:
+        case CTOBJECT_TYPE_STRING:
         {
-            printf("'%s'\n", CTStringUTF8String(obj->value));
+            printf("'%s'\n", CTStringUTF8String(obj->ptr));
             break;
         }
             
-        case CTBENCODE_TYPE_INTEGER:
+        case CTOBJECT_TYPE_NUMBER:
         {
-            printf("'%lli'\n", CTNumberGetLongValue(obj->value));
+            printf("'%lli'\n", CTNumberGetLongValue(obj->ptr));
             break;
         }
     }
@@ -214,16 +214,15 @@ int main(int argc, const char * argv[])
     
     for (int i = 0; i < 0x10; i++)
     {
-        CTArrayAddEntry(array, testStrings[i]);
+        CTArrayAddEntry(array, CTObjectCreate(allocator, testStrings[i], CTOBJECT_NOT_AN_OBJECT));
     }
     
     assert(array->count == 0x10);
-    assert(CTArrayIndexOfEntry(array, "not found in array") == -1);
+    assert(CTArrayIndexOfEntry(array, (void *)"not found in array") == -1);
     
     for (int i = 0; i < 0x10; i++)
     {
-        assert(CTArrayIndexOfEntry(array, testStrings[i]) == i);
-        assert(strcmp(array->elements[i]->characters, testStrings[i]) == 0);
+        assert(strcmp(array->elements[i]->ptr, testStrings[i]) == 0);
     }
     
     for (int i = 0xF; i >= 0x0; i--)
@@ -238,7 +237,7 @@ int main(int argc, const char * argv[])
     
     for (int i = 0; i < 0x10; i++)
     {
-        CTDictionaryAddEntry(dict, testStrings[i], testStrings2[i]);
+        CTDictionaryAddEntry(dict, testStrings[i], CTObjectCreate(allocator, testStrings2[i], CTOBJECT_TYPE_STRING));
     }
     
     assert(dict->count == 0x10);
@@ -248,7 +247,7 @@ int main(int argc, const char * argv[])
     for (int i = 0; i < 0x10; i++)
     {
         assert(CTDictionaryIndexOfEntry(dict, testStrings[i]) == i);
-        assert(strcmp(CTDictionaryValueForKey(dict, testStrings[i])->characters, testStrings2[i]) == 0);
+        assert(strcmp(CTDictionaryValueForKey(dict, testStrings[i])->ptr, testStrings2[i]) == 0);
     }
     
     for (int i = 0; i < 0x10; i++)
@@ -264,8 +263,8 @@ int main(int argc, const char * argv[])
     char * append = ". Appended Characters";
     
     CTString * string = CTStringCreate(allocator, stringTest);
-    CTStringAppendCharacters(string, append, -1);
-    CTStringPrependCharacters(string, prepend, -1);
+    CTStringAppendCharacters(string, append, CTSTRING_NO_LIMIT);
+    CTStringPrependCharacters(string, prepend, CTSTRING_NO_LIMIT);
     assert(strcmp(CTStringUTF8String(string), "Prepended Characters. Test of string. Appended Characters") == 0);
     assert(strcmp(CTStringStringBetween(string, prepend, append), "Test of string") == 0);
     assert(CTStringStringBetween(string, append, prepend) == NULL);
@@ -287,47 +286,47 @@ int main(int argc, const char * argv[])
     allocator = CTAllocatorCreate();
     
     array = CTArrayCreate(allocator);
-	CTArrayAddEntry(array, "{}");
-	CTArrayAddEntry(array, "{ \"v\":\"1\"}");
-	CTArrayAddEntry(array, "{ \"v\":\"1\"\r\n}");
-	CTArrayAddEntry(array, "{ \"v\":1}");
-	CTArrayAddEntry(array, "{ \"v\":\"ab'c\"}");
-	CTArrayAddEntry(array, "{ \"PI\":3.141E-10}");
-	CTArrayAddEntry(array, "{ \"PI\":3.1413e-10}");
-	CTArrayAddEntry(array, "{ \"v\":12345123456789}");
-	CTArrayAddEntry(array, "{ \"v\":123456789123456789123456789}");
-	CTArrayAddEntry(array, "{ \"v\":[ 1,2,3,4]}");
-	CTArrayAddEntry(array, "{ \"v\":[ \"1\",\"2\",\"3\",\"4\"]}");
-	CTArrayAddEntry(array, "{ \"v\":[ { \n}, { },[]]}");
-	CTArrayAddEntry(array, "{ \"v\":\"\u03bc\u00bf\"}");
-	CTArrayAddEntry(array, "{ \"v\":\"\u00B1\u00B6\"}");
-	CTArrayAddEntry(array, "{ \"a\":\"hp://foo\"}");
-	CTArrayAddEntry(array, "{ \"a\":null}");
-	CTArrayAddEntry(array, "{ \"a\":true}");
-	CTArrayAddEntry(array, "{ \"a\":false}");
-	CTArrayAddEntry(array, "{ \"a\" : true }");
-	CTArrayAddEntry(array, "{ \"v\":1.797693134E308}");
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":\"1\"}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":\"1\"\r\n}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":1}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":\"ab'c\"}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"PI\":3.141E-10}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"PI\":3.1413e-10}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":12345123456789}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":123456789123456789123456789}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":[ 1,2,3,4]}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":[ \"1\",\"2\",\"3\",\"4\"]}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":[ { \n}, { },[]]}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":\"\u03bc\u00bf\"}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":\"\u00B1\u00B6\"}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"a\":\"hp://foo\"}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"a\":null}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"a\":true}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"a\":false}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"a\" : true }", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{ \"v\":1.797693134E308}", CTOBJECT_NOT_AN_OBJECT));
     
     CTError * error = NULL;
     CTJSONObject * object = NULL;
 	for (int i = 0; i < array->count; i++)
 	{
-		object = CTJSONParse(allocator, array->elements[i]->characters, &error);
+		object = CTJSONParse(allocator, array->elements[i]->ptr, &error);
 		assert(!error);
 	}
     CTArrayEmpty(array);
     
-	CTArrayAddEntry(array, "");
-	CTArrayAddEntry(array, "{'X':'s");
-	CTArrayAddEntry(array, "{{\"k\":\"v\"}}");
-	CTArrayAddEntry(array, "[]");
-	CTArrayAddEntry(array, "{\"l\":[\"e\",\"]}");
-	CTArrayAddEntry(array, "{\"k\":[]\"}");
-	CTArrayAddEntry(array, "{\"k\":[\"\", \"]\"}");
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{'X':'s", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{{\"k\":\"v\"}}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "[]", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{\"l\":[\"e\",\"]}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{\"k\":[]\"}", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "{\"k\":[\"\", \"]\"}", CTOBJECT_NOT_AN_OBJECT));
 	for (int i = 0; i < array->count; i++)
 	{
 		error = NULL;
-		CTJSONParse(CTAllocatorGetDefault(), CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &error);
+		CTJSONParse(CTAllocatorGetDefault(), CTArrayObjectAtIndex(array, i)->ptr, &error);
 		assert(error);
         printf("%s\n", CTStringUTF8String(CTErrorGetError(error)));
         CTErrorRelease(error);
@@ -335,30 +334,32 @@ int main(int argc, const char * argv[])
 #pragma mark - CTBencode Test Begin
     
     CTArrayEmpty(array);
-    CTArrayAddEntry(array, "de");
-    CTArrayAddEntry(array, "li7483ee");
-	CTArrayAddEntry(array, "d4:yololllleeeleli720eeli-230eld4:hulli-233eeeeee");
-	CTArrayAddEntry(array, "d4:yoloi3ee");
-	CTArrayAddEntry(array, "i-3240.0e");
-    CTArrayAddEntry(array, "l0:e");
+	
+    CTArrayAddEntry(array, CTObjectCreate(allocator, "de", CTOBJECT_NOT_AN_OBJECT));
+    CTArrayAddEntry(array, CTObjectCreate(allocator, "li7483ee", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "d4:yololllleeeleli720eeli-230eld4:hulli-233eeeeee", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "d4:yoloi3ee", CTOBJECT_NOT_AN_OBJECT));
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "i-3240.0e", CTOBJECT_NOT_AN_OBJECT));
+    CTArrayAddEntry(array, CTObjectCreate(allocator, "l0:e", CTOBJECT_NOT_AN_OBJECT));
+	
     error = NULL;
 	for (int i = 0; i < array->count; i++)
 	{
         uint64_t start = 0;
-        recurseBencode(CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error), 0);
+        printf("%s\n", CTStringUTF8String(CTBencodeSerialise(allocator, CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &start, &error), &error)));
 		assert(!error);
 	}
     
     CTArrayEmpty(array);
-    CTArrayAddEntry(array, "");
-    CTArrayAddEntry(array, "d");
-    CTArrayAddEntry(array, "l");
-    CTArrayAddEntry(array, "di0ee");
+	CTArrayAddEntry(array, CTObjectCreate(allocator, "", CTOBJECT_NOT_AN_OBJECT));
+    CTArrayAddEntry(array, CTObjectCreate(allocator, "d", CTOBJECT_NOT_AN_OBJECT));
+    CTArrayAddEntry(array, CTObjectCreate(allocator, "l", CTOBJECT_NOT_AN_OBJECT));
+    CTArrayAddEntry(array, CTObjectCreate(allocator, "di0ee", CTOBJECT_NOT_AN_OBJECT));
     for (int i = 0; i < array->count; i++)
 	{
         uint64_t start = 0;
 		error = NULL;
-        CTBencodeParse(allocator, CTStringUTF8String(CTArrayObjectAtIndex(array, i)), &start, &error);
+        CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &start, &error);
 		assert(error);
         printf("%s\n", CTStringUTF8String(CTErrorGetError(error)));
         CTErrorRelease(error);

@@ -10,10 +10,10 @@
 
 #include "CTAllocator.h"
 #include "CTArray.h"
+#include "CTBencode.h"
 #include "CTDictionary.h"
 #include "CTFunctions.h"
 #include "CTJSON.h"
-#include "CTBencode.h"
 #include "CTNetServer.h"
 #include "CTNull.h"
 #include "CTNumber.h"

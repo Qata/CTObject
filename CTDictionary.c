@@ -14,9 +14,9 @@
 #include "CTDictionary.h"
 #include "CTFunctions.h"
 
-struct CTDictionaryEntry * CTDictionaryCreateEntry(CTAllocator * restrict alloc)
+CTDictionaryEntry * CTDictionaryCreateEntry(CTAllocator * restrict alloc)
 {
-    struct CTDictionaryEntry * retVal = CTAllocatorAllocate(alloc, sizeof(struct CTDictionaryEntry));
+    CTDictionaryEntry * retVal = CTAllocatorAllocate(alloc, sizeof(CTDictionaryEntry));
     return retVal;
 }
 
@@ -29,10 +29,11 @@ CTDictionary * CTDictionaryCreate(CTAllocator * alloc)
 
 void CTDictionaryRelease(CTDictionary * dict)
 {
+	printf("%llu\n", dict->count);
 	for (uint64_t i = 0; i < dict->count; i++)
     {
         CTStringRelease(dict->elements[i]->key);
-        CTStringRelease(dict->elements[i]->value);
+        CTObjectRelease(dict->elements[i]->value);
     }
 	CTAllocatorDeallocate(dict->alloc, dict->elements);
 	CTAllocatorDeallocate(dict->alloc, dict);
@@ -59,7 +60,7 @@ void CTDictionaryAddEntriesFromQueryString(CTDictionary * restrict dict, const c
                 memset(str, 0, sizeof(str));
                 memset(val, 0, sizeof(val));
                 sscanf(pointer, "%[^=]=%s", str, val);
-                CTDictionaryAddEntry(dict, str, val);
+                CTDictionaryAddEntry(dict, str, CTObjectCreate(dict->alloc, CTStringCreate(dict->alloc, val), CTOBJECT_TYPE_STRING));
                 pointer = strtok(NULL, "&");
             }
         }
@@ -67,14 +68,18 @@ void CTDictionaryAddEntriesFromQueryString(CTDictionary * restrict dict, const c
     }
 }
 
-void CTDictionaryAddEntry(CTDictionary * restrict dict, const char * restrict key, const char * restrict value)
+void CTDictionaryAddEntry(CTDictionary * restrict dict, const char * restrict key, CTObject * restrict value)
+{
+    CTDictionaryAddEntry2(dict, CTStringCreate(dict->alloc, key), value);
+}
+
+void CTDictionaryAddEntry2(CTDictionary * restrict dict, CTString * restrict key, CTObject * restrict value)
 {
     unsigned long index = dict->count++;
-    
-	assert((dict->elements = CTAllocatorReallocate(dict->alloc, dict->elements, sizeof(struct CTDictionaryEntry *) * dict->count)));
+	assert((dict->elements = CTAllocatorReallocate(dict->alloc, dict->elements, sizeof(CTDictionaryEntry *) * dict->count)));
     dict->elements[index] = CTDictionaryCreateEntry(dict->alloc);
-	dict->elements[index]->key = CTStringCreate(dict->alloc, key);
-    dict->elements[index]->value = CTStringCreate(dict->alloc, value);
+	dict->elements[index]->key = key;
+    dict->elements[index]->value = value;
 }
 
 void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict key)
@@ -91,7 +96,7 @@ void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict
 		}
 		if (countOfKeys)
 		{
-			struct CTDictionaryEntry ** retVal = CTAllocatorAllocate(dict->alloc, sizeof(struct CTDictionaryEntry *) * dict->count - countOfKeys);
+			CTDictionaryEntry ** retVal = CTAllocatorAllocate(dict->alloc, sizeof(CTDictionaryEntry *) * dict->count - countOfKeys);
 			for (unsigned long i = 0, count = 0; i < dict->count; i++)
 			{
 				if (strcmp(CTStringUTF8String(dict->elements[i]->key), key))
@@ -110,7 +115,7 @@ void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict
 	}
 }
 
-const CTString * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key)
+CTObject * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key)
 {
     for (unsigned long i = 0; i < dict->count; i++)
     {

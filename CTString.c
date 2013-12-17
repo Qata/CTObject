@@ -10,12 +10,13 @@
 #include "CTFunctions.h"
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
 
 CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict characters)
 {
     CTString * string = CTAllocatorAllocate(alloc, sizeof(CTString));
     string->alloc = alloc;
-    string->characters = stringDuplicate(alloc, characters);
+    string->characters = characters ? stringDuplicate(alloc, characters) : "";
     CTStringSetLength(string, strlen(characters));
     return string;
 }
@@ -138,6 +139,34 @@ void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long c
         string->characters = "";
         CTStringSetLength(string, 0);
     }
+}
+
+void CTStringAppendString(CTString * restrict string1, CTString * restrict string2)
+{
+	char * result = NULL;
+	result = CTAllocatorAllocate(string1->alloc, CTStringLength(string1) + CTStringLength(string2) + 1);
+	strcat(result, CTStringUTF8String(string1));
+	strcat(result, CTStringUTF8String(string2));
+	result[CTStringLength(string1) + CTStringLength(string2)] = 0;
+	CTAllocatorDeallocate(string1->alloc, string1->characters);
+	string1->characters = result;
+	CTStringSetLength(string1, CTStringLength(string1) + CTStringLength(string2));
+}
+
+void CTStringToUpper(CTString * restrict string)
+{
+	for (uint64_t i = 0; i < CTStringLength(string); i++)
+	{
+		string->characters[i] = toupper(string->characters[i]);
+	}
+}
+
+void CTStringToLower(CTString * restrict string)
+{
+	for (uint64_t i = 0; i < CTStringLength(string); i++)
+	{
+		string->characters[i] = tolower(string->characters[i]);
+	}
 }
 
 const char * CTStringStringBetween(CTString * restrict string, const char * restrict search1, const char * restrict search2)

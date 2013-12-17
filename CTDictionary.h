@@ -8,17 +8,18 @@
 #pragma once
 #include "CTAllocator.h"
 #include "CTString.h"
+#include "CTObject.h"
 
-struct CTDictionaryEntry
+typedef struct
 {
 	CTString * key;
-	CTString * value;
-};
+	CTObject * value;
+} CTDictionaryEntry;
 
 typedef struct
 {
     uint64_t count;
-    struct CTDictionaryEntry ** elements;
+    CTDictionaryEntry ** elements;
     CTAllocator * alloc;
 } CTDictionary;
 
@@ -27,7 +28,8 @@ void CTDictionaryRelease(CTDictionary * dict);
 
 void CTDictionaryAddEntriesFromQueryString(CTDictionary * restrict dict, const char * restrict query);
 
-void CTDictionaryAddEntry(CTDictionary * restrict dict, const char * restrict key, const char * restrict value);
+void CTDictionaryAddEntry(CTDictionary * restrict dict, const char * restrict key, CTObject * restrict value);
+void CTDictionaryAddEntry2(CTDictionary * restrict dict, CTString * restrict key, CTObject * restrict value);
 void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict key);
-const CTString * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key);
+CTObject * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key);
 unsigned long CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key);

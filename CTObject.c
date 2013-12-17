@@ -10,17 +10,47 @@
 #include <stdlib.h>
 #include <string.h>
 #include "CTObject.h"
+#include "CTDictionary.h"
+#include "CTArray.h"
+#include "CTNumber.h"
+#include "CTString.h"
 
-CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, unsigned long size)
+CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, uint8_t type)
 {
     CTObject * object = CTAllocatorAllocate(alloc, sizeof(CTObject));
-    object->size = size;
-    object->ptr = ptr;
     object->alloc = alloc;
+    object->ptr = ptr;
+    object->type = type;
+    return object;
+}
+
+CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, uint8_t type, unsigned long size)
+{
+    CTObject * object = CTObjectCreate(alloc, ptr, type);
+    object->size = size;
     return object;
 }
 
 void CTObjectRelease(CTObject * object)
 {
+    switch (object->type)
+    {
+        case CTOBJECT_TYPE_DICTIONARY:
+            CTDictionaryRelease(object->ptr);
+            break;
+            
+        case CTOBJECT_TYPE_ARRAY:
+            CTArrayRelease(object->ptr);
+            break;
+            
+        case CTOBJECT_TYPE_NUMBER:
+            CTNumberRelease(object->ptr);
+            break;
+            
+        case CTOBJECT_TYPE_STRING:
+            CTStringRelease(object->ptr);
+            break;
+    }
+    
     CTAllocatorDeallocate(object->alloc, object);
 }

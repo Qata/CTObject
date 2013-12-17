@@ -8,19 +8,19 @@
 
 #pragma once
 #include "CTAllocator.h"
-#include "CTString.h"
+#include "CTObject.h"
 
 typedef struct
 {
     CTAllocator * alloc;
     uint64_t count;
-    CTString ** elements;
+    CTObject ** elements;
 } CTArray;
 
 CTArray * CTArrayCreate(CTAllocator * restrict alloc);
-void CTArrayRelease(CTArray * array);
-void CTArrayAddEntry(CTArray * restrict array, const char * restrict value);
+void CTArrayRelease(CTArray * restrict array);
+void CTArrayAddEntry(CTArray * restrict array, CTObject * restrict value);
 void CTArrayDeleteEntry(CTArray * restrict array, uint64_t index);
 void CTArrayEmpty(CTArray * restrict array);
-CTString * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index);
-uint64_t CTArrayIndexOfEntry(CTArray * restrict array, const char * restrict value);
+CTObject * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index);
+uint64_t CTArrayIndexOfEntry(CTArray * restrict array, CTObject * value);

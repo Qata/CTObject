@@ -290,15 +290,15 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
         switch (CTStringUTF8String(JSON)[start])
         {
             case '"':
-                object = CTObjectCreate(alloc, CTStringFromJSON(alloc, JSON, start, &start, error), sizeof(CTString));
+                object = CTObjectCreate(alloc, CTStringFromJSON(alloc, JSON, start, &start, error), CTOBJECT_TYPE_STRING);
                 *valueType = CTJSON_TYPE_STRING;
                 break;
             case '{':
-                object = CTObjectCreate(alloc, CTJSONObjectFromJSONObject(alloc, JSON, start, &start, error), sizeof(CTJSONObject));
+                object = CTObjectCreate(alloc, CTJSONObjectFromJSONObject(alloc, JSON, start, &start, error), CTOBJECT_TYPE_DICTIONARY);
                 *valueType = CTJSON_TYPE_OBJECT;
                 break;
             case '[':
-                object = CTObjectCreate(alloc, CTJSONArrayFromJSON(alloc, JSON, start, &start, error), sizeof(CTJSONArray));
+                object = CTObjectCreate(alloc, CTJSONArrayFromJSON(alloc, JSON, start, &start, error), CTOBJECT_TYPE_ARRAY);
                 *valueType = CTJSON_TYPE_ARRAY;
                 break;
             case 't':
@@ -309,19 +309,19 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                     if (!strncmp("true", CTStringUTF8String(JSON) + start, 4))
                     {
                         start += strlen("true");
-                        object = CTObjectCreate(alloc, CTNumberCreateWithInt(alloc, 1), sizeof(CTNumber));
+                        object = CTObjectCreate(alloc, CTNumberCreateWithInt(alloc, 1), CTOBJECT_TYPE_NUMBER);
                         *valueType = CTJSON_TYPE_BOOLEAN;
                     }
                     else if (!strncmp("null", CTStringUTF8String(JSON) + start, 4))
                     {
                         start += strlen("null");
-                        object = CTObjectCreate(alloc, CTNullCreate(alloc), sizeof(CTNumber));
+                        object = CTObjectCreate(alloc, CTNullCreate(alloc), -1);
                         *valueType = CTJSON_TYPE_NULL;
                     }
                     else if (CTStringLength(JSON) - start > 4 && !strncmp("false", CTStringUTF8String(JSON) + start, 5))
                     {
                         start += strlen("false");
-                        object = CTObjectCreate(alloc, CTNumberCreateWithInt(alloc, 0), sizeof(CTNumber));
+                        object = CTObjectCreate(alloc, CTNumberCreateWithInt(alloc, 0), CTOBJECT_TYPE_NUMBER);
                         *valueType = CTJSON_TYPE_BOOLEAN;
                     }
                 }
@@ -376,17 +376,17 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                             {
                                 if (exponent <= 15 && exponent >= -6)
                                 {
-                                    object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Double * powl(10, exponent)), sizeof(CTNumber));
+                                    object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Double * pow(10, exponent)), CTOBJECT_TYPE_NUMBER);
                                 }
                                 else
                                 {
                                     *valueType = CTJSON_TYPE_LARGE_NUMBER;
-                                    object = CTObjectCreate(alloc, CTLargeNumberCreate(alloc, CTNumberCreateWithDouble(alloc, Double), CTNumberCreateWithLong(alloc, exponent)), sizeof(CTLargeNumber));
+                                    object = CTObjectCreate(alloc, CTLargeNumberCreate(alloc, CTNumberCreateWithDouble(alloc, Double), CTNumberCreateWithLong(alloc, exponent)), CTOBJECT_TYPE_NUMBER);
                                 }
                             }
                             else
                             {
-                                object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Double), sizeof(CTNumber));
+                                object = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Double), CTOBJECT_TYPE_NUMBER);
                             }
                         }
                     }
@@ -398,17 +398,17 @@ CTObject * CTObjectFromJSON(CTAllocator * alloc, CTString * restrict JSON, unsig
                         {
                             if (exponent <= 15 && exponent >= -6)
                             {
-                                object = CTObjectCreate(alloc, CTNumberCreateWithLong(alloc, Long * powl(10, exponent)), sizeof(CTNumber));
+                                object = CTObjectCreate(alloc, CTNumberCreateWithLong(alloc, Long * pow(10, exponent)), CTOBJECT_TYPE_NUMBER);
                             }
                             else
                             {
                                 *valueType = CTJSON_TYPE_LARGE_NUMBER;
-                                object = CTObjectCreate(alloc, CTLargeNumberCreate(alloc, CTNumberCreateWithLong(alloc, Long), CTNumberCreateWithLong(alloc, exponent)), sizeof(CTLargeNumber));
+                                object = CTObjectCreate(alloc, CTLargeNumberCreate(alloc, CTNumberCreateWithLong(alloc, Long), CTNumberCreateWithLong(alloc, exponent)), CTOBJECT_TYPE_NUMBER);
                             }
                         }
                         else
                         {
-                            object = CTObjectCreate(alloc, CTNumberCreateWithLong(alloc, Long), sizeof(CTNumber));
+                            object = CTObjectCreate(alloc, CTNumberCreateWithLong(alloc, Long), CTOBJECT_TYPE_NUMBER);
                         }
                     }
                     if (CTStringLength(exponentString))
@@ -523,7 +523,7 @@ void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, 
                 break;
             }
             case CTJSON_TYPE_NULL:
-                CTStringAppendCharacters(JSON, ((CTNull *)ptr)->value, -1);
+                CTStringAppendCharacters(JSON, ((CTNull *)ptr)->value, CTSTRING_NO_LIMIT);
                 break;
             case CTJSON_TYPE_LARGE_NUMBER:
             {

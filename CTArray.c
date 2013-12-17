@@ -19,30 +19,30 @@ CTArray * CTArrayCreate(CTAllocator * restrict alloc)
     return array;
 }
 
-void CTArrayRelease(CTArray * array)
+void CTArrayRelease(CTArray * restrict array)
 {
 	for (uint64_t i = 0; i < array->count; i++)
     {
-        CTStringRelease(array->elements[i]);
+        CTObjectRelease(array->elements[i]);
     }
 	CTAllocatorDeallocate(array->alloc, array->elements);
 	CTAllocatorDeallocate(array->alloc, array);
 }
 
-void CTArrayAddEntry(CTArray * restrict array, const char * restrict value)
+void CTArrayAddEntry(CTArray * restrict array, CTObject * restrict value)
 {
     uint64_t index = array->count++;
     
 	assert((array->elements = CTAllocatorReallocate(array->alloc, array->elements, sizeof(CTArray *) * array->count)));
     
-    array->elements[index] = CTStringCreate(array->alloc, value);
+    array->elements[index] = value;
 }
 
 void CTArrayDeleteEntry(CTArray * restrict array, uint64_t index)
 {
     if (array->count > index)
 	{
-		CTString ** values = CTAllocatorAllocate(array->alloc, sizeof(CTString *) * array->count - 1);
+		CTObject ** values = CTAllocatorAllocate(array->alloc, sizeof(CTObject *) * array->count - 1);
         for (uint64_t i = 0, count = 0; i < array->count; i++)
         {
             if (!(i == index))
@@ -51,7 +51,7 @@ void CTArrayDeleteEntry(CTArray * restrict array, uint64_t index)
             }
             else
             {
-                CTAllocatorDeallocate(array->alloc, array->elements[i]);
+				CTObjectRelease(array->elements[i]);
             }
         }
         CTAllocatorDeallocate(array->alloc, array->elements);
@@ -60,11 +60,11 @@ void CTArrayDeleteEntry(CTArray * restrict array, uint64_t index)
 	}
 }
 
-uint64_t CTArrayIndexOfEntry(CTArray * restrict array, const char * restrict value)
+uint64_t CTArrayIndexOfEntry(CTArray * restrict array, CTObject * restrict value)
 {
     for (uint64_t i = 0; i < array->count; i++)
     {
-        if (!strcmp(array->elements[i]->characters, value))
+        if (array->elements[i] == value)
         {
             return i;
         }
@@ -80,7 +80,7 @@ void CTArrayEmpty(CTArray * restrict array)
     }
 }
 
-CTString * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index)
+CTObject * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index)
 {
 	return index < array->count ? array->elements[index] : NULL;
 }
