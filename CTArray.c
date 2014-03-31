@@ -38,7 +38,7 @@ void CTArrayAddEntry2(CTArray * restrict array, CTObject * restrict value)
 {
     uint64_t index = array->count++;
     
-	assert((array->elements = CTAllocatorReallocate(array->alloc, array->elements, sizeof(CTArray *) * array->count)));
+	assert(array->elements = CTAllocatorReallocate(array->alloc, array->elements, sizeof(CTArray *) * array->count));
     
     array->elements[index] = value;
 }
@@ -47,21 +47,20 @@ void CTArrayDeleteEntry(CTArray * restrict array, uint64_t index)
 {
     if (array->count > index)
 	{
-		CTObject ** values = CTAllocatorAllocate(array->alloc, sizeof(CTObject *) * array->count - 1);
-        for (uint64_t i = 0, count = 0; i < array->count; i++)
+		unsigned shift = 0;
+        for (uint64_t i = 0; i < array->count; i++)
         {
-            if (!(i == index))
+            if (i != index)
             {
-                values[count++] = array->elements[i];
+				array->elements[i - shift] = array->elements[i];
             }
             else
             {
 				CTObjectRelease(array->elements[i]);
+				shift = 1;
             }
         }
-        CTAllocatorDeallocate(array->alloc, array->elements);
-        array->elements = values;
-        --array->count;
+        array->elements = CTAllocatorReallocate(array->alloc, array->elements, sizeof(CTObject *) * --array->count);
 	}
 }
 
