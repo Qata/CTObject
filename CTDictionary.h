@@ -18,9 +18,9 @@ typedef struct
 
 typedef struct
 {
+    CTAllocator * alloc;
     uint64_t count;
     CTDictionaryEntry ** elements;
-    CTAllocator * alloc;
 } CTDictionary;
 
 CTDictionary * CTDictionaryCreate(CTAllocator * restrict alloc);

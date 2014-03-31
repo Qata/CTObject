@@ -11,6 +11,7 @@
 #include "CTAllocator.h"
 #include "CTArray.h"
 #include "CTBencode.h"
+#include "CTData.h"
 #include "CTDictionary.h"
 #include "CTFunctions.h"
 #include "CTJSON.h"

@@ -14,6 +14,7 @@
 #include "CTArray.h"
 #include "CTNumber.h"
 #include "CTString.h"
+#include "CTNull.h"
 
 CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, uint8_t type)
 {
@@ -50,6 +51,10 @@ void CTObjectRelease(CTObject * object)
         case CTOBJECT_TYPE_STRING:
             CTStringRelease(object->ptr);
             break;
+			
+		case CTOBJECT_TYPE_NULL:
+			CTNullRelease(object->ptr);
+			break;
     }
     
     CTAllocatorDeallocate(object->alloc, object);

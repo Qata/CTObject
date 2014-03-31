@@ -18,42 +18,55 @@ void recurseJSON(void * obj, int type, int indentation)
         printf("\t");
     switch (type)
     {
-        case CTJSON_TYPE_OBJECT:
+        case CTOBJECT_TYPE_DICTIONARY:
         {
             printf("{\n");
-            CTJSONObject * object = (CTJSONObject *)obj;
+            CTDictionary * object = (CTDictionary *)obj;
             for (unsigned long i = 0; i < object->count; i++)
             {
                 CTString * key = object->elements[i]->key;
                 void * ptr = object->elements[i]->value->ptr;
                 for (int i = 0; i < indentation + 1; i++)
                     printf("\t");
-                switch (object->elements[i]->valueType)
+                switch (object->elements[i]->value->type)
                 {
-                    case CTJSON_TYPE_OBJECT:
+                    case CTOBJECT_TYPE_DICTIONARY:
                         printf("'%s' = \n", CTStringUTF8String(key));
-                        recurseJSON(ptr, CTJSON_TYPE_OBJECT, indentation + 1);
+                        recurseJSON(ptr, CTOBJECT_TYPE_DICTIONARY, indentation + 1);
                         break;
-                    case CTJSON_TYPE_ARRAY:
+                    case CTOBJECT_TYPE_ARRAY:
                         printf("'%s' = \n", CTStringUTF8String(key));
-                        recurseJSON(ptr, CTJSON_TYPE_ARRAY, indentation + 1);
+                        recurseJSON(ptr, CTOBJECT_TYPE_ARRAY, indentation + 1);
                         break;
-                    case CTJSON_TYPE_STRING:
+                    case CTOBJECT_TYPE_STRING:
                         printf("'%s' = '%s'\n", CTStringUTF8String(key), ((CTString *)ptr)->characters);
                         break;
-                    case CTJSON_TYPE_BOOLEAN:
-                        printf("'%s' = '%u'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.UInt);
+                    case CTOBJECT_TYPE_NUMBER:
+					{
+						switch (((CTNumber *)ptr)->type)
+						{
+							case CTNUMBER_TYPE_DOUBLE:
+								printf("'%s' = '%Lf'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.Double);
+								break;
+							case CTNUMBER_TYPE_INT:
+								printf("'%s' = '%i'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.Int);
+								break;
+							case CTNUMBER_TYPE_UINT:
+								printf("'%s' = '%u'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.UInt);
+								break;
+							case CTNUMBER_TYPE_LONG:
+								printf("'%s' = '%lli'\n", CTStringUTF8String(key), (long long)((CTNumber *)ptr)->value.Long);
+								break;
+							case CTNUMBER_TYPE_ULONG:
+								printf("'%s' = '%llu'\n", CTStringUTF8String(key), (long long)((CTNumber *)ptr)->value.ULong);
+								break;
+						}
                         break;
-                    case CTJSON_TYPE_DOUBLE:
-                        printf("'%s' = '%Lf'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.Double);
-                        break;
-                    case CTJSON_TYPE_LONG:
-                        printf("'%s' = '%lli'\n", CTStringUTF8String(key), (long long)((CTNumber *)ptr)->value.Long);
-                        break;
-                    case CTJSON_TYPE_NULL:
+					}
+                    case CTOBJECT_TYPE_NULL:
                         printf("'%s' = %s\n", CTStringUTF8String(key), ((CTNull *)ptr)->value);
                         break;
-                    case CTJSON_TYPE_LARGE_NUMBER:
+                    case CTOBJECT_TYPE_LARGE_NUMBER:
                         printf("'%s' = %Lfe%lli\n", CTStringUTF8String(key), ((CTLargeNumber *)ptr)->base->value.Double, (long long)((CTLargeNumber *)ptr)->exponent->value.Long);
                         break;
                 }
@@ -64,37 +77,50 @@ void recurseJSON(void * obj, int type, int indentation)
             break;
         }
             
-        case CTJSON_TYPE_ARRAY:
+        case CTOBJECT_TYPE_ARRAY:
         {
             printf ("[\n");
-            CTJSONArray * array = (CTJSONArray *)obj;
+            CTArray * array = (CTArray *)obj;
             for (unsigned long i = 0; i < array->count; i++)
             {
-                if (array->elements[i]->valueType != CTJSON_TYPE_OBJECT && array->elements[i]->valueType != CTJSON_TYPE_ARRAY)
+                if (array->elements[i]->type != CTOBJECT_TYPE_DICTIONARY && array->elements[i]->type != CTOBJECT_TYPE_ARRAY)
                     for (int i = 0; i < indentation + 1; i++)
                         printf("\t");
-                void * ptr = array->elements[i]->value->ptr;
-                switch (array->elements[i]->valueType)
+                void * ptr = array->elements[i]->ptr;
+                switch (array->elements[i]->type)
                 {
-                    case CTJSON_TYPE_OBJECT:
-                        recurseJSON(ptr, CTJSON_TYPE_OBJECT, indentation + 1);
+                    case CTOBJECT_TYPE_DICTIONARY:
+                        recurseJSON(ptr, CTOBJECT_TYPE_DICTIONARY, indentation + 1);
                         break;
-                    case CTJSON_TYPE_ARRAY:
-                        recurseJSON(ptr, CTJSON_TYPE_ARRAY, indentation + 1);
+                    case CTOBJECT_TYPE_ARRAY:
+                        recurseJSON(ptr, CTOBJECT_TYPE_ARRAY, indentation + 1);
                         break;
-                    case CTJSON_TYPE_STRING:
+                    case CTOBJECT_TYPE_STRING:
                         printf("'%s'\n", ((CTString *)ptr)->characters);
                         break;
-                    case CTJSON_TYPE_BOOLEAN:
-                        printf("'%u'\n", ((CTNumber *)ptr)->value.UInt);
+                    case CTOBJECT_TYPE_NUMBER:
+					{
+						switch (((CTNumber *)ptr)->type)
+						{
+							case CTNUMBER_TYPE_DOUBLE:
+								printf("'%Lf'\n", ((CTNumber *)ptr)->value.Double);
+								break;
+							case CTNUMBER_TYPE_INT:
+								printf("'%i'\n", ((CTNumber *)ptr)->value.Int);
+								break;
+							case CTNUMBER_TYPE_UINT:
+								printf("'%u'\n", ((CTNumber *)ptr)->value.UInt);
+								break;
+							case CTNUMBER_TYPE_LONG:
+								printf("'%lli'\n", (long long)((CTNumber *)ptr)->value.Long);
+								break;
+							case CTNUMBER_TYPE_ULONG:
+								printf("'%llu'\n", (long long)((CTNumber *)ptr)->value.ULong);
+								break;
+						}
                         break;
-                    case CTJSON_TYPE_DOUBLE:
-                        printf("'%Lf'\n", ((CTNumber *)ptr)->value.Double);
-                        break;
-                    case CTJSON_TYPE_LONG:
-                        printf("'%lli'\n", (long long)((CTNumber *)ptr)->value.Long);
-                        break;
-                    case CTJSON_TYPE_NULL:
+					}
+                    case CTOBJECT_TYPE_NULL:
                         printf("'%s'\n", ((CTNull *)ptr)->value);
                         break;
                 }
@@ -306,12 +332,15 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "{ \"a\":false}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"a\" : true }", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"v\":1.797693134E308}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{\"menu\": {\"header\": \"SVG Viewer\",\"items\": [1.7, true, false, {\"id\": \"Open\"},{\"id\": \"OpenNew\", \"label\": \"Open New\"},null,{\"id\": \"ZoomIn\", \"label\": \"Zoom In\"},{\"id\": \"ZoomOut\", \"label\": \"Zoom Out\"},{\"id\": \"OriginalView\", \"label\": \"Original View\"},null,{\"id\": \"Quality\"},{\"id\": \"Pause\"},{\"id\": \"Mute\"},null,{\"id\": \"Find\", \"label\": \"Find...\"},{\"id\": \"FindAgain\", \"label\": \"Find Again\"},{\"id\": \"Copy\"},{\"id\": \"CopyAgain\", \"label\": \"Copy Again\"},{\"id\": \"CopySVG\", \"label\": \"Copy SVG\"},{\"id\": \"ViewSVG\", \"label\": \"View SVG\"},{\"id\": \"ViewSource\", \"label\": \"View Source\"},{\"id\": \"SaveAs\", \"label\": \"Save As\"},null,{\"id\": \"Help\"},{\"id\": \"About\", \"label\": \"About Adobe CVG Viewer...\"}]}}", CTOBJECT_NOT_AN_OBJECT);
     
     CTError * error = NULL;
-    CTJSONObject * object = NULL;
 	for (int i = 0; i < array->count; i++)
 	{
-		object = CTJSONParse(allocator, array->elements[i]->ptr, &error);
+		CTDictionary * dict = CTJSONParse(allocator, array->elements[i]->ptr, &error);
+		recurseJSON(dict, CTOBJECT_TYPE_DICTIONARY, 0);
+		assert(!error);
+		CTJSONSerialise(allocator, dict, &error);
 		assert(!error);
 	}
     CTArrayEmpty(array);

@@ -12,6 +12,7 @@
 #include "CTArray.h"
 #include "CTDictionary.h"
 #include "CTObject.h"
+#include "CTData.h"
 
 /**
  * Turn a string of bencoded data into a meaningful CTObject chain.

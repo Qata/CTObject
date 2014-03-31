@@ -17,7 +17,10 @@ CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict ch
     CTString * string = CTAllocatorAllocate(alloc, sizeof(CTString));
     string->alloc = alloc;
     string->characters = characters ? stringDuplicate(alloc, characters) : "";
-    CTStringSetLength(string, strlen(characters));
+	if (characters)
+	{
+		CTStringSetLength(string, strlen(characters));
+	}
     return string;
 }
 
@@ -200,4 +203,9 @@ const char * CTStringStringBetween(CTString * restrict string, const char * rest
 int CTStringContainsString(CTString * restrict string, const char * restrict search)
 {
 	return (int)strstr(CTStringUTF8String(string), search);
+}
+
+int CTStringCompare(CTString * restrict string1, CTString * restrict string2)
+{
+	return strcmp(CTStringUTF8String(string1), CTStringUTF8String(string2));
 }

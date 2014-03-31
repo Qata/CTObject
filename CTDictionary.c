@@ -29,7 +29,6 @@ CTDictionary * CTDictionaryCreate(CTAllocator * alloc)
 
 void CTDictionaryRelease(CTDictionary * dict)
 {
-	printf("%llu\n", dict->count);
 	for (uint64_t i = 0; i < dict->count; i++)
     {
         CTStringRelease(dict->elements[i]->key);

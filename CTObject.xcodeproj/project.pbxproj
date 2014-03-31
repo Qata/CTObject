@@ -42,6 +42,7 @@
 		2396CAB11818BA0200B86F0A /* CTNull.h in Headers */ = {isa = PBXBuildFile; fileRef = 2396CAAE1818BA0200B86F0A /* CTNull.h */; };
 		23A4EFE2183057D700A435C1 /* CTError.c in Sources */ = {isa = PBXBuildFile; fileRef = 23A4EFE1183057D700A435C1 /* CTError.c */; };
 		23A4EFE3183057D700A435C1 /* CTError.c in Sources */ = {isa = PBXBuildFile; fileRef = 23A4EFE1183057D700A435C1 /* CTError.c */; };
+		23B69382188DDBA90098D06D /* CTData.c in Sources */ = {isa = PBXBuildFile; fileRef = 23B69381188DDBA90098D06D /* CTData.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -89,6 +90,8 @@
 		2396CAAE1818BA0200B86F0A /* CTNull.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTNull.h; sourceTree = "<group>"; usesTabs = 1; };
 		23A4EFE0183057B600A435C1 /* CTError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTError.h; sourceTree = "<group>"; usesTabs = 1; };
 		23A4EFE1183057D700A435C1 /* CTError.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTError.c; sourceTree = "<group>"; usesTabs = 1; };
+		23B69380188DDBA00098D06D /* CTData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTData.h; sourceTree = "<group>"; };
+		23B69381188DDBA90098D06D /* CTData.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTData.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +122,8 @@
 				238958681817317200096409 /* CTArray.c */,
 				232B28861857E643000C93F1 /* CTBencode.h */,
 				232B28881857E64F000C93F1 /* CTBencode.c */,
+				23B69380188DDBA00098D06D /* CTData.h */,
+				23B69381188DDBA90098D06D /* CTData.c */,
 				238958691817317200096409 /* CTDictionary.h */,
 				2389586A1817317200096409 /* CTDictionary.c */,
 				23A4EFE0183057B600A435C1 /* CTError.h */,
@@ -256,6 +261,7 @@
 				232B28891857E64F000C93F1 /* CTBencode.c in Sources */,
 				2396CAA41818889100B86F0A /* CTJSON.c in Sources */,
 				2396CAAF1818BA0200B86F0A /* CTNull.c in Sources */,
+				23B69382188DDBA90098D06D /* CTData.c in Sources */,
 				238958761817317200096409 /* CTDictionary.c in Sources */,
 				238958781817317200096409 /* CTFunctions.c in Sources */,
 				2389587A1817317200096409 /* CTNetServer.c in Sources */,
