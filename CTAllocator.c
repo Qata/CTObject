@@ -55,7 +55,7 @@ void CTAllocatorRelease(CTAllocator * restrict allocator)
 	}
 	else
 	{
-		puts("Please do not attempt to release the default allocator");
+		fputs("Don't touch the default allocator\n", stderr);
 	}
 }
 

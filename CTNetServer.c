@@ -22,7 +22,7 @@ CTNetServer * CTNetServerOpen(CTAllocator * restrict alloc, const char * restric
     if ((server->handle = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
         close(server->handle);
-        printf("Failed to create socket.\n");
+        fputs("Failed to create socket\n", stderr);
         return NULL;
     }
     
@@ -43,7 +43,7 @@ CTNetServer * CTNetServerOpen(CTAllocator * restrict alloc, const char * restric
     if (connect(server->handle, (const struct sockaddr *)&server->socketAddress, sizeof(server->socketAddress)) < 0)
     {
         close(server->handle);
-        printf("Failed to connect to socket.\n");
+        fputs("Failed to connect to socket\n", stderr);
         return NULL;
     }
     return server;

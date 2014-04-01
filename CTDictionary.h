@@ -32,4 +32,4 @@ void CTDictionaryAddEntry(CTDictionary * restrict dict, const char * restrict ke
 void CTDictionaryAddEntry2(CTDictionary * restrict dict, CTString * restrict key, CTObject * restrict value);
 void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict key);
 CTObject * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key);
-unsigned long CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key);
+uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key);

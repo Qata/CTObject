@@ -92,6 +92,7 @@
 		23A4EFE1183057D700A435C1 /* CTError.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTError.c; sourceTree = "<group>"; usesTabs = 1; };
 		23B69380188DDBA00098D06D /* CTData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTData.h; sourceTree = "<group>"; };
 		23B69381188DDBA90098D06D /* CTData.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CTData.c; sourceTree = "<group>"; };
+		23E5D21F18EA43C50097FAD9 /* CTDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTDefine.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				2389588C181731F300096409 /* CTPrelude.h */,
+				23E5D21F18EA43C50097FAD9 /* CTDefine.h */,
 				238958651817317200096409 /* CTAllocator.h */,
 				238958661817317200096409 /* CTAllocator.c */,
 				238958671817317200096409 /* CTArray.h */,

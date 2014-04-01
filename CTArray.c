@@ -71,7 +71,7 @@ uint64_t CTArrayIndexOfEntry(CTArray * restrict array, CTObject * restrict value
             return i;
         }
     }
-    return -1;
+    return CT_NOT_FOUND;
 }
 
 void CTArrayEmpty(CTArray * restrict array)

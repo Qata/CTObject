@@ -215,6 +215,7 @@ void recurseBencode(CTObject * obj, int indentation)
 
 int main(int argc, const char * argv[])
 {
+	printf("%lli", CT_NOT_FOUND);
     clock_t t = clock();
 #pragma mark - CTAllocator Test Begin
     CTAllocator * allocator = CTAllocatorCreate();
@@ -244,7 +245,7 @@ int main(int argc, const char * argv[])
     }
     
     assert(array->count == 0x10);
-    assert(CTArrayIndexOfEntry(array, (void *)"not found in array") == -1);
+    assert(CTArrayIndexOfEntry(array, (void *)"not found in array") == CT_NOT_FOUND);
     
     for (int i = 0; i < 0x10; i++)
     {
@@ -267,7 +268,7 @@ int main(int argc, const char * argv[])
     }
     
     assert(dict->count == 0x10);
-    assert(CTDictionaryIndexOfEntry(dict, "not found in dictionary") == -1);
+    assert(CTDictionaryIndexOfEntry(dict, "not found in dictionary") == CT_NOT_FOUND);
     assert(CTDictionaryValueForKey(dict, "not found in dictionary") == NULL);
     
     for (int i = 0; i < 0x10; i++)

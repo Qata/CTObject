@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#include <stdint.h>
+#include "CTDefine.h"
 
 /**
  * An object that acts as a front to malloc, realloc and free in order to keep track of allocated memory.

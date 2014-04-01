@@ -126,7 +126,7 @@ CTObject * CTDictionaryValueForKey(const CTDictionary * restrict dict, const cha
     return NULL;
 }
 
-unsigned long CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key)
+uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key)
 {
     for (unsigned long i = 0; i < dict->count; i++)
     {
@@ -135,5 +135,5 @@ unsigned long CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const
             return i;
         }
     }
-    return -1;
+    return CT_NOT_FOUND;
 }
