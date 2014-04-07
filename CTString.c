@@ -174,6 +174,7 @@ void CTStringToLower(CTString * restrict string)
 
 const char * CTStringStringBetween(CTString * restrict string, const char * restrict search1, const char * restrict search2)
 {
+	//Possibly causing crashes on ARM systems
 	uint64_t index = 0;
 	char * ret1 = NULL, * ret2 = NULL;
 	
@@ -185,7 +186,6 @@ const char * CTStringStringBetween(CTString * restrict string, const char * rest
 			{
 				char * retVal = CTAllocatorAllocate(string->alloc, ret2 - (ret1 + strlen(search1)));
 				strncpy(retVal, ret1 + strlen(search1), ret2 - (ret1 + strlen(search1)));
-				retVal[ret2 - ret1 + 1] = 0;
 				return retVal;
 			}
 			index = ret1 - CTStringUTF8String(string);
@@ -208,4 +208,9 @@ int CTStringContainsString(CTString * restrict string, const char * restrict sea
 int CTStringCompare(CTString * restrict string1, CTString * restrict string2)
 {
 	return strcmp(CTStringUTF8String(string1), CTStringUTF8String(string2));
+}
+
+int CTStringCompare2(CTString * restrict string1, const char * restrict string2)
+{
+	return strcmp(CTStringUTF8String(string1), string2);
 }

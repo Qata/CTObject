@@ -39,3 +39,4 @@ void CTStringToLower(CTString * restrict string);
 const char * CTStringStringBetween(CTString * restrict string, const char * restrict search1, const char * restrict search2);
 int CTStringContainsString(CTString * restrict string, const char * restrict search);
 int CTStringCompare(CTString * restrict string1, CTString * restrict string2);
+int CTStringCompare2(CTString * restrict string1, const char * restrict string2);

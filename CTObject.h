@@ -26,9 +26,9 @@ typedef struct
     CTAllocator * alloc;
     uint64_t size;
     void * ptr;
-    uint8_t type;
+    int8_t type;
 } CTObject;
 
-CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, uint8_t type);
-CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, uint8_t type, unsigned long size);
+CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, int8_t type);
+CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, int8_t type, unsigned long size);
 void CTObjectRelease(CTObject * object);

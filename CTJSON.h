@@ -16,5 +16,5 @@
 #include "CTNull.h"
 #include "CTError.h"
 
-CTDictionary * CTJSONParse(CTAllocator * alloc, const char * JSON, CTError ** error);
-CTString * CTJSONSerialise(CTAllocator * alloc, CTDictionary * JSON, CTError ** error);
+CTObject * CTJSONParse(CTAllocator * alloc, const char * JSON, CTError ** error);
+CTString * CTJSONSerialise(CTAllocator * alloc, CTObject * JSON, CTError ** error);

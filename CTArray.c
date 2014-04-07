@@ -29,7 +29,7 @@ void CTArrayRelease(CTArray * restrict array)
 	CTAllocatorDeallocate(array->alloc, array);
 }
 
-void CTArrayAddEntry(CTArray * restrict array, void * value, uint8_t type)
+void CTArrayAddEntry(CTArray * restrict array, void * value, int8_t type)
 {
 	CTArrayAddEntry2(array, CTObjectCreate(array->alloc, value, type));
 }

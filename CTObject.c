@@ -16,7 +16,7 @@
 #include "CTString.h"
 #include "CTNull.h"
 
-CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, uint8_t type)
+CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, int8_t type)
 {
     CTObject * object = CTAllocatorAllocate(alloc, sizeof(CTObject));
     object->alloc = alloc;
@@ -25,7 +25,7 @@ CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, uint8_t type
     return object;
 }
 
-CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, uint8_t type, unsigned long size)
+CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, int8_t type, unsigned long size)
 {
     CTObject * object = CTObjectCreate(alloc, ptr, type);
     object->size = size;

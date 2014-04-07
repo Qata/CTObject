@@ -215,7 +215,6 @@ void recurseBencode(CTObject * obj, int indentation)
 
 int main(int argc, const char * argv[])
 {
-	printf("%lli", CT_NOT_FOUND);
     clock_t t = clock();
 #pragma mark - CTAllocator Test Begin
     CTAllocator * allocator = CTAllocatorCreate();
@@ -338,8 +337,8 @@ int main(int argc, const char * argv[])
     CTError * error = NULL;
 	for (int i = 0; i < array->count; i++)
 	{
-		CTDictionary * dict = CTJSONParse(allocator, array->elements[i]->ptr, &error);
-		recurseJSON(dict, CTOBJECT_TYPE_DICTIONARY, 0);
+		CTObject * dict = CTJSONParse(allocator, array->elements[i]->ptr, &error);
+		recurseJSON(dict->ptr, CTOBJECT_TYPE_DICTIONARY, 0);
 		assert(!error);
 		CTJSONSerialise(allocator, dict, &error);
 		assert(!error);
@@ -349,16 +348,13 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{'X':'s", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{{\"k\":\"v\"}}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "[]", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{\"l\":[\"e\",\"]}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{\"k\":[]\"}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{\"k\":[\"\", \"]\"}", CTOBJECT_NOT_AN_OBJECT);
+	//CTArrayAddEntry(array, "{\"k\":[]\"}", CTOBJECT_NOT_AN_OBJECT);
 	for (int i = 0; i < array->count; i++)
 	{
 		error = NULL;
 		CTJSONParse(CTAllocatorGetDefault(), CTArrayObjectAtIndex(array, i)->ptr, &error);
 		assert(error);
-        printf("%s\n", CTStringUTF8String(CTErrorGetError(error)));
         CTErrorRelease(error);
 	}
 #pragma mark - CTBencode Test Begin

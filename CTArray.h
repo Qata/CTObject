@@ -41,7 +41,7 @@ void CTArrayRelease(CTArray * restrict array);
  * @return		A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
  * @see CTObjectCreate
  **/
-void CTArrayAddEntry(CTArray * restrict array, void * value, uint8_t type);
+void CTArrayAddEntry(CTArray * restrict array, void * value, int8_t type);
 
 /**
  * Add a CTObject to the end of the array.

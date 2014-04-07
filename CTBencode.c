@@ -121,6 +121,7 @@ CTObject * CTBencodeParse2(CTAllocator * alloc, const char * bencoded, uint64_t 
                 case 'i':
                     retVal = CTObjectCreate(alloc, CTBencodeExtractInteger(alloc, bencodedString, start, error), CTOBJECT_TYPE_NUMBER);
                     break;
+                case '-':
                 case '0':
                 case '1':
                 case '2':

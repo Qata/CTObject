@@ -33,7 +33,7 @@ typedef struct
     CTAllocator * alloc;
     union CTNumberValue value;
     uint64_t size;
-    uint8_t type;
+    int8_t type;
 } CTNumber;
 
 typedef struct
