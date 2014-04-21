@@ -8,7 +8,6 @@
 
 #pragma once
 #include "CTAllocator.h"
-#include "CTString.h"
 
 enum
 {

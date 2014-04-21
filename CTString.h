@@ -8,6 +8,7 @@
 
 #pragma once
 #include "CTAllocator.h"
+#include "CTObject.h"
 
 #define CTSTRING_NO_LIMIT -1
 
@@ -40,3 +41,10 @@ const char * CTStringStringBetween(CTString * restrict string, const char * rest
 int CTStringContainsString(CTString * restrict string, const char * restrict search);
 int CTStringCompare(CTString * restrict string1, CTString * restrict string2);
 int CTStringCompare2(CTString * restrict string1, const char * restrict string2);
+
+/**
+ * Return a CTObject encasing the CTString passed.
+ * @param str	A properly initialised CTString that was created with CTStringCreate.
+ * @return		The CTString wrapped in a CTObject. The result is identical to using CTObjectCreate.
+ **/
+CTObject * CTObjectWithString(CTString * restrict str);

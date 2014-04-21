@@ -11,6 +11,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
+#include <stdarg.h>
 #include "CTDictionary.h"
 #include "CTFunctions.h"
 
@@ -25,6 +26,22 @@ CTDictionary * CTDictionaryCreate(CTAllocator * alloc)
     CTDictionary * dict = CTAllocatorAllocate(alloc, sizeof(CTDictionary));
     dict->alloc = alloc;
     return dict;
+}
+
+CTDictionary * CTDictionaryCreateWithKeysPairedWithValues(CTAllocator * restrict alloc, ...)
+{
+	CTDictionary * retVal = CTDictionaryCreate(alloc);
+	va_list list;
+	va_start(list, alloc);
+	for (const char * key = va_arg(list, const char*); key != NULL; key = va_arg(list, const char*))
+	{
+		CTObject * value = va_arg(list, CTObject*);
+		if (!value)
+			break;
+		CTDictionaryAddEntry(retVal, key, value);
+	}
+	va_end(list);
+	return retVal;
 }
 
 void CTDictionaryRelease(CTDictionary * dict)
@@ -136,4 +153,9 @@ uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char
         }
     }
     return CT_NOT_FOUND;
+}
+
+CTObject * CTObjectWithDictionary(CTDictionary * restrict dict)
+{
+	return CTObjectCreate(dict->alloc, dict, CTOBJECT_TYPE_DICTIONARY);
 }

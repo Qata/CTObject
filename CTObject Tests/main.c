@@ -263,7 +263,7 @@ int main(int argc, const char * argv[])
     
     for (int i = 0; i < 0x10; i++)
     {
-        CTDictionaryAddEntry(dict, testStrings[i], CTObjectCreate(allocator, testStrings2[i], CTOBJECT_TYPE_STRING));
+        CTDictionaryAddEntry(dict, testStrings[i], CTObjectCreate(allocator, testStrings2[i], CTOBJECT_NOT_AN_OBJECT));
     }
     
     assert(dict->count == 0x10);
@@ -337,14 +337,14 @@ int main(int argc, const char * argv[])
     CTError * error = NULL;
 	for (int i = 0; i < array->count; i++)
 	{
-		CTObject * dict = CTJSONParse(allocator, array->elements[i]->ptr, &error);
+		CTObject * dict = CTJSONParse(allocator, array->elements[i]->ptr, 0, &error);
 		recurseJSON(dict->ptr, CTOBJECT_TYPE_DICTIONARY, 0);
 		assert(!error);
-		CTJSONSerialise(allocator, dict, &error);
+		CTJSONSerialise(allocator, dict, 0, &error);
 		assert(!error);
 	}
     CTArrayEmpty(array);
-    
+	
 	CTArrayAddEntry(array, "", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{'X':'s", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{{\"k\":\"v\"}}", CTOBJECT_NOT_AN_OBJECT);
@@ -353,7 +353,7 @@ int main(int argc, const char * argv[])
 	for (int i = 0; i < array->count; i++)
 	{
 		error = NULL;
-		CTJSONParse(CTAllocatorGetDefault(), CTArrayObjectAtIndex(array, i)->ptr, &error);
+		CTJSONParse(CTAllocatorGetDefault(), CTArrayObjectAtIndex(array, i)->ptr, 0, &error);
 		assert(error);
         CTErrorRelease(error);
 	}

@@ -23,3 +23,9 @@ void CTNullRelease(CTNull * null)
 {
     CTAllocatorDeallocate(null->alloc, null);
 }
+
+
+CTObject * CTObjectWithNull(CTNull * restrict n)
+{
+	return CTObjectCreate(n->alloc, n, CTOBJECT_TYPE_NULL);
+}

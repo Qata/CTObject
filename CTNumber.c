@@ -185,3 +185,13 @@ long double CTNumberGetDoubleValue(CTNumber * restrict number)
             return 0;
     }
 }
+
+CTObject * CTObjectWithNumber(CTNumber * restrict n)
+{
+	return CTObjectCreate(n->alloc, n, CTOBJECT_TYPE_NUMBER);
+}
+
+CTObject * CTObjectWithLargeNumber(CTLargeNumber * restrict n)
+{
+	return CTObjectCreate(n->base->alloc, n, CTOBJECT_TYPE_LARGE_NUMBER);
+}

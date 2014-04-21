@@ -8,6 +8,7 @@
 
 #pragma once
 #include "CTAllocator.h"
+#include "CTObject.h"
 
 typedef struct
 {
@@ -17,3 +18,4 @@ typedef struct
 
 CTNull * CTNullCreate(CTAllocator * restrict alloc);
 void CTNullRelease(CTNull * null);
+CTObject * CTObjectWithNull(CTNull * restrict n);

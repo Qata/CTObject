@@ -214,3 +214,8 @@ int CTStringCompare2(CTString * restrict string1, const char * restrict string2)
 {
 	return strcmp(CTStringUTF8String(string1), string2);
 }
+
+CTObject * CTObjectWithString(CTString * restrict str)
+{
+	return CTObjectCreate(str->alloc, str, CTOBJECT_TYPE_STRING);
+}

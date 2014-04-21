@@ -8,6 +8,7 @@
 
 #pragma once
 #include "CTAllocator.h"
+#include "CTObject.h"
 #include <stdint.h>
 
 enum
@@ -62,3 +63,11 @@ int32_t CTNumberGetIntValue(CTNumber * restrict number);
 uint64_t CTNumberGetUnsignedLongValue(CTNumber * restrict number);
 int64_t CTNumberGetLongValue(CTNumber * restrict number);
 long double CTNumberGetDoubleValue(CTNumber * restrict number);
+
+/**
+ * Return a CTObject encasing the CTNumber passed.
+ * @param n	A properly initialised CTNumber that was created with CTNumberCreate*.
+ * @return	The CTNumber wrapped in a CTObject. The result is identical to using CTObjectCreate.
+ **/
+CTObject * CTObjectWithNumber(CTNumber * restrict n);
+CTObject * CTObjectWithLargeNumber(CTLargeNumber * restrict n);

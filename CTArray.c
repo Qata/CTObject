@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <stdarg.h>
 #include "CTArray.h"
 
 CTArray * CTArrayCreate(CTAllocator * restrict alloc)
@@ -17,6 +18,19 @@ CTArray * CTArrayCreate(CTAllocator * restrict alloc)
     CTArray * array = CTAllocatorAllocate(alloc, sizeof(CTArray));
     array->alloc = alloc;
     return array;
+}
+
+CTArray * CTArrayCreateWithObjects(CTAllocator * restrict alloc, ...)
+{
+	CTArray * retVal = CTArrayCreate(alloc);
+	va_list list;
+	va_start(list, alloc);
+	for (CTObject * value = va_arg(list, CTObject*); value != NULL; value = va_arg(list, CTObject*))
+	{
+		CTArrayAddEntry2(retVal, value);
+	}
+	va_end(list);
+	return retVal;
 }
 
 void CTArrayRelease(CTArray * restrict array)
@@ -90,4 +104,9 @@ CTObject * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index)
 uint64_t CTArrayCount(CTArray * restrict array)
 {
 	return array->count;
+}
+
+CTObject * CTObjectWithArray(CTArray * restrict array)
+{
+	return CTObjectCreate(array->alloc, array, CTOBJECT_TYPE_ARRAY);
 }

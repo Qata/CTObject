@@ -24,6 +24,7 @@ typedef struct
 } CTDictionary;
 
 CTDictionary * CTDictionaryCreate(CTAllocator * restrict alloc);
+CTDictionary * CTDictionaryCreateWithKeysPairedWithValues(CTAllocator * restrict alloc, ...);
 void CTDictionaryRelease(CTDictionary * dict);
 
 void CTDictionaryAddEntriesFromQueryString(CTDictionary * restrict dict, const char * restrict query);
@@ -33,3 +34,10 @@ void CTDictionaryAddEntry2(CTDictionary * restrict dict, CTString * restrict key
 void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict key);
 CTObject * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key);
 uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key);
+
+/**
+ * Return a CTObject encasing the CTDictionary passed.
+ * @param dict	A properly initialised CTDictionary that was created with CTDictionaryCreate*.
+ * @return		The CTDictionary wrapped in a CTObject. The result is identical to using CTObjectCreate.
+ **/
+CTObject * CTObjectWithDictionary(CTDictionary * restrict dict);
