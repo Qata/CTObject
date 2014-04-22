@@ -200,17 +200,17 @@ const char * CTStringStringBetween(CTString * restrict string, const char * rest
 	return NULL;
 }
 
-int CTStringContainsString(CTString * restrict string, const char * restrict search)
+uint8_t CTStringContainsString(CTString * restrict string, const char * restrict search)
 {
-	return (int)strstr(CTStringUTF8String(string), search);
+	return strstr(CTStringUTF8String(string), search) ? 1 : 0;
 }
 
-int CTStringCompare(CTString * restrict string1, CTString * restrict string2)
+int8_t CTStringCompare(CTString * restrict string1, CTString * restrict string2)
 {
 	return strcmp(CTStringUTF8String(string1), CTStringUTF8String(string2));
 }
 
-int CTStringCompare2(CTString * restrict string1, const char * restrict string2)
+int8_t CTStringCompare2(CTString * restrict string1, const char * restrict string2)
 {
 	return strcmp(CTStringUTF8String(string1), string2);
 }

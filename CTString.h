@@ -38,9 +38,9 @@ void CTStringToUpper(CTString * restrict string);
 void CTStringToLower(CTString * restrict string);
 
 const char * CTStringStringBetween(CTString * restrict string, const char * restrict search1, const char * restrict search2);
-int CTStringContainsString(CTString * restrict string, const char * restrict search);
-int CTStringCompare(CTString * restrict string1, CTString * restrict string2);
-int CTStringCompare2(CTString * restrict string1, const char * restrict string2);
+uint8_t CTStringContainsString(CTString * restrict string, const char * restrict search);
+int8_t CTStringCompare(CTString * restrict string1, CTString * restrict string2);
+int8_t CTStringCompare2(CTString * restrict string1, const char * restrict string2);
 
 /**
  * Return a CTObject encasing the CTString passed.
