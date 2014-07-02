@@ -59,7 +59,7 @@ void CTStringPrependCharacters(CTString * restrict string, const char * restrict
 void CTStringPrependCharacter(CTString * restrict string, char character)
 {
 	char * result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + 1 + 1);
-    strcat(result, &character);
+	strncat(result, &character, 1);
     strcat(result, CTStringUTF8String(string));
     result[CTStringLength(string) + 1] = 0;
     CTAllocatorDeallocate(string->alloc, string->characters);
