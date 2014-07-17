@@ -51,6 +51,16 @@ CTLargeNumber * CTLargeNumberCreate(CTAllocator * restrict alloc, CTNumber * bas
     return lnumber;
 }
 
+CTNumber * CTLargeNumberBase(const CTLargeNumber * restrict number)
+{
+	return number->base;
+}
+
+CTNumber * CTLargeNumberExponent(const CTLargeNumber * restrict number)
+{
+	return number->exponent;
+}
+
 void CTNumberRelease(CTNumber * number)
 {
     CTAllocatorDeallocate(number->alloc, number);
@@ -91,7 +101,7 @@ void CTNumberSetDoubleValue(CTNumber * restrict number, long double value)
     number->type = CTNUMBER_TYPE_DOUBLE;
 }
 
-uint32_t CTNumberGetUnsignedIntValue(CTNumber * restrict number)
+uint32_t CTNumberUnsignedIntValue(const CTNumber * restrict number)
 {
     switch (number->type)
     {
@@ -110,7 +120,7 @@ uint32_t CTNumberGetUnsignedIntValue(CTNumber * restrict number)
     }
 }
 
-int32_t CTNumberGetIntValue(CTNumber * restrict number)
+int32_t CTNumberIntValue(const CTNumber * restrict number)
 {
     switch (number->type)
     {
@@ -129,7 +139,7 @@ int32_t CTNumberGetIntValue(CTNumber * restrict number)
     }
 }
 
-uint64_t CTNumberGetUnsignedLongValue(CTNumber * restrict number)
+uint64_t CTNumberUnsignedLongValue(const CTNumber * restrict number)
 {
     switch (number->type)
     {
@@ -148,7 +158,7 @@ uint64_t CTNumberGetUnsignedLongValue(CTNumber * restrict number)
     }
 }
 
-int64_t CTNumberGetLongValue(CTNumber * restrict number)
+int64_t CTNumberLongValue(const CTNumber * restrict number)
 {
     switch (number->type)
     {
@@ -167,7 +177,7 @@ int64_t CTNumberGetLongValue(CTNumber * restrict number)
     }
 }
 
-long double CTNumberGetDoubleValue(CTNumber * restrict number)
+long double CTNumberDoubleValue(const CTNumber * restrict number)
 {
     switch (number->type)
     {
@@ -184,6 +194,11 @@ long double CTNumberGetDoubleValue(CTNumber * restrict number)
         default:
             return 0;
     }
+}
+
+int8_t CTNumberType(const CTNumber * restrict number)
+{
+	return number->type;
 }
 
 CTObject * CTObjectWithNumber(CTNumber * restrict n)

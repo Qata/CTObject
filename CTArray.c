@@ -57,6 +57,15 @@ void CTArrayAddEntry2(CTArray * restrict array, CTObject * restrict value)
     array->elements[index] = value;
 }
 
+CTObject * CTArrayEntry(const CTArray * restrict array, uint64_t index)
+{
+	if (index < array->count)
+	{
+		return array->elements[index];
+	}
+	return NULL;
+}
+
 void CTArrayDeleteEntry(CTArray * restrict array, uint64_t index)
 {
     if (array->count > index)

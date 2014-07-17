@@ -35,12 +35,12 @@ CTAllocator * CTAllocatorCreate();
  **/
 void CTAllocatorRelease(CTAllocator * restrict allocator);
 /**
- * Allocate memory and add a pointer to it to the objects array within the specified CTAllocator, to be used when CTAllocatorRelease is called.
+ * Allocate memory and add a pointer to it to the object's array within the specified CTAllocator, to be used when CTAllocatorRelease is called.
  * @return	Returns a block of memory created with malloc.
  **/
 void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size);
 /**
- * Reallocate memory to be the specified size if a pointer to it exists in the objects array.
+ * Reallocate memory to be the specified size if a pointer to it exists in the object's array.
  * @param allocator	A properly initialised CTAllocator that was created with CTAllocatorCreate.
  * @param ptr		A pointer to the chunk of memory to resize.
  * @param size		The size to reallocate the block as.
@@ -48,9 +48,17 @@ void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size)
  **/
 void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, unsigned long size);
 /**
- * Deallocate memory at the given address and remove it from the objects array.
+ * Deallocate memory at the given address and remove it from the object's array.
  * @param allocator	A properly initialised CTAllocator that was created with CTAllocatorCreate.
  * @param ptr		A pointer to the chunk of memory to deallocate.
  * @return			A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
  **/
 void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr);
+/**
+ * Transfer ownership of memory at the given address.
+ * @param allocator	A properly initialised CTAllocator that was created with CTAllocatorCreate.
+ * @param dest		A properly initialised CTAllocator that was created with CTAllocatorCreate.
+ * @param ptr		A pointer to the chunk of memory to transfer.
+ * @return			A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
+ **/
+void CTAllocatorTransferOwnership(CTAllocator * restrict allocator, CTAllocator * restrict dest, void * ptr);

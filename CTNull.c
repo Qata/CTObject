@@ -19,11 +19,15 @@ CTNull * CTNullCreate(CTAllocator * restrict alloc)
     return null;
 }
 
+const char * CTNullValue(CTNull * null)
+{
+	return null->value;
+}
+
 void CTNullRelease(CTNull * null)
 {
     CTAllocatorDeallocate(null->alloc, null);
 }
-
 
 CTObject * CTObjectWithNull(CTNull * restrict n)
 {

@@ -11,4 +11,4 @@
 #include <stdint.h>
 #include <limits.h>
 
-#define CT_NOT_FOUND -INT64_MAX
+#define CT_NOT_FOUND UINT64_MAX

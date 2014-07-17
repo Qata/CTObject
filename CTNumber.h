@@ -51,6 +51,8 @@ CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, long double fl
 void CTNumberRelease(CTNumber * number);
 
 CTLargeNumber * CTLargeNumberCreate(CTAllocator * restrict alloc, CTNumber * base, CTNumber * exponent);
+CTNumber * CTLargeNumberBase(const CTLargeNumber * restrict number);
+CTNumber * CTLargeNumberExponent(const CTLargeNumber * restrict number);
 
 void CTNumberSetUnsignedIntValue(CTNumber * restrict number, uint32_t integer);
 void CTNumberSetIntValue(CTNumber * restrict number, int32_t integer);
@@ -58,11 +60,12 @@ void CTNumberSetUnsignedLongValue(CTNumber * restrict number, uint64_t longInteg
 void CTNumberSetLongValue(CTNumber * restrict number, int64_t longInteger);
 void CTNumberSetDoubleValue(CTNumber * restrict number, long double floatingPoint);
 
-uint32_t CTNumberGetUnsignedIntValue(CTNumber * restrict number);
-int32_t CTNumberGetIntValue(CTNumber * restrict number);
-uint64_t CTNumberGetUnsignedLongValue(CTNumber * restrict number);
-int64_t CTNumberGetLongValue(CTNumber * restrict number);
-long double CTNumberGetDoubleValue(CTNumber * restrict number);
+uint32_t CTNumberUnsignedIntValue(const CTNumber * restrict number);
+int32_t CTNumberIntValue(const CTNumber * restrict number);
+uint64_t CTNumberUnsignedLongValue(const CTNumber * restrict number);
+int64_t CTNumberLongValue(const CTNumber * restrict number);
+long double CTNumberDoubleValue(const CTNumber * restrict number);
+int8_t CTNumberType(const CTNumber * restrict number);
 
 /**
  * Return a CTObject encasing the CTNumber passed.

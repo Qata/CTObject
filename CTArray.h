@@ -60,6 +60,13 @@ void CTArrayAddEntry(CTArray * restrict array, void * value, int8_t type);
 void CTArrayAddEntry2(CTArray * restrict array, CTObject * restrict value);
 
 /**
+ * Return the CTObject at the specified index.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @return		A CTObject stored at the specified index, or NULL if the index oversteps the array size.
+ **/
+CTObject * CTArrayEntry(const CTArray * restrict array, uint64_t index);
+
+/**
  * Delete the CTObject at the specified index.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @param index	The index of the object to be deleted.

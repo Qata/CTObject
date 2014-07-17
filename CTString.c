@@ -16,7 +16,7 @@ CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict ch
 {
     CTString * string = CTAllocatorAllocate(alloc, sizeof(CTString));
     string->alloc = alloc;
-    string->characters = characters ? stringDuplicate(alloc, characters) : "";
+    string->characters = stringDuplicate(alloc, characters ? characters : "");
 	if (characters)
 	{
 		CTStringSetLength(string, strlen(characters));
@@ -85,7 +85,7 @@ void CTStringAppendCharacters(CTString * restrict string, const char * restrict 
 		result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + limit + 1);
 		strcat(result, CTStringUTF8String(string));
 		strncat(result, characters, limit);
-		result[CTStringLength(string) + limit] = 0;
+		result[string->length + limit] = 0;
 		CTAllocatorDeallocate(string->alloc, string->characters);
 		string->characters = result;
 		CTStringSetLength(string, CTStringLength(string) + limit);
@@ -97,8 +97,8 @@ void CTStringAppendCharacter(CTString * restrict string, char character)
     char * result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + 1 + 1);
     strcat(result, CTStringUTF8String(string));
 	strncat(result, &character, 1);
-    CTStringSetLength(string, CTStringLength(string) + 1);
-    result[CTStringLength(string)] = 0;
+	string->length += 1;
+    result[string->length] = 0;
     CTAllocatorDeallocate(string->alloc, string->characters);
     string->characters = result;
 }
@@ -122,8 +122,9 @@ void CTStringRemoveCharactersFromStart(CTString * restrict string, unsigned long
     }
     else
     {
-        string->characters = "";
-        CTStringSetLength(string, 0);
+        CTAllocatorDeallocate(string->alloc, string->characters);
+        string->characters = stringDuplicate(string->alloc, "");
+		string->length = 0;
     }
 }
 
@@ -139,8 +140,9 @@ void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long c
     }
     else
     {
-        string->characters = "";
-        CTStringSetLength(string, 0);
+        CTAllocatorDeallocate(string->alloc, string->characters);
+        string->characters = stringDuplicate(string->alloc, "");
+		string->length = 0;
     }
 }
 
@@ -174,7 +176,6 @@ void CTStringToLower(CTString * restrict string)
 
 const char * CTStringStringBetween(CTString * restrict string, const char * restrict search1, const char * restrict search2)
 {
-	//Possibly causing crashes on ARM systems
 	uint64_t index = 0;
 	char * ret1 = NULL, * ret2 = NULL;
 	

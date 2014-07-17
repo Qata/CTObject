@@ -207,7 +207,7 @@ void recurseBencode(CTObject * obj, int indentation)
             
         case CTOBJECT_TYPE_NUMBER:
         {
-            printf("'%lli'\n", CTNumberGetLongValue(obj->ptr));
+            printf("'%lli'\n", CTNumberLongValue(obj->ptr));
             break;
         }
     }
@@ -317,6 +317,7 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "{ \"v\":\"1\"\r\n}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"v\":1}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"v\":\"ab'c\"}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"PI\":323.141E-6}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"PI\":3.141E-10}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"PI\":3.1413e-10}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"v\":12345123456789}", CTOBJECT_NOT_AN_OBJECT);

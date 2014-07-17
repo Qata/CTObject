@@ -61,7 +61,7 @@ void CTAllocatorRelease(CTAllocator * restrict allocator)
 
 void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size)
 {
-	allocator = !allocator ? CTAllocatorGetDefault() : allocator;
+	allocator = allocator ? allocator : CTAllocatorGetDefault();
 	if (!(allocator->objects = realloc(allocator->objects, sizeof(void *) * allocator->count + 1)))
 	{
 		return NULL;
@@ -71,7 +71,7 @@ void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size)
 
 void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 {
-	allocator = !allocator ? CTAllocatorGetDefault() : allocator;
+	allocator = allocator ? allocator : CTAllocatorGetDefault();
     if (allocator->count)
 	{
 		int countOfKeys = 0;
@@ -87,7 +87,7 @@ void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
             void ** objects = malloc(sizeof(void *) * allocator->count - countOfKeys);
             for (unsigned long i = 0, count = 0; i < allocator->count; i++)
             {
-                if (!(allocator->objects[i] == ptr))
+                if (allocator->objects[i] != ptr)
                 {
                     objects[count++] = allocator->objects[i];
                 }
@@ -118,4 +118,44 @@ void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, unsig
         return NULL;
     }
     return CTAllocatorAllocate(allocator, size);
+}
+
+void CTAllocatorTransferOwnership(CTAllocator * restrict allocator, CTAllocator * restrict dest, void * ptr)
+{
+	allocator = allocator ? allocator : CTAllocatorGetDefault();
+	if (dest && dest != allocator)
+	{
+		if (allocator->count)
+		{
+			int countOfKeys = 0;
+			for (unsigned long i = 0; i < allocator->count; i++)
+			{
+				if (allocator->objects[i] == ptr)
+				{
+					++countOfKeys;
+				}
+			}
+			if (countOfKeys)
+			{
+				void ** objects = malloc(sizeof(void *) * allocator->count - countOfKeys);
+				for (unsigned long i = 0, count = 0; i < allocator->count; i++)
+				{
+					if (allocator->objects[i] != ptr)
+					{
+						objects[count++] = allocator->objects[i];
+					}
+					else
+					{
+						if ((dest->objects = realloc(dest->objects, sizeof(void *) * dest->count + 1)))
+						{
+							dest->objects[dest->count++] = allocator->objects[i];
+						}
+					}
+				}
+				free(allocator->objects);
+				allocator->objects = objects;
+				allocator->count = allocator->count - countOfKeys;
+			}
+		}
+	}
 }

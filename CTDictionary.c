@@ -21,6 +21,16 @@ CTDictionaryEntry * CTDictionaryCreateEntry(CTAllocator * restrict alloc)
     return retVal;
 }
 
+CTString * CTDictionaryEntryKey(const CTDictionaryEntry * restrict entry)
+{
+	return entry->key;
+}
+
+CTObject * CTDictionaryEntryValue(const CTDictionaryEntry * restrict entry)
+{
+	return entry->value;
+}
+
 CTDictionary * CTDictionaryCreate(CTAllocator * alloc)
 {
     CTDictionary * dict = CTAllocatorAllocate(alloc, sizeof(CTDictionary));
@@ -131,6 +141,15 @@ void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict
 	}
 }
 
+CTDictionaryEntry * CTDictionaryEntryAtIndex(const CTDictionary * restrict dict, uint64_t index)
+{
+	if (index < dict->count)
+	{
+		return dict->elements[index];
+	}
+	return NULL;
+}
+
 CTObject * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key)
 {
     for (unsigned long i = 0; i < dict->count; i++)
@@ -153,6 +172,11 @@ uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char
         }
     }
     return CT_NOT_FOUND;
+}
+
+uint64_t CTDictionaryCount(const CTDictionary * restrict dict)
+{
+	return dict->count;
 }
 
 CTObject * CTObjectWithDictionary(CTDictionary * restrict dict)

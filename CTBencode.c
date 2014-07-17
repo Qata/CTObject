@@ -18,11 +18,8 @@ CTString * CTBencodeExtractString(CTAllocator * alloc, CTString * bencodedString
 {
     CTString * retVal = CTStringCreate(alloc, "");
     uint64_t length = strtoull(CTStringUTF8String(bencodedString) + *start, NULL, 10);
-    
-	if (length > 0)
-		*start += (unsigned)ceil(log10(length + 1)) + 1;
-	else
-		*start += 2;
+	
+	*start += length > 0 ? ceil(log10(length + 1)) + 1 : 2;
     if (*start + length <= CTStringLength(bencodedString))
     {
         CTStringAppendCharacters(retVal, CTStringUTF8String(bencodedString) + *start, length);
@@ -33,11 +30,11 @@ CTString * CTBencodeExtractString(CTAllocator * alloc, CTString * bencodedString
 
 CTDictionary * CTBencodeExtractDictionary(CTAllocator * alloc, CTString * bencodedString, uint64_t * start, CTError ** error)
 {
-    ++*start;
+    ++(*start);
     CTDictionary * dict = CTDictionaryCreate(alloc);
     while (*start < CTStringLength(bencodedString) && CTStringUTF8String(bencodedString)[*start] != 'e' && !*error)
     {
-        CTString * key = CTBencodeParse2(alloc, CTStringUTF8String(bencodedString), start, error)->ptr;
+        CTString * key = CTObjectValue(CTBencodeParse2(alloc, CTStringUTF8String(bencodedString), start, error));
         CTObject * value = CTBencodeParse2(alloc, CTStringUTF8String(bencodedString), start, error);
         
         if (key && value)
@@ -59,13 +56,13 @@ CTDictionary * CTBencodeExtractDictionary(CTAllocator * alloc, CTString * bencod
 			*error = CTErrorCreate(alloc, "No terminating e found for dictionary", 0);
 		}
     }
-    ++*start;
+    ++(*start);
     return dict;
 }
 
 CTArray * CTBencodeExtractList(CTAllocator * alloc, CTString * bencodedString, uint64_t * start, CTError ** error)
 {
-    ++*start;
+    ++(*start);
     CTArray * list = CTArrayCreate(alloc);
     while (*start < CTStringLength(bencodedString) && CTStringUTF8String(bencodedString)[*start] != 'e' && !*error)
     {
@@ -75,21 +72,21 @@ CTArray * CTBencodeExtractList(CTAllocator * alloc, CTString * bencodedString, u
     {
         *error = CTErrorCreate(alloc, "No terminating e found for list", 0);
     }
-    ++*start;
+    ++(*start);
     return list;
 }
 
 CTNumber * CTBencodeExtractInteger(CTAllocator * alloc, CTString * bencodedString, uint64_t * start, CTError ** error)
 {
-    ++*start;
+    ++(*start);
     CTString * string = CTStringCreate(alloc, "");
     
     while ((CTStringUTF8String(bencodedString)[*start] >= '0' && CTStringUTF8String(bencodedString)[*start] <= '9' ) || CTStringUTF8String(bencodedString)[*start] == '.' || CTStringUTF8String(bencodedString)[*start] == '-' || CTStringUTF8String(bencodedString)[*start] == '+')
     {
         CTStringAppendCharacter(string, CTStringUTF8String(bencodedString)[*start]);
-        ++*start;
+        ++(*start);
     }
-    ++*start;
+    ++(*start);
     int64_t value = strtoll(CTStringUTF8String(string), NULL, 10);
     return CTNumberCreateWithLong(alloc, value);
 }
@@ -153,27 +150,27 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
 {
     CTString * retVal = CTStringCreate(alloc, "");
     CTAllocator * allocl = CTAllocatorCreate();
-    switch (bencoded->type)
+    switch (CTObjectType(bencoded))
     {
         case CTOBJECT_TYPE_DICTIONARY:
         {
             CTStringAppendCharacter(retVal, 'd');
-            for (uint64_t i = 0; i < ((CTDictionary *)bencoded->ptr)->count; i++)
+            for (uint64_t i = 0; i < CTDictionaryCount(CTObjectValue(bencoded)); i++)
             {
-                if (CTStringLength(bencoded->ptr))
+				CTDictionaryEntry * pair = CTDictionaryEntryAtIndex(CTObjectValue(bencoded), i);
+                if (CTStringLength(CTObjectValue(bencoded)))
                 {
-                    CTDictionaryEntry * pair = ((CTDictionary *)bencoded->ptr)->elements[i];
-                    char buf[(int)floor(log(CTStringLength(pair->key)) + 1)];
-                    snprintf(buf, sizeof(buf), "%llu", (unsigned long long)CTStringLength(pair->key));
+                    char buf[(int)floor(log(CTStringLength(CTDictionaryEntryKey(pair))) + 1)];
+                    snprintf(buf, sizeof(buf), "%llu", (unsigned long long)CTStringLength(CTDictionaryEntryKey(pair)));
                     CTStringAppendCharacters(retVal, buf, sizeof(buf));
                     CTStringAppendCharacter(retVal, ':');
-                    CTStringAppendString(retVal, pair->key);
+                    CTStringAppendString(retVal, CTDictionaryEntryKey(pair));
                 }
                 else
                 {
                     CTStringAppendCharacters(retVal, "0:", CTSTRING_NO_LIMIT);
                 }
-                CTStringAppendString(retVal, CTBencodeSerialise(allocl, ((CTDictionary *)bencoded->ptr)->elements[i]->value, error));
+                CTStringAppendString(retVal, CTBencodeSerialise(allocl, CTDictionaryEntryValue(pair), error));
             }
             CTStringAppendCharacter(retVal, 'e');
             break;
@@ -182,9 +179,9 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
         case CTOBJECT_TYPE_ARRAY:
         {
             CTStringAppendCharacter(retVal, 'l');
-            for (uint64_t i = 0; i < ((CTArray *)bencoded->ptr)->count; i++)
+            for (uint64_t i = 0; i < ((CTArray *)CTObjectValue(bencoded))->count; i++)
             {
-                CTStringAppendString(retVal, CTBencodeSerialise(allocl, ((CTArray *)bencoded->ptr)->elements[i], error));
+                CTStringAppendString(retVal, CTBencodeSerialise(allocl, CTArrayObjectAtIndex(CTObjectValue(bencoded), i), error));
             }
             CTStringAppendCharacter(retVal, 'e');
             break;
@@ -193,10 +190,10 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
         case CTOBJECT_TYPE_NUMBER:
         {
             CTStringAppendCharacter(retVal, 'i');
-            if (CTNumberGetUnsignedLongValue(bencoded->ptr))
+            if (CTNumberUnsignedLongValue(CTObjectValue(bencoded)))
             {
-                char buf[(int)floor(log(CTNumberGetUnsignedLongValue(bencoded->ptr)) + 1)];
-                snprintf(buf, sizeof(buf), "%llu", (unsigned long long)CTNumberGetUnsignedLongValue(bencoded->ptr));
+                char buf[(int)floor(log(CTNumberUnsignedLongValue(CTObjectValue(bencoded))) + 1)];
+                snprintf(buf, sizeof(buf), "%llu", (unsigned long long)CTNumberUnsignedLongValue(CTObjectValue(bencoded)));
                 CTStringAppendCharacters(retVal, buf, sizeof(buf));
             }
             else
@@ -209,10 +206,10 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
             
         case CTOBJECT_TYPE_STRING:
         {
-            if (CTStringLength(bencoded->ptr))
+            if (CTStringLength(CTObjectValue(bencoded)))
             {
-                char buf[(int)floor(log(CTStringLength(bencoded->ptr)) + 1)];
-                snprintf(buf, sizeof(buf), "%llu", (unsigned long long)CTStringLength(bencoded->ptr));
+                char buf[(int)floor(log(CTStringLength(CTObjectValue(bencoded))) + 1)];
+                snprintf(buf, sizeof(buf), "%llu", (unsigned long long)CTStringLength(CTObjectValue(bencoded)));
                 CTStringAppendCharacters(retVal, buf, sizeof(buf));
             }
             else
@@ -220,7 +217,7 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
                 CTStringAppendCharacter(retVal, '0');
             }
             CTStringAppendCharacter(retVal, ':');
-            CTStringAppendString(retVal, bencoded->ptr);
+            CTStringAppendString(retVal, CTObjectValue(bencoded));
             break;
         }
     }

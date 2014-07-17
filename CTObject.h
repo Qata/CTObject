@@ -29,5 +29,8 @@ typedef struct
 } CTObject;
 
 CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, int8_t type);
-CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, int8_t type, unsigned long size);
+CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, int8_t type, uint64_t size);
+void * CTObjectValue(const CTObject * restrict object);
+int8_t CTObjectType(const CTObject * restrict object);
+uint64_t CTObjectSize(const CTObject * restrict object);
 void CTObjectRelease(CTObject * object);

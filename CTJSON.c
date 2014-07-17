@@ -8,6 +8,12 @@
 
 #include "CTJSON.h"
 #include "CTFunctions.h"
+#include "CTString.h"
+#include "CTObject.h"
+#include "CTDictionary.h"
+#include "CTArray.h"
+#include "CTNumber.h"
+#include "CTNull.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,7 +34,11 @@ CTObject * CTArrayFromJSON(CTAllocator * alloc, const char * restrict JSON, uint
 CTObject * CTJSONParse(CTAllocator * alloc, const char * JSON, CTJSONOptions options, CTError ** error)
 {
 	uint64_t start = 0;
-	return CTJSONParse2(alloc, JSON, &start, options, error);
+	CTAllocator * lalloc = CTAllocatorCreate();
+	CTString * JSONString = CTStringCreate(lalloc, JSON);
+	CTObject * retVal = CTJSONParse2(alloc, JSON, &start, options, error);
+	CTStringRelease(JSONString);
+	return retVal;
 }
 
 CTObject * CTJSONParse2(CTAllocator * alloc, const char * JSON, uint64_t * start, CTJSONOptions options, CTError ** error)
@@ -94,7 +104,7 @@ CTObject * CTDictionaryFromJSON(CTAllocator * alloc, const char * restrict JSON,
 	CTObject * key = NULL;
 	CTObject * value = NULL;
 	const char * err = "Formatting error in dictionary\n";
-	++*start;
+	++(*start);
     while (*start < strlen(JSON) && JSON[*start] != '}')
 	{
 		switch (JSON[*start])
@@ -122,13 +132,13 @@ CTObject * CTDictionaryFromJSON(CTAllocator * alloc, const char * restrict JSON,
 				return CTObjectCreate(alloc, dictionary, CTOBJECT_TYPE_DICTIONARY);
 				break;
 		}
-		if (key && value && key->type == CTOBJECT_TYPE_STRING)
+		if (key && value && CTObjectType(key) == CTOBJECT_TYPE_STRING)
 		{
-			CTDictionaryAddEntry2(dictionary, key->ptr, value);
+			CTDictionaryAddEntry2(dictionary, CTObjectValue(key), value);
+			CTAllocatorDeallocate(alloc, key);
 			key = value = NULL;
 		}
-		++(*start);
-		if (JSON[*start - 1] == '}')
+		if (JSON[(*start)++] == '}')
 			break;
 	}
 	
@@ -160,9 +170,7 @@ CTObject * CTArrayFromJSON(CTAllocator * alloc, const char * restrict JSON, uint
 				CTArrayAddEntry2(array, CTJSONParse2(alloc, JSON, start, options, error));
 				break;
 		}
-		++(*start);
-		if (JSON[*start - 1] == ']')
-			break;
+		if (JSON[++(*start) - 1] == ']') break;
 	}
 	return CTObjectCreate(alloc, array, CTOBJECT_TYPE_ARRAY);
 }
@@ -191,7 +199,7 @@ CTObject * CTStringFromJSON(CTAllocator * alloc, const char * restrict JSON, uin
 	{
 		char err[0x100];
 		memset(err, 0, 0x100);
-		sprintf(err, "Non-terminated string in JSON at index %llu", *start);
+		sprintf(err, "Non-terminated string in JSON at index %llu\n", *start);
 		if (error)
 		{
 			*error = CTErrorCreate(alloc, err, 0);
@@ -218,7 +226,7 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const char * restrict JSON, uin
 	
 	if (*start < strlen(JSON) && (JSON[*start] == 'e' || JSON[*start] == 'E'))
 	{
-		++*start;
+		++(*start);
 		if (*start < strlen(JSON) && JSON[*start] == '-')
 		{
 			CTStringAppendCharacter(exponentString, JSON[(*start)++]);
@@ -251,16 +259,16 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const char * restrict JSON, uin
 			{
 				if (exponent >= -6 && exponent <= 15)
 				{
-					retVal = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Double * pow(10, exponent)), CTOBJECT_TYPE_NUMBER);
+					retVal = CTObjectWithNumber(CTNumberCreateWithDouble(alloc, Double * pow(10, exponent)));
 				}
 				else
 				{
-					retVal = CTObjectCreate(alloc, CTLargeNumberCreate(alloc, CTNumberCreateWithDouble(alloc, Double), CTNumberCreateWithLong(alloc, exponent)), CTOBJECT_TYPE_NUMBER);
+					retVal = CTObjectWithLargeNumber(CTLargeNumberCreate(alloc, CTNumberCreateWithDouble(alloc, Double), CTNumberCreateWithLong(alloc, exponent)));
 				}
 			}
 			else
 			{
-				retVal = CTObjectCreate(alloc, CTNumberCreateWithDouble(alloc, Double), CTOBJECT_TYPE_NUMBER);
+				retVal = CTObjectWithNumber(CTNumberCreateWithDouble(alloc, Double));
 			}
 		}
 	}
@@ -271,16 +279,16 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const char * restrict JSON, uin
 		{
 			if (exponent >= -6 && exponent <= 15)
 			{
-				retVal = CTObjectCreate(alloc, CTNumberCreateWithLong(alloc, Long * pow(10, exponent)), CTOBJECT_TYPE_NUMBER);
+				retVal = CTObjectWithNumber(CTNumberCreateWithLong(alloc, Long * pow(10, exponent)));
 			}
 			else
 			{
-				retVal = CTObjectCreate(alloc, CTLargeNumberCreate(alloc, CTNumberCreateWithLong(alloc, Long), CTNumberCreateWithLong(alloc, exponent)), CTOBJECT_TYPE_LARGE_NUMBER);
+				retVal = CTObjectWithLargeNumber(CTLargeNumberCreate(alloc, CTNumberCreateWithLong(alloc, Long), CTNumberCreateWithLong(alloc, exponent)));
 			}
 		}
 		else
 		{
-			retVal = CTObjectCreate(alloc, CTNumberCreateWithLong(alloc, Long), CTOBJECT_TYPE_NUMBER);
+			retVal = CTObjectWithNumber(CTNumberCreateWithLong(alloc, Long));
 		}
 	}
 	if (CTStringLength(exponentString))
@@ -292,7 +300,7 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const char * restrict JSON, uin
 		start += CTStringLength(numberString);
 	}
 	CTAllocatorRelease(allocl);
-	return retVal ? retVal : CTObjectCreate(alloc, 0, CTOBJECT_NOT_AN_OBJECT);
+	return retVal ? retVal : CTObjectCreate(alloc, NULL, CTOBJECT_NOT_AN_OBJECT);
 }
 
 CTObject * CTLiteralFromJSON(CTAllocator * alloc, const char * restrict JSON, uint64_t * start, CTJSONOptions options, CTError ** error)
@@ -335,52 +343,54 @@ CTObject * CTLiteralFromJSON(CTAllocator * alloc, const char * restrict JSON, ui
 CTString * CTJSONSerialise(CTAllocator * alloc, CTObject * JSON, CTJSONOptions options, CTError ** error)
 {
     CTString * retVal = CTStringCreate(alloc, "");
-    CTJSONSerialiseRecursive(alloc, retVal, JSON->ptr, JSON->type, options, error);
+    CTJSONSerialiseRecursive(alloc, retVal, CTObjectValue(JSON), CTObjectType(JSON), options, error);
     return retVal;
 }
 
 void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, int type, CTJSONOptions options, CTError ** error)
 {
-    CTDictionary * object = obj;
-    CTArray * array = obj;
-    uint64_t count = 0;
+    uint64_t count = 1;
     int valueType = 0;
     void * ptr = NULL;
     
     if (type == CTOBJECT_TYPE_DICTIONARY)
     {
-        count = object->count;
+        count = CTDictionaryCount(obj);
         CTStringAppendCharacter(JSON, '{');
     }
     else if (type == CTOBJECT_TYPE_ARRAY)
     {
-        count = array->count;
+        count = CTArrayCount(obj);
         CTStringAppendCharacter(JSON, '[');
     }
     for (unsigned long i = 0; i < count; i++)
     {
         if (type == CTOBJECT_TYPE_DICTIONARY)
         {
-            CTString * key = object->elements[i]->key;
             CTStringAppendCharacter(JSON, options & CTJSONOptionsSingleQuoteStrings ? '\'' : '"');
-            CTStringAppendCharacters(JSON, CTStringUTF8String(key), CTSTRING_NO_LIMIT);
+            CTStringAppendCharacters(JSON, CTStringUTF8String(CTDictionaryEntryKey(CTDictionaryEntryAtIndex(obj, i))), CTSTRING_NO_LIMIT);
             CTStringAppendCharacter(JSON, options & CTJSONOptionsSingleQuoteStrings ? '\'' : '"');
             CTStringAppendCharacter(JSON, ':');
         }
+		
         if (type == CTOBJECT_TYPE_DICTIONARY)
         {
-            ptr = object->elements[i]->value->ptr;
-            valueType = object->elements[i]->value->type;
+            ptr = CTObjectValue(CTDictionaryEntryValue(CTDictionaryEntryAtIndex(obj, i)));
+            valueType = CTObjectType(CTDictionaryEntryValue(CTDictionaryEntryAtIndex(obj, i)));
         }
         else if (type == CTOBJECT_TYPE_ARRAY)
         {
-            ptr = array->elements[i]->ptr;
-            valueType = array->elements[i]->type;
+            ptr = CTObjectValue(CTArrayObjectAtIndex(obj, i));
+            valueType = CTObjectType(CTArrayObjectAtIndex(obj, i));
         }
         
         switch (valueType)
         {
             case CTOBJECT_TYPE_DICTIONARY:
+			{
+                CTJSONSerialiseRecursive(alloc, JSON, ptr, valueType, options, error);
+				break;
+			}
             case CTOBJECT_TYPE_ARRAY:
             {
                 CTJSONSerialiseRecursive(alloc, JSON, ptr, valueType, options, error);
@@ -388,23 +398,23 @@ void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, 
             }
             case CTOBJECT_TYPE_STRING:
                 CTStringAppendCharacter(JSON, options & CTJSONOptionsSingleQuoteStrings ? '\'' : '"');
-                CTStringAppendCharacters(JSON, ((CTString *)ptr)->characters, CTSTRING_NO_LIMIT);
+                CTStringAppendCharacters(JSON, CTStringUTF8String(ptr), CTSTRING_NO_LIMIT);
                 CTStringAppendCharacter(JSON, options & CTJSONOptionsSingleQuoteStrings ? '\'' : '"');
                 break;
             case CTOBJECT_TYPE_NUMBER:
             {
 				char * str = NULL;
-				if (((CTNumber *)ptr)->type == CTNUMBER_TYPE_DOUBLE)
+				if (CTNumberType(ptr) == CTNUMBER_TYPE_DOUBLE)
 				{
-					str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTNumber *)ptr)->value.Double)) + 7) * sizeof(char)));
-					sprintf(str, "%Lf", ((CTNumber *)ptr)->value.Double);
+					str = CTAllocatorAllocate(alloc, (unsigned)ceil(log10(CTNumberDoubleValue(ptr)) + 7));
+					sprintf(str, "%Lf", CTNumberDoubleValue(ptr));
 					CTStringAppendCharacters(JSON, str, CTSTRING_NO_LIMIT);
 					CTAllocatorDeallocate(alloc, str);
 				}
 				else
 				{
-					str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTNumber *)ptr)->value.Long)) + 1) * sizeof(char)));
-					sprintf(str, "%lli", (long long)((CTNumber *)ptr)->value.Long);
+					str = CTAllocatorAllocate(alloc, (unsigned)ceil(log10(CTNumberLongValue(ptr)) + 1));
+					sprintf(str, "%lli", CTNumberLongValue(ptr));
 					CTStringAppendCharacters(JSON, str, CTSTRING_NO_LIMIT);
 				}
                 
@@ -412,17 +422,18 @@ void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, 
                 break;
             }
             case CTOBJECT_TYPE_NULL:
-                CTStringAppendCharacters(JSON, ((CTNull *)ptr)->value, CTSTRING_NO_LIMIT);
+                CTStringAppendCharacters(JSON, CTNullValue(ptr), CTSTRING_NO_LIMIT);
                 break;
             case CTOBJECT_TYPE_LARGE_NUMBER:
             {
-                char * str = CTAllocatorAllocate(alloc, (unsigned)((ceil(log10(((CTLargeNumber *)ptr)->base->value.Double)) + 7) * sizeof(char)) + (int)((ceil(log10(((CTLargeNumber *)ptr)->exponent->value.Long)) + 1) * sizeof(char)));
-                sprintf(str, "%Lfe%lli", ((CTLargeNumber *)ptr)->base->value.Double, (long long)((CTLargeNumber *)ptr)->exponent->value.Long);
+                char * str = CTAllocatorAllocate(alloc, (unsigned)(ceil(log10(CTNumberDoubleValue(CTLargeNumberBase(ptr)))) + 7 + ceil(log10(CTNumberLongValue(CTLargeNumberBase(ptr)) + 1))) + 1);
+                sprintf(str, "%Lfe%lli", CTNumberDoubleValue(CTLargeNumberBase(ptr)), CTNumberLongValue(CTLargeNumberBase(ptr)));
                 CTStringAppendCharacters(JSON, str, CTSTRING_NO_LIMIT);
                 CTAllocatorDeallocate(alloc, str);
                 break;
             }
         }
+		
         if (i < (count - 1))
         {
             CTStringAppendCharacter(JSON, ',');

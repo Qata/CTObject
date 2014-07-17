@@ -25,11 +25,26 @@ CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, int8_t type)
     return object;
 }
 
-CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, int8_t type, unsigned long size)
+CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, int8_t type, uint64_t size)
 {
     CTObject * object = CTObjectCreate(alloc, ptr, type);
     object->size = size;
     return object;
+}
+
+void * CTObjectValue(const CTObject * restrict object)
+{
+	return object->ptr;
+}
+
+int8_t CTObjectType(const CTObject * restrict object)
+{
+	return object->type;
+}
+
+uint64_t CTObjectSize(const CTObject * restrict object)
+{
+	return object->size;
 }
 
 void CTObjectRelease(CTObject * object)
