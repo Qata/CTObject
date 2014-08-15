@@ -27,6 +27,13 @@ CTDictionary * CTDictionaryCreate(CTAllocator * restrict alloc);
 CTDictionary * CTDictionaryCreateWithKeysPairedWithValues(CTAllocator * restrict alloc, ...);
 void CTDictionaryRelease(CTDictionary * dict);
 
+/**
+ * Compare two CTDictionary objects
+ * @param array	A properly initialised CTDictionary that was created with CTDictionaryCreate*.
+ * @return		A value indicating equality, 0 = false, 1 = true.
+ **/
+uint8_t CTDictionaryCompare(CTDictionary * dict1, CTDictionary * dict2);
+
 CTDictionaryEntry * CTDictionaryEntryAtIndex(const CTDictionary * restrict dict, uint64_t index);
 
 CTString * CTDictionaryEntryKey(const CTDictionaryEntry * restrict entry);

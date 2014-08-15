@@ -15,7 +15,7 @@ static CTAllocator * defaultAllocator;
 
 void CTAllocatorReleasePrivate(CTAllocator * restrict allocator)
 {
-	for (int i = 0; i < allocator->count; i++)
+	for (int i = 0; i < allocator->count; ++i)
 	{
 		free(allocator->objects[i]);
 	}
@@ -59,7 +59,7 @@ void CTAllocatorRelease(CTAllocator * restrict allocator)
 	}
 }
 
-void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size)
+void * CTAllocatorAllocate(CTAllocator * restrict allocator, uint64_t size)
 {
 	allocator = allocator ? allocator : CTAllocatorGetDefault();
 	if (!(allocator->objects = realloc(allocator->objects, sizeof(void *) * allocator->count + 1)))
@@ -75,7 +75,7 @@ void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
     if (allocator->count)
 	{
 		int countOfKeys = 0;
-		for (unsigned long i = 0; i < allocator->count; i++)
+		for (unsigned long i = 0; i < allocator->count; ++i)
 		{
 			if (allocator->objects[i] == ptr)
 			{
@@ -85,7 +85,7 @@ void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 		if (countOfKeys)
 		{
             void ** objects = malloc(sizeof(void *) * allocator->count - countOfKeys);
-            for (unsigned long i = 0, count = 0; i < allocator->count; i++)
+            for (unsigned long i = 0, count = 0; i < allocator->count; ++i)
             {
                 if (allocator->objects[i] != ptr)
                 {
@@ -103,12 +103,12 @@ void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 	}
 }
 
-void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, unsigned long size)
+void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, uint64_t size)
 {
 	allocator = !allocator ? CTAllocatorGetDefault() : allocator;
     if (ptr)
     {
-        for (uint64_t i = 0; i < allocator->count; i++)
+        for (uint64_t i = 0; i < allocator->count; ++i)
         {
             if (allocator->objects[i] == ptr)
             {
@@ -128,7 +128,7 @@ void CTAllocatorTransferOwnership(CTAllocator * restrict allocator, CTAllocator 
 		if (allocator->count)
 		{
 			int countOfKeys = 0;
-			for (unsigned long i = 0; i < allocator->count; i++)
+			for (unsigned long i = 0; i < allocator->count; ++i)
 			{
 				if (allocator->objects[i] == ptr)
 				{
@@ -138,7 +138,7 @@ void CTAllocatorTransferOwnership(CTAllocator * restrict allocator, CTAllocator 
 			if (countOfKeys)
 			{
 				void ** objects = malloc(sizeof(void *) * allocator->count - countOfKeys);
-				for (unsigned long i = 0, count = 0; i < allocator->count; i++)
+				for (unsigned long i = 0, count = 0; i < allocator->count; ++i)
 				{
 					if (allocator->objects[i] != ptr)
 					{

@@ -38,7 +38,7 @@ void CTAllocatorRelease(CTAllocator * restrict allocator);
  * Allocate memory and add a pointer to it to the object's array within the specified CTAllocator, to be used when CTAllocatorRelease is called.
  * @return	Returns a block of memory created with malloc.
  **/
-void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size);
+void * CTAllocatorAllocate(CTAllocator * restrict allocator, uint64_t size);
 /**
  * Reallocate memory to be the specified size if a pointer to it exists in the object's array.
  * @param allocator	A properly initialised CTAllocator that was created with CTAllocatorCreate.
@@ -46,7 +46,7 @@ void * CTAllocatorAllocate(CTAllocator * restrict allocator, unsigned long size)
  * @param size		The size to reallocate the block as.
  * @return			Returns a block of memory created with realloc.
  **/
-void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, unsigned long size);
+void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, uint64_t size);
 /**
  * Deallocate memory at the given address and remove it from the object's array.
  * @param allocator	A properly initialised CTAllocator that was created with CTAllocatorCreate.

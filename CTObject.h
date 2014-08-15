@@ -33,4 +33,10 @@ CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, int8_t type
 void * CTObjectValue(const CTObject * restrict object);
 int8_t CTObjectType(const CTObject * restrict object);
 uint64_t CTObjectSize(const CTObject * restrict object);
+/**
+ * Compare two CTObject objects
+ * @param array	A properly initialised CTObject that was created with CTObjectCreate* or CTObjectWith*.
+ * @return		A value indicating equality, 0 = false, 1 = true.
+ **/
+uint8_t CTObjectCompare(const CTObject * restrict object1, const CTObject * restrict object2);
 void CTObjectRelease(CTObject * object);

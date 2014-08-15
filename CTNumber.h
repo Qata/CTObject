@@ -48,6 +48,15 @@ CTNumber * CTNumberCreateWithInt(CTAllocator * restrict alloc, int integer);
 CTNumber * CTNumberCreateWithUnsignedLong(CTAllocator * restrict alloc, uint64_t longInteger);
 CTNumber * CTNumberCreateWithLong(CTAllocator * restrict alloc, int64_t longInteger);
 CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, long double floatingPoint);
+
+/**
+ * Compare two CTNumber objects
+ * @param array	A properly initialised CTNumber that was created with CTNumberCreate*.
+ * @return		A value indicating equality, 0 = false, 1 = true.
+ **/
+uint8_t CTNumberCompare(const CTNumber * restrict number1, const CTNumber * restrict number2);
+uint8_t CTLargeNumberCompare(const CTLargeNumber * restrict number1, const CTLargeNumber * restrict number2);
+
 void CTNumberRelease(CTNumber * number);
 
 CTLargeNumber * CTLargeNumberCreate(CTAllocator * restrict alloc, CTNumber * base, CTNumber * exponent);

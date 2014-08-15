@@ -35,12 +35,37 @@ CTArray * CTArrayCreateWithObjects(CTAllocator * restrict alloc, ...)
 
 void CTArrayRelease(CTArray * restrict array)
 {
-	for (uint64_t i = 0; i < array->count; i++)
+	for (uint64_t i = 0; i < array->count; ++i)
     {
         CTObjectRelease(array->elements[i]);
     }
 	CTAllocatorDeallocate(array->alloc, array->elements);
 	CTAllocatorDeallocate(array->alloc, array);
+}
+
+uint8_t CTArrayCompare(CTArray * array1, CTArray * array2)
+{
+	if (array1->count == array2->count)
+	{
+		for (uint64_t i = 0; i < array1->count; ++i)
+		{
+			CTObject * entry1 = CTArrayEntry(array1, i);
+			CTObject * entry2 = NULL;
+			for (uint64_t j = 0; j < array2->count; ++j)
+			{
+				CTObject * entryTemp = CTArrayEntry(array2, j);
+				if (CTObjectCompare(entry1, entryTemp))
+				{
+					
+					entry2 = entryTemp;
+					break;
+				}
+			}
+			if (!entry2) return 0;
+		}
+		return 1;
+	}
+	return 0;
 }
 
 void CTArrayAddEntry(CTArray * restrict array, void * value, int8_t type)
@@ -70,7 +95,7 @@ void CTArrayDeleteEntry(CTArray * restrict array, uint64_t index)
 {
     if (array->count > index)
 	{
-        for (uint64_t i = 0; i < array->count; i++)
+        for (uint64_t i = 0; i < array->count; ++i)
         {
             if (i != index)
             {
@@ -85,11 +110,23 @@ void CTArrayDeleteEntry(CTArray * restrict array, uint64_t index)
 	}
 }
 
-uint64_t CTArrayIndexOfEntry(CTArray * restrict array, CTObject * restrict value)
+uint64_t CTArrayIndexOfEntryByReference(CTArray * restrict array, CTObject * restrict value)
 {
-    for (uint64_t i = 0; i < array->count; i++)
+    for (uint64_t i = 0; i < array->count; ++i)
     {
         if (array->elements[i] == value)
+        {
+            return i;
+        }
+    }
+    return CT_NOT_FOUND;
+}
+
+uint64_t CTArrayIndexOfEntryByValue(CTArray * restrict array, CTObject * value)
+{
+    for (uint64_t i = 0; i < array->count; ++i)
+    {
+        if (CTObjectCompare(array->elements[i], value))
         {
             return i;
         }

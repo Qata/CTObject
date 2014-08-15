@@ -56,13 +56,38 @@ CTDictionary * CTDictionaryCreateWithKeysPairedWithValues(CTAllocator * restrict
 
 void CTDictionaryRelease(CTDictionary * dict)
 {
-	for (uint64_t i = 0; i < dict->count; i++)
+	for (uint64_t i = 0; i < dict->count; ++i)
     {
         CTStringRelease(dict->elements[i]->key);
         CTObjectRelease(dict->elements[i]->value);
     }
 	CTAllocatorDeallocate(dict->alloc, dict->elements);
 	CTAllocatorDeallocate(dict->alloc, dict);
+}
+
+uint8_t CTDictionaryCompare(CTDictionary * dict1, CTDictionary * dict2)
+{
+	if (dict1->count == dict2->count)
+	{
+		for (uint64_t i = 0; i < dict1->count; ++i)
+		{
+			CTDictionaryEntry * entry1 = CTDictionaryEntryAtIndex(dict1, i);
+			CTDictionaryEntry * entry2 = NULL;
+			for (uint64_t j = 0; j < dict2->count; ++j)
+			{
+				CTDictionaryEntry * entryTemp = CTDictionaryEntryAtIndex(dict2, j);
+				if (CTStringCompare(entry1->key, entryTemp->key) == 0 && CTObjectCompare(entry1->value, entryTemp->value))
+				{
+					entry2 = entryTemp;
+					break;
+				}
+			}
+			
+			if (!entry2) return 0;
+		}
+		return 1;
+	}
+	return 0;
 }
 
 void CTDictionaryAddEntriesFromQueryString(CTDictionary * restrict dict, const char * restrict query)
@@ -113,7 +138,7 @@ void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict
     if (dict->count)
 	{
 		int countOfKeys = 0;
-		for (unsigned long i = 0; i < dict->count; i++)
+		for (unsigned long i = 0; i < dict->count; ++i)
 		{
 			if (!strcmp(CTStringUTF8String(dict->elements[i]->key), key))
 			{
@@ -123,7 +148,7 @@ void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict
 		if (countOfKeys)
 		{
 			CTDictionaryEntry ** retVal = CTAllocatorAllocate(dict->alloc, sizeof(CTDictionaryEntry *) * dict->count - countOfKeys);
-			for (unsigned long i = 0, count = 0; i < dict->count; i++)
+			for (unsigned long i = 0, count = 0; i < dict->count; ++i)
 			{
 				if (strcmp(CTStringUTF8String(dict->elements[i]->key), key))
 				{
@@ -152,7 +177,7 @@ CTDictionaryEntry * CTDictionaryEntryAtIndex(const CTDictionary * restrict dict,
 
 CTObject * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key)
 {
-    for (unsigned long i = 0; i < dict->count; i++)
+    for (unsigned long i = 0; i < dict->count; ++i)
     {
         if (!strcmp(CTStringUTF8String(dict->elements[i]->key), key))
         {
@@ -164,7 +189,7 @@ CTObject * CTDictionaryValueForKey(const CTDictionary * restrict dict, const cha
 
 uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key)
 {
-    for (unsigned long i = 0; i < dict->count; i++)
+    for (unsigned long i = 0; i < dict->count; ++i)
     {
         if (!strcmp(CTStringUTF8String(dict->elements[i]->key), key))
         {

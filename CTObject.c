@@ -32,6 +32,29 @@ CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, int8_t type
     return object;
 }
 
+uint8_t CTObjectCompare(const CTObject * restrict object1, const CTObject * restrict object2)
+{
+	if (object1->type == object2->type)
+	{
+		switch(object1->type)
+		{
+			case CTOBJECT_TYPE_DICTIONARY:
+				return CTDictionaryCompare(object1->ptr, object2->ptr);
+			case CTOBJECT_TYPE_ARRAY:
+				return CTArrayCompare(object1->ptr, object2->ptr);
+			case CTOBJECT_TYPE_NUMBER:
+				return CTNumberCompare(object1->ptr, object2->ptr);
+			case CTOBJECT_TYPE_LARGE_NUMBER:
+				return CTLargeNumberCompare(object1->ptr, object2->ptr);
+			case CTOBJECT_TYPE_STRING:
+				return CTStringCompare(object1->ptr, object2->ptr) == 0;
+			case CTOBJECT_TYPE_NULL:
+				return 1;
+		}
+	}
+	return 0;
+}
+
 void * CTObjectValue(const CTObject * restrict object)
 {
 	return object->ptr;

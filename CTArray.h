@@ -41,6 +41,13 @@ CTArray * CTArrayCreateWithObjects(CTAllocator * restrict alloc, ...);
 void CTArrayRelease(CTArray * restrict array);
 
 /**
+ * Compare two CTArray objects
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @return		A value indicating equality, 0 = false, 1 = true.
+ **/
+uint8_t CTArrayCompare(CTArray * array1, CTArray * array2);
+
+/**
  * Add a CTObject to the end of the array.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @param value	A void pointer to be used in the creation of a CTObject.
@@ -95,8 +102,15 @@ CTObject * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index);
  * @param value	The CTObject pointer to search for in the array.
  * @return		The index of the CTObject, if not found, NULL is returned.
  **/
-uint64_t CTArrayIndexOfEntry(CTArray * restrict array, CTObject * value);
+uint64_t CTArrayIndexOfEntryByReference(CTArray * restrict array, CTObject * value);
 
+/**
+ * Return the index of the CTObject * in the array.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param value	The CTObject to search for in the array.
+ * @return		The index of the CTObject, if not found, NULL is returned.
+ **/
+uint64_t CTArrayIndexOfEntryByValue(CTArray * restrict array, CTObject * value);
 
 /**
  * Return the count of the array.

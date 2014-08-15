@@ -47,60 +47,36 @@ void CTStringSetLength(CTString * restrict string, uint64_t length)
 
 void CTStringPrependCharacters(CTString * restrict string, const char * restrict characters, int64_t limit)
 {
-    char * result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + strlen(characters) + 1);
-    strcat(result, characters);
-    strcat(result, CTStringUTF8String(string));
-    result[CTStringLength(string) + strlen(characters)] = 0;
-    CTAllocatorDeallocate(string->alloc, string->characters);
-    string->characters = result;
-    CTStringSetLength(string, CTStringLength(string) + strlen(characters));
+	const uint64_t length = limit < 0 ? strlen(characters) : limit;
+	string->characters = CTAllocatorReallocate(string->alloc, string->characters, string->length + length + 1);
+	memmove(string->characters + length, string->characters, string->length + 1);
+	memcpy(string->characters, characters, length);
+	string->length += length;
 }
 
 void CTStringPrependCharacter(CTString * restrict string, char character)
 {
-	char * result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + 1 + 1);
-	strncat(result, &character, 1);
-    strcat(result, CTStringUTF8String(string));
-    result[CTStringLength(string) + 1] = 0;
-    CTAllocatorDeallocate(string->alloc, string->characters);
-    string->characters = result;
-    CTStringSetLength(string, CTStringLength(string) + 1);
+	string->characters = CTAllocatorReallocate(string->alloc, string->characters, string->length + 2);
+	memmove(string->characters + 1, string->characters, string->length + 1);
+	string->characters[0] = character;
+	++string->length;
 }
 
 void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters, int64_t limit)
 {
-	char * result = NULL;
-	if (limit < 0)
-	{
-		result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + strlen(characters) + 1);
-		strcat(result, CTStringUTF8String(string));
-		strcat(result, characters);
-		result[CTStringLength(string) + strlen(characters)] = 0;
-		CTAllocatorDeallocate(string->alloc, string->characters);
-		string->characters = result;
-		CTStringSetLength(string, CTStringLength(string) + strlen(characters));
-	}
-	else
-	{
-		result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + limit + 1);
-		strcat(result, CTStringUTF8String(string));
-		strncat(result, characters, limit);
-		result[string->length + limit] = 0;
-		CTAllocatorDeallocate(string->alloc, string->characters);
-		string->characters = result;
-		CTStringSetLength(string, CTStringLength(string) + limit);
-	}
+	const uint64_t length = limit < 0 ? strlen(characters) : limit;
+	string->characters = CTAllocatorReallocate(string->alloc, string->characters, CTStringLength(string) + length + 1);
+	memcpy(string->characters + string->length, characters, length);
+	string->length += length;
+	string->characters[string->length] = 0;
 }
 
 void CTStringAppendCharacter(CTString * restrict string, char character)
 {
-    char * result = CTAllocatorAllocate(string->alloc, CTStringLength(string) + 1 + 1);
-    strcat(result, CTStringUTF8String(string));
-	strncat(result, &character, 1);
-	string->length += 1;
-    result[string->length] = 0;
-    CTAllocatorDeallocate(string->alloc, string->characters);
-    string->characters = result;
+	string->characters = CTAllocatorReallocate(string->alloc, string->characters, string->length + 2);
+	string->characters[string->length] = character;
+	++string->length;
+	string->characters[string->length] = 0;
 }
 
 void CTStringSet(CTString * restrict string, const char * restrict characters)
@@ -114,16 +90,14 @@ void CTStringRemoveCharactersFromStart(CTString * restrict string, unsigned long
 {
     if (count < CTStringLength(string))
     {
-        char * new = CTAllocatorAllocate(string->alloc, CTStringLength(string) - count + 1);
-        memcpy(new, CTStringUTF8String(string) + count, CTStringLength(string) - count);
-        CTAllocatorDeallocate(string->alloc, string->characters);
-        string->characters = new;
-        CTStringSetLength(string, CTStringLength(string) - count + 1);
+		memmove(string->characters, string->characters + count, string->length - count + 1);
+		CTAllocatorReallocate(string->alloc, string->characters, string->length - count + 1);
+		string->length -= count;
     }
     else
     {
-        CTAllocatorDeallocate(string->alloc, string->characters);
-        string->characters = stringDuplicate(string->alloc, "");
+        string->characters = CTAllocatorReallocate(string->alloc, string->characters, 1);
+		string->characters[0] = 0;
 		string->length = 0;
     }
 }
@@ -132,35 +106,29 @@ void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long c
 {
     if (count < CTStringLength(string))
     {
-        char * new = CTAllocatorAllocate(string->alloc, CTStringLength(string) - count + 1);
-        memcpy(new, CTStringUTF8String(string), CTStringLength(string) - count);
-        CTAllocatorDeallocate(string->alloc, string->characters);
-        string->characters = new;
-        CTStringSetLength(string, CTStringLength(string) - count + 1);
+		CTAllocatorReallocate(string->alloc, string->characters, string->length - count + 1);
+		string->characters[string->length - count] = 0;
+		string->length -= count;
     }
     else
     {
-        CTAllocatorDeallocate(string->alloc, string->characters);
-        string->characters = stringDuplicate(string->alloc, "");
+        string->characters = CTAllocatorReallocate(string->alloc, string->characters, 1);
+		string->characters[0] = 0;
 		string->length = 0;
     }
 }
 
 void CTStringAppendString(CTString * restrict string1, CTString * restrict string2)
 {
-	char * result = NULL;
-	result = CTAllocatorAllocate(string1->alloc, CTStringLength(string1) + CTStringLength(string2) + 1);
-	strcat(result, CTStringUTF8String(string1));
-	strcat(result, CTStringUTF8String(string2));
-	result[CTStringLength(string1) + CTStringLength(string2)] = 0;
-	CTAllocatorDeallocate(string1->alloc, string1->characters);
-	string1->characters = result;
+	string1->characters = CTAllocatorReallocate(string1->alloc, string1->characters, CTStringLength(string1) + CTStringLength(string2) + 1);
+	strcat(string1->characters, CTStringUTF8String(string2));
+	string1->characters[CTStringLength(string1) + CTStringLength(string2)] = 0;
 	CTStringSetLength(string1, CTStringLength(string1) + CTStringLength(string2));
 }
 
 void CTStringToUpper(CTString * restrict string)
 {
-	for (uint64_t i = 0; i < CTStringLength(string); i++)
+	for (uint64_t i = 0; i < CTStringLength(string); ++i)
 	{
 		string->characters[i] = toupper(string->characters[i]);
 	}
@@ -168,7 +136,7 @@ void CTStringToUpper(CTString * restrict string)
 
 void CTStringToLower(CTString * restrict string)
 {
-	for (uint64_t i = 0; i < CTStringLength(string); i++)
+	for (uint64_t i = 0; i < CTStringLength(string); ++i)
 	{
 		string->characters[i] = tolower(string->characters[i]);
 	}

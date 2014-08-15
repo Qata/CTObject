@@ -155,7 +155,7 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
         case CTOBJECT_TYPE_DICTIONARY:
         {
             CTStringAppendCharacter(retVal, 'd');
-            for (uint64_t i = 0; i < CTDictionaryCount(CTObjectValue(bencoded)); i++)
+            for (uint64_t i = 0; i < CTDictionaryCount(CTObjectValue(bencoded)); ++i)
             {
 				CTDictionaryEntry * pair = CTDictionaryEntryAtIndex(CTObjectValue(bencoded), i);
                 if (CTStringLength(CTObjectValue(bencoded)))
@@ -179,7 +179,7 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
         case CTOBJECT_TYPE_ARRAY:
         {
             CTStringAppendCharacter(retVal, 'l');
-            for (uint64_t i = 0; i < ((CTArray *)CTObjectValue(bencoded))->count; i++)
+            for (uint64_t i = 0; i < ((CTArray *)CTObjectValue(bencoded))->count; ++i)
             {
                 CTStringAppendString(retVal, CTBencodeSerialise(allocl, CTArrayObjectAtIndex(CTObjectValue(bencoded), i), error));
             }
