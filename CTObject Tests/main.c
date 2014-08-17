@@ -25,7 +25,7 @@ void recurseJSON(void * obj, int type, int indentation)
             for (unsigned long i = 0; i < object->count; ++i)
             {
                 CTString * key = object->elements[i]->key;
-                void * ptr = object->elements[i]->value->ptr;
+                void * ptr = CTObjectValue(object->elements[i]->value);
                 for (int i = 0; i < indentation + 1; ++i)
                     printf("\t");
                 switch (object->elements[i]->value->type)
@@ -46,19 +46,19 @@ void recurseJSON(void * obj, int type, int indentation)
 						switch (((CTNumber *)ptr)->type)
 						{
 							case CTNUMBER_TYPE_DOUBLE:
-								printf("'%s' = '%Lf'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.Double);
+								printf("'%s' = %Lf\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.Double);
 								break;
 							case CTNUMBER_TYPE_INT:
-								printf("'%s' = '%i'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.Int);
+								printf("'%s' = %i\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.Int);
 								break;
 							case CTNUMBER_TYPE_UINT:
-								printf("'%s' = '%u'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.UInt);
+								printf("'%s' = %u\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.UInt);
 								break;
 							case CTNUMBER_TYPE_LONG:
-								printf("'%s' = '%lli'\n", CTStringUTF8String(key), (long long)((CTNumber *)ptr)->value.Long);
+								printf("'%s' = %lli\n", CTStringUTF8String(key), (long long)((CTNumber *)ptr)->value.Long);
 								break;
 							case CTNUMBER_TYPE_ULONG:
-								printf("'%s' = '%llu'\n", CTStringUTF8String(key), (long long)((CTNumber *)ptr)->value.ULong);
+								printf("'%s' = %llu\n", CTStringUTF8String(key), (long long)((CTNumber *)ptr)->value.ULong);
 								break;
 						}
                         break;
@@ -66,10 +66,29 @@ void recurseJSON(void * obj, int type, int indentation)
                     case CTOBJECT_TYPE_NULL:
                         printf("'%s' = %s\n", CTStringUTF8String(key), ((CTNull *)ptr)->value);
                         break;
-                    case CTOBJECT_TYPE_LARGE_NUMBER:
-                        printf("'%s' = %Lfe%lli\n", CTStringUTF8String(key), ((CTLargeNumber *)ptr)->base->value.Double, (long long)((CTLargeNumber *)ptr)->exponent->value.Long);
-                        break;
-                }
+					case CTOBJECT_TYPE_LARGE_NUMBER:
+						printf("'%s' = ", CTStringUTF8String(key));
+						switch (((CTLargeNumber *)ptr)->base->type)
+						{
+							case CTNUMBER_TYPE_DOUBLE:
+								printf("%Lf", ((CTLargeNumber *)ptr)->base->value.Double);
+								break;
+							case CTNUMBER_TYPE_INT:
+								printf("%i", ((CTLargeNumber *)ptr)->base->value.Int);
+								break;
+							case CTNUMBER_TYPE_UINT:
+								printf("%u", ((CTLargeNumber *)ptr)->base->value.UInt);
+								break;
+							case CTNUMBER_TYPE_LONG:
+								printf("%lli", (long long)((CTLargeNumber *)ptr)->base->value.Long);
+								break;
+							case CTNUMBER_TYPE_ULONG:
+								printf("%llu", (long long)((CTLargeNumber *)ptr)->base->value.ULong);
+								break;
+						}
+						printf("e%lli\n", (long long)((CTLargeNumber *)ptr)->exponent->value.Long);
+						break;
+				}
             }
             for (int i = 0; i < indentation; ++i)
                 printf("\t");
@@ -103,19 +122,19 @@ void recurseJSON(void * obj, int type, int indentation)
 						switch (((CTNumber *)ptr)->type)
 						{
 							case CTNUMBER_TYPE_DOUBLE:
-								printf("'%Lf'\n", ((CTNumber *)ptr)->value.Double);
+								printf("%Lf\n", ((CTNumber *)ptr)->value.Double);
 								break;
 							case CTNUMBER_TYPE_INT:
-								printf("'%i'\n", ((CTNumber *)ptr)->value.Int);
+								printf("%i\n", ((CTNumber *)ptr)->value.Int);
 								break;
 							case CTNUMBER_TYPE_UINT:
-								printf("'%u'\n", ((CTNumber *)ptr)->value.UInt);
+								printf("%u\n", ((CTNumber *)ptr)->value.UInt);
 								break;
 							case CTNUMBER_TYPE_LONG:
-								printf("'%lli'\n", (long long)((CTNumber *)ptr)->value.Long);
+								printf("%lli\n", (long long)((CTNumber *)ptr)->value.Long);
 								break;
 							case CTNUMBER_TYPE_ULONG:
-								printf("'%llu'\n", (long long)((CTNumber *)ptr)->value.ULong);
+								printf("%llu\n", (long long)((CTNumber *)ptr)->value.ULong);
 								break;
 						}
                         break;
@@ -124,22 +143,22 @@ void recurseJSON(void * obj, int type, int indentation)
 						switch (((CTLargeNumber *)ptr)->base->type)
 						{
 							case CTNUMBER_TYPE_DOUBLE:
-								printf("'%Lf", ((CTLargeNumber *)ptr)->base->value.Double);
+								printf("%Lf", ((CTLargeNumber *)ptr)->base->value.Double);
 								break;
 							case CTNUMBER_TYPE_INT:
-								printf("'%i", ((CTLargeNumber *)ptr)->base->value.Int);
+								printf("%i", ((CTLargeNumber *)ptr)->base->value.Int);
 								break;
 							case CTNUMBER_TYPE_UINT:
-								printf("'%u", ((CTLargeNumber *)ptr)->base->value.UInt);
+								printf("%u", ((CTLargeNumber *)ptr)->base->value.UInt);
 								break;
 							case CTNUMBER_TYPE_LONG:
-								printf("'%lli", (long long)((CTLargeNumber *)ptr)->base->value.Long);
+								printf("%lli", (long long)((CTLargeNumber *)ptr)->base->value.Long);
 								break;
 							case CTNUMBER_TYPE_ULONG:
-								printf("'%llu", (long long)((CTLargeNumber *)ptr)->base->value.ULong);
+								printf("%llu", (long long)((CTLargeNumber *)ptr)->base->value.ULong);
 								break;
 						}
-						printf("e%lli'\n", (long long)((CTLargeNumber *)ptr)->exponent->value.Long);
+						printf("e%lli\n", (long long)((CTLargeNumber *)ptr)->exponent->value.Long);
 						break;
                     case CTOBJECT_TYPE_NULL:
                         printf("'%s'\n", ((CTNull *)ptr)->value);
@@ -163,11 +182,11 @@ void recurseBencode(CTObject * obj, int indentation)
         case CTOBJECT_TYPE_DICTIONARY:
         {
             printf("{\n");
-            CTDictionary * object = obj->ptr;
+            CTDictionary * object = CTObjectValue(obj);
             for (unsigned long i = 0; i < object->count; ++i)
             {
                 CTString * key = object->elements[i]->key;
-                void * ptr = object->elements[i]->value->ptr;
+                void * ptr = CTObjectValue(object->elements[i]->value);
                 for (int i = 0; i < indentation + 1; ++i)
                     printf("\t");
                 switch (object->elements[i]->value->type)
@@ -194,7 +213,7 @@ void recurseBencode(CTObject * obj, int indentation)
         case CTOBJECT_TYPE_ARRAY:
         {
             printf ("[\n");
-            CTArray * array = obj->ptr;
+            CTArray * array = CTObjectValue(obj);
             for (unsigned long i = 0; i < array->count; ++i)
             {
                 if (array->elements[i]->type != CTOBJECT_TYPE_DICTIONARY && array->elements[i]->type != CTOBJECT_TYPE_ARRAY)
@@ -222,13 +241,13 @@ void recurseBencode(CTObject * obj, int indentation)
         }
         case CTOBJECT_TYPE_STRING:
         {
-            printf("'%s'\n", CTStringUTF8String(obj->ptr));
+            printf("'%s'\n", CTStringUTF8String(CTObjectValue(obj)));
             break;
         }
             
         case CTOBJECT_TYPE_NUMBER:
         {
-            printf("'%lli'\n", CTNumberLongValue(obj->ptr));
+            printf("'%lli'\n", CTNumberLongValue(CTObjectValue(obj)));
             break;
         }
     }
@@ -243,15 +262,20 @@ void CTArrayTests()
 		assert(!error);
 		CTObject * array2 = CTJSONParse(allocator, "[1, '2', [], {}, 2, 'a', 1343e380]", CTJSONOptionsSingleQuoteStrings, &error);
 		assert(!error);
-		assert(CTArrayCompare(array1->ptr, array2->ptr));
+		assert(CTArrayCompare(CTObjectValue(array1), CTObjectValue(array2)));
 		
-		assert(CTArrayIndexOfEntryByValue(array1->ptr, CTObjectWithString(CTStringCreate(allocator, "a"))) == 0);
-		assert(CTArrayIndexOfEntryByValue(array1->ptr, CTObjectWithNumber(CTNumberCreateWithLong(allocator, 1))) == 1);
-		assert(CTArrayIndexOfEntryByValue(array1->ptr, CTObjectWithString(CTStringCreate(allocator, "2"))) == 2);
-		assert(CTArrayIndexOfEntryByValue(array1->ptr, CTObjectWithNumber(CTNumberCreateWithLong(allocator, 2))) == 3);
-		assert(CTArrayIndexOfEntryByValue(array1->ptr, CTObjectWithArray(CTArrayCreate(allocator))) == 4);
-		assert(CTArrayIndexOfEntryByValue(array1->ptr, CTObjectWithDictionary(CTDictionaryCreate(allocator))) == 5);
-		assert(CTArrayIndexOfEntryByValue(array1->ptr, CTObjectWithLargeNumber(CTLargeNumberCreate(allocator, CTNumberCreateWithLong(allocator, 1343), CTNumberCreateWithLong(allocator, 380)))) == 6);
+		recurseJSON(array1->ptr, CTOBJECT_TYPE_ARRAY, 0);
+		
+		CTNumber * n = CTArrayObjectAtIndex(array1->ptr, 1)->ptr;
+		printf("%i, %lli\n", n->type == CTNUMBER_TYPE_LONG, n->value.Long);
+		
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithString(CTStringCreate(allocator, "a"))) == 0);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithNumber(CTNumberCreateWithLong(allocator, 1))) == 1);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithString(CTStringCreate(allocator, "2"))) == 2);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithNumber(CTNumberCreateWithLong(allocator, 2))) == 3);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithArray(CTArrayCreate(allocator))) == 4);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithDictionary(CTDictionaryCreate(allocator))) == 5);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithLargeNumber(CTLargeNumberCreate(allocator, CTNumberCreateWithLong(allocator, 1343), CTNumberCreateWithLong(allocator, 380)))) == 6);
 		CTAllocatorRelease(allocator);
 	}
 	{
@@ -261,7 +285,7 @@ void CTArrayTests()
 		assert(!error);
 		CTObject * array2 = CTJSONParse(allocator, "[1, '2', [1, 2, 3, '4', '5'], {'5':5, '1':1, '2':2, '4':4, '3':3}, 2, 'a', 1343e380]", CTJSONOptionsSingleQuoteStrings, &error);
 		assert(!error);
-		assert(CTArrayCompare(array1->ptr, array2->ptr));
+		assert(CTArrayCompare(CTObjectValue(array1), CTObjectValue(array2)));
 		CTAllocatorRelease(allocator);
 	}
 	{
@@ -271,7 +295,7 @@ void CTArrayTests()
 		assert(!error);
 		CTObject * array2 = CTJSONParse(allocator, "[1, '2', [1, 2, 3, '4', '5'], {'5':3, '1':1, '2':2, '4':4, '3':3}, 2, 'a', 1343e380]", CTJSONOptionsSingleQuoteStrings, &error);
 		assert(!error);
-		assert(!CTArrayCompare(array1->ptr, array2->ptr));
+		assert(!CTArrayCompare(CTObjectValue(array1), CTObjectValue(array2)));
 		CTAllocatorRelease(allocator);
 	}
 	{
@@ -281,7 +305,7 @@ void CTArrayTests()
 		assert(!error);
 		CTObject * array2 = CTJSONParse(allocator, "[1, '2', [1, 2, 3, '4', '5'], {'1':1, '2':2, '4':4, '3':3}, 2, 'a', 1343e380]", CTJSONOptionsSingleQuoteStrings, &error);
 		assert(!error);
-		assert(!CTArrayCompare(array1->ptr, array2->ptr));
+		assert(!CTArrayCompare(CTObjectValue(array1), CTObjectValue(array2)));
 		CTAllocatorRelease(allocator);
 	}
 	{
@@ -291,7 +315,7 @@ void CTArrayTests()
 		assert(!error);
 		CTObject * array2 = CTJSONParse(allocator, "[1, '2', [1, 2, 3, '4', '5'], {'5':5, '1':1, '2':2, '4':4, '3':3}, 2, 'a', 1343.0e380]", CTJSONOptionsSingleQuoteStrings, &error);
 		assert(!error);
-		assert(!CTArrayCompare(array1->ptr, array2->ptr));
+		assert(!CTArrayCompare(CTObjectValue(array1), CTObjectValue(array2)));
 		CTAllocatorRelease(allocator);
 	}
 }
@@ -406,7 +430,7 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "{ \"PI\":3.1413e-10}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"v\":12345123456789}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"v\":123456789123456789123456789}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":[ 1,2,3,4]}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{ \"v\":[ 0,-1,2,3,4]}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"v\":[ \"1\",\"2\",\"3\",\"4\"]}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"v\":[ { \n}, { },[]]}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{ \"v\":\"\u03bc\u00bf\"}", CTOBJECT_NOT_AN_OBJECT);
@@ -419,13 +443,14 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "{ \"v\":1.797693134E308}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{\"menu\": {\"header\": \"SVG Viewer\",\"items\": [1.7, true, false, {\"id\": \"Open\"},{\"id\": \"OpenNew\", \"label\": \"Open New\"},null,{\"id\": \"ZoomIn\", \"label\": \"Zoom In\"},{\"id\": \"ZoomOut\", \"label\": \"Zoom Out\"},{\"id\": \"OriginalView\", \"label\": \"Original View\"},null,{\"id\": \"Quality\"},{\"id\": \"Pause\"},{\"id\": \"Mute\"},null,{\"id\": \"Find\", \"label\": \"Find...\"},{\"id\": \"FindAgain\", \"label\": \"Find Again\"},{\"id\": \"Copy\"},{\"id\": \"CopyAgain\", \"label\": \"Copy Again\"},{\"id\": \"CopySVG\", \"label\": \"Copy SVG\"},{\"id\": \"ViewSVG\", \"label\": \"View SVG\"},{\"id\": \"ViewSource\", \"label\": \"View Source\"},{\"id\": \"SaveAs\", \"label\": \"Save As\"},null,{\"id\": \"Help\"},{\"id\": \"About\", \"label\": \"About Adobe CVG Viewer...\"}]}}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "\"hello\"", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "1.0e7", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{\"method\":\"runcommand\",\"params\":[{\"type\":\"target\",\"line\":[1]}, {\"type\":\"indirect\",\"value\":\"on\"}],\"id\":59916}", CTOBJECT_NOT_AN_OBJECT);
     
     CTError * error = NULL;
 	for (int i = 0; i < array->count; ++i)
 	{
 		CTObject * dict = CTJSONParse(allocator, array->elements[i]->ptr, 0, &error);
-		recurseJSON(dict->ptr, dict->type, 0);
+		recurseJSON(CTObjectValue(dict), dict->type, 0);
 		assert(!error);
 		CTJSONSerialise(allocator, dict, 0, &error);
 		assert(!error);
@@ -437,6 +462,7 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "{{\"k\":\"v\"}}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{\"l\":[\"e\",\"]}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{\"l\":[\"e\",1.3.3]}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "{\"l\":[\"e\",01]}", CTOBJECT_NOT_AN_OBJECT);
 	//CTArrayAddEntry(array, "{\"k\":[]\"}", CTOBJECT_NOT_AN_OBJECT);
 	for (int i = 0; i < array->count; ++i)
 	{

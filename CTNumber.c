@@ -221,7 +221,7 @@ long double CTNumberDoubleValue(const CTNumber * restrict number)
     }
 }
 
-int8_t CTNumberType(const CTNumber * restrict number)
+CTNUMBER_TYPE CTNumberType(const CTNumber * restrict number)
 {
 	return number->type;
 }

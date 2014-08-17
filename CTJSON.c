@@ -213,9 +213,17 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 	CTAllocator * allocl = CTAllocatorCreate();
 	CTString * numberString = CTStringCreate(allocl, "");
 	CTString * exponentString = CTStringCreate(allocl, "");
-	char * pEnd;
+	char * pEnd = NULL;
 	
 	const char * JSONC = CTStringUTF8String(JSON);
+	
+	if (*start < CTStringLength(JSON))
+	{
+		if (JSONC[*start] == '-' || JSONC[*start] == '+')
+		{
+			CTStringAppendCharacter(numberString, JSONC[(*start)++]);
+		}
+	}
 	
 	while (*start < CTStringLength(JSON) && (isdigit(JSONC[*start]) || JSONC[*start] == '.'))
 	{
@@ -230,6 +238,17 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 			while (*start < CTStringLength(JSON) && JSONC[*start] != ',' && JSONC[*start] != ']' && JSONC[*start] != '}') ++(*start);
 		}
 		CTStringAppendCharacter(numberString, JSONC[(*start)++]);
+	}
+	
+	if (*start < CTStringLength(JSON) && CTStringLength(numberString) > 1 && CTStringUTF8String(numberString)[0] == '0')
+	{
+		err = "A number was found that started with zero\n";
+		if (error)
+		{
+			*error = CTErrorCreate(alloc, err, 0);
+		}
+		fputs(err, stderr);
+		while (*start < CTStringLength(JSON) && JSONC[*start] != ',' && JSONC[*start] != ']' && JSONC[*start] != '}') ++(*start);
 	}
 	
 	if (*start < CTStringLength(JSON) && tolower(JSONC[*start]) == 'e')

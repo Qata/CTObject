@@ -11,14 +11,14 @@
 #include "CTObject.h"
 #include <stdint.h>
 
-enum
+typedef enum
 {
     CTNUMBER_TYPE_UINT,
     CTNUMBER_TYPE_INT,
     CTNUMBER_TYPE_ULONG,
     CTNUMBER_TYPE_LONG,
     CTNUMBER_TYPE_DOUBLE
-};
+} CTNUMBER_TYPE;
 
 union CTNumberValue
 {
@@ -34,7 +34,7 @@ typedef struct
     CTAllocator * alloc;
     union CTNumberValue value;
     uint64_t size;
-    int8_t type;
+    CTNUMBER_TYPE type;
 } CTNumber;
 
 typedef struct
@@ -74,7 +74,7 @@ int32_t CTNumberIntValue(const CTNumber * restrict number);
 uint64_t CTNumberUnsignedLongValue(const CTNumber * restrict number);
 int64_t CTNumberLongValue(const CTNumber * restrict number);
 long double CTNumberDoubleValue(const CTNumber * restrict number);
-int8_t CTNumberType(const CTNumber * restrict number);
+CTNUMBER_TYPE CTNumberType(const CTNumber * restrict number);
 
 /**
  * Return a CTObject encasing the CTNumber passed.
