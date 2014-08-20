@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "CTAllocator.h"
 
 static CTAllocator * defaultAllocator;
@@ -61,7 +62,7 @@ void CTAllocatorRelease(CTAllocator * restrict allocator)
 
 void * CTAllocatorAllocate(CTAllocator * restrict allocator, uint64_t size)
 {
-	allocator = allocator ? allocator : CTAllocatorGetDefault();
+	assert(allocator);
 	if (!(allocator->objects = realloc(allocator->objects, sizeof(void *) * allocator->count + 1)))
 	{
 		return NULL;
@@ -71,7 +72,7 @@ void * CTAllocatorAllocate(CTAllocator * restrict allocator, uint64_t size)
 
 void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 {
-	allocator = allocator ? allocator : CTAllocatorGetDefault();
+	assert(allocator);
     if (allocator->count)
 	{
 		int countOfKeys = 0;
@@ -105,7 +106,7 @@ void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 
 void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, uint64_t size)
 {
-	allocator = !allocator ? CTAllocatorGetDefault() : allocator;
+	assert(allocator);
     if (ptr)
     {
         for (uint64_t i = 0; i < allocator->count; ++i)
@@ -122,7 +123,7 @@ void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, uint6
 
 void CTAllocatorTransferOwnership(CTAllocator * restrict allocator, CTAllocator * restrict dest, void * ptr)
 {
-	allocator = allocator ? allocator : CTAllocatorGetDefault();
+	assert(allocator);
 	if (dest && dest != allocator)
 	{
 		if (allocator->count)

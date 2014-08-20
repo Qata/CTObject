@@ -8,37 +8,44 @@
 
 #include "CTNumber.h"
 
+CTNumber * CTNumberCreate(CTAllocator * alloc)
+{
+	CTNumber * number = CTAllocatorAllocate(alloc, sizeof(CTNumber));
+	number->alloc = alloc;
+	return number;
+}
+
 CTNumber * CTNumberCreateWithUnsignedInt(CTAllocator * restrict alloc, uint32_t value)
 {
-    CTNumber * number = CTAllocatorAllocate(alloc, sizeof(CTNumber));
+	CTNumber * number = CTNumberCreate(alloc);
     CTNumberSetUnsignedIntValue(number, value);
     return number;
 }
 
 CTNumber * CTNumberCreateWithInt(CTAllocator * restrict alloc, int32_t value)
 {
-    CTNumber * number = CTAllocatorAllocate(alloc, sizeof(CTNumber));
+	CTNumber * number = CTNumberCreate(alloc);
     CTNumberSetIntValue(number, value);
     return number;
 }
 
 CTNumber * CTNumberCreateWithUnsignedLong(CTAllocator * restrict alloc, uint64_t value)
 {
-    CTNumber * number = CTAllocatorAllocate(alloc, sizeof(CTNumber));
+	CTNumber * number = CTNumberCreate(alloc);
     CTNumberSetUnsignedLongValue(number, value);
     return number;
 }
 
 CTNumber * CTNumberCreateWithLong(CTAllocator * restrict alloc, int64_t value)
 {
-    CTNumber * number = CTAllocatorAllocate(alloc, sizeof(CTNumber));
+	CTNumber * number = CTNumberCreate(alloc);
     CTNumberSetLongValue(number, value);
     return number;
 }
 
 CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, long double value)
 {
-    CTNumber * number = CTAllocatorAllocate(alloc, sizeof(CTNumber));
+	CTNumber * number = CTNumberCreate(alloc);
     CTNumberSetDoubleValue(number, value);
     return number;
 }
@@ -71,6 +78,7 @@ uint8_t CTLargeNumberCompare(const CTLargeNumber * restrict number1, const CTLar
 CTLargeNumber * CTLargeNumberCreate(CTAllocator * restrict alloc, CTNumber * base, CTNumber * exponent)
 {
     CTLargeNumber * lnumber = CTAllocatorAllocate(alloc, sizeof(CTLargeNumber));
+	lnumber->alloc = alloc;
     lnumber->base = base;
     lnumber->exponent = exponent;
     return lnumber;
@@ -94,35 +102,30 @@ void CTNumberRelease(CTNumber * number)
 void CTNumberSetUnsignedIntValue(CTNumber * restrict number, uint32_t value)
 {
     number->value.UInt = value;
-    number->size = sizeof(value);
     number->type = CTNUMBER_TYPE_UINT;
 }
 
 void CTNumberSetIntValue(CTNumber * restrict number, int32_t value)
 {
     number->value.Int = value;
-    number->size = sizeof(value);
     number->type = CTNUMBER_TYPE_INT;
 }
 
 void CTNumberSetUnsignedLongValue(CTNumber * restrict number, uint64_t value)
 {
     number->value.ULong = value;
-    number->size = sizeof(value);
     number->type = CTNUMBER_TYPE_ULONG;
 }
 
 void CTNumberSetLongValue(CTNumber * restrict number, int64_t value)
 {
     number->value.Long = value;
-    number->size = sizeof(value);
     number->type = CTNUMBER_TYPE_LONG;
 }
 
 void CTNumberSetDoubleValue(CTNumber * restrict number, long double value)
 {
     number->value.Double = value;
-    number->size = sizeof(value);
     number->type = CTNUMBER_TYPE_DOUBLE;
 }
 

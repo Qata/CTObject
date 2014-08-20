@@ -14,8 +14,7 @@
 
 void recurseJSON(void * obj, int type, int indentation)
 {
-    for (int i = 0; i < indentation; ++i)
-        printf("\t");
+    for (int i = 0; i < indentation; ++i) printf("\t");
     switch (type)
     {
         case CTOBJECT_TYPE_DICTIONARY:
@@ -26,8 +25,7 @@ void recurseJSON(void * obj, int type, int indentation)
             {
                 CTString * key = object->elements[i]->key;
                 void * ptr = CTObjectValue(object->elements[i]->value);
-                for (int i = 0; i < indentation + 1; ++i)
-                    printf("\t");
+                for (int i = 0; i <= indentation; ++i) printf("\t");
                 switch (object->elements[i]->value->type)
                 {
                     case CTOBJECT_TYPE_DICTIONARY:
@@ -90,8 +88,7 @@ void recurseJSON(void * obj, int type, int indentation)
 						break;
 				}
             }
-            for (int i = 0; i < indentation; ++i)
-                printf("\t");
+            for (int i = 0; i < indentation; ++i) printf("\t");
             printf("}\n");
             break;
         }
@@ -103,8 +100,7 @@ void recurseJSON(void * obj, int type, int indentation)
             for (unsigned long i = 0; i < array->count; ++i)
             {
                 if (array->elements[i]->type != CTOBJECT_TYPE_DICTIONARY && array->elements[i]->type != CTOBJECT_TYPE_ARRAY)
-                    for (int i = 0; i < indentation + 1; ++i)
-                        printf("\t");
+                    for (int i = 0; i <= indentation; ++i) printf("\t");
                 void * ptr = array->elements[i]->ptr;
                 switch (array->elements[i]->type)
                 {
@@ -165,8 +161,7 @@ void recurseJSON(void * obj, int type, int indentation)
                         break;
                 }
             }
-            for (int i = 0; i < indentation; ++i)
-                printf("\t");
+            for (int i = 0; i < indentation; ++i) printf("\t");
             printf("]\n");
             break;
         }
@@ -175,8 +170,7 @@ void recurseJSON(void * obj, int type, int indentation)
 
 void recurseBencode(CTObject * obj, int indentation)
 {
-    for (int i = 0; i < indentation; ++i)
-        printf("\t");
+    for (int i = 0; i < indentation; ++i) printf("\t");
     switch (obj->type)
     {
         case CTOBJECT_TYPE_DICTIONARY:
@@ -187,7 +181,7 @@ void recurseBencode(CTObject * obj, int indentation)
             {
                 CTString * key = object->elements[i]->key;
                 void * ptr = CTObjectValue(object->elements[i]->value);
-                for (int i = 0; i < indentation + 1; ++i)
+                for (int i = 0; i <= indentation; ++i)
                     printf("\t");
                 switch (object->elements[i]->value->type)
                 {
@@ -204,8 +198,7 @@ void recurseBencode(CTObject * obj, int indentation)
                         break;
                 }
             }
-            for (int i = 0; i < indentation; ++i)
-                printf("\t");
+            for (int i = 0; i < indentation; ++i) printf("\t");
             printf("}\n");
             break;
         }
@@ -217,8 +210,7 @@ void recurseBencode(CTObject * obj, int indentation)
             for (unsigned long i = 0; i < array->count; ++i)
             {
                 if (array->elements[i]->type != CTOBJECT_TYPE_DICTIONARY && array->elements[i]->type != CTOBJECT_TYPE_ARRAY)
-                    for (int i = 0; i < indentation + 1; ++i)
-                        printf("\t");
+                    for (int i = 0; i <= indentation; ++i) printf("\t");
                 void * ptr = array->elements[i]->ptr;
                 switch (array->elements[i]->type)
                 {
@@ -234,8 +226,7 @@ void recurseBencode(CTObject * obj, int indentation)
                         break;
                 }
             }
-            for (int i = 0; i < indentation; ++i)
-                printf("\t");
+            for (int i = 0; i < indentation; ++i) printf("\t");
             printf("]\n");
             break;
         }
@@ -322,6 +313,7 @@ void CTArrayTests()
 
 int main(int argc, const char * argv[])
 {
+	
     clock_t t = clock();
 #pragma mark - CTAllocator Test Begin
     CTAllocator * allocator = CTAllocatorCreate();
@@ -444,6 +436,7 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "{\"menu\": {\"header\": \"SVG Viewer\",\"items\": [1.7, true, false, {\"id\": \"Open\"},{\"id\": \"OpenNew\", \"label\": \"Open New\"},null,{\"id\": \"ZoomIn\", \"label\": \"Zoom In\"},{\"id\": \"ZoomOut\", \"label\": \"Zoom Out\"},{\"id\": \"OriginalView\", \"label\": \"Original View\"},null,{\"id\": \"Quality\"},{\"id\": \"Pause\"},{\"id\": \"Mute\"},null,{\"id\": \"Find\", \"label\": \"Find...\"},{\"id\": \"FindAgain\", \"label\": \"Find Again\"},{\"id\": \"Copy\"},{\"id\": \"CopyAgain\", \"label\": \"Copy Again\"},{\"id\": \"CopySVG\", \"label\": \"Copy SVG\"},{\"id\": \"ViewSVG\", \"label\": \"View SVG\"},{\"id\": \"ViewSource\", \"label\": \"View Source\"},{\"id\": \"SaveAs\", \"label\": \"Save As\"},null,{\"id\": \"Help\"},{\"id\": \"About\", \"label\": \"About Adobe CVG Viewer...\"}]}}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "\"hello\"", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "1.0e7", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "1", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{\"method\":\"runcommand\",\"params\":[{\"type\":\"target\",\"line\":[1]}, {\"type\":\"indirect\",\"value\":\"on\"}],\"id\":59916}", CTOBJECT_NOT_AN_OBJECT);
     
     CTError * error = NULL;
@@ -461,9 +454,8 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "{'X':'s", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{{\"k\":\"v\"}}", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "{\"l\":[\"e\",\"]}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{\"l\":[\"e\",1.3.3]}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{\"l\":[\"e\",01]}", CTOBJECT_NOT_AN_OBJECT);
-	//CTArrayAddEntry(array, "{\"k\":[]\"}", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "1.3.3", CTOBJECT_NOT_AN_OBJECT);
+	CTArrayAddEntry(array, "01", CTOBJECT_NOT_AN_OBJECT);
 	for (int i = 0; i < array->count; ++i)
 	{
 		error = NULL;
@@ -500,7 +492,7 @@ int main(int argc, const char * argv[])
 		error = NULL;
         CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &error);
 		assert(error);
-        printf("%s\n", CTStringUTF8String(CTErrorGetError(error)));
+        printf("%s\n", CTStringUTF8String(CTErrorGetErrorString(error)));
         CTErrorRelease(error);
 	}
     

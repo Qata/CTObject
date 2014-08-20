@@ -83,7 +83,7 @@ CTObject * CTJSONParse2(CTAllocator * alloc, const CTString * restrict JSON, uin
 	}
 	else
 	{
-		const char * err = "Empty JSON string\n";
+		const char * err = "Empty JSON string";
 		if (error)
 		{
 			*error = CTErrorCreate(alloc, err, 0);
@@ -98,7 +98,7 @@ CTObject * CTDictionaryFromJSON(CTAllocator * alloc, const CTString * restrict J
 	CTDictionary * dictionary = CTDictionaryCreate(alloc);
 	CTObject * key = NULL;
 	CTObject * value = NULL;
-	const char * err = "Formatting error in dictionary\n";
+	const char * err = "Formatting error in dictionary";
 	++(*start);
 	const char * JSONC = CTStringUTF8String(JSON);
     while (*start < CTStringLength(JSON) && JSONC[*start] != '}')
@@ -195,7 +195,7 @@ CTObject * CTStringFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 	{
 		char err[0x100];
 		memset(err, 0, 0x100);
-		sprintf(err, "Non-terminated string in JSON at index %llu\n", *start);
+		sprintf(err, "Non-terminated string in JSON at index %llu", *start);
 		if (error)
 		{
 			*error = CTErrorCreate(alloc, err, 0);
@@ -208,6 +208,7 @@ CTObject * CTStringFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 
 CTObject * CTNumberFromJSON(CTAllocator * alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTError ** error)
 {
+	assert(alloc);
 	CTObject * retVal = NULL;
 	const char * err = NULL;
 	CTAllocator * allocl = CTAllocatorCreate();
@@ -229,7 +230,7 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 	{
 		if (JSONC[*start] == '.' && CTStringContainsString(numberString, "."))
 		{
-			err = "A number was found that contained more than one decimal point\n";
+			err = "A number was found that contained more than one decimal point";
 			if (error)
 			{
 				*error = CTErrorCreate(alloc, err, 0);
@@ -238,17 +239,16 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 			while (*start < CTStringLength(JSON) && JSONC[*start] != ',' && JSONC[*start] != ']' && JSONC[*start] != '}') ++(*start);
 		}
 		CTStringAppendCharacter(numberString, JSONC[(*start)++]);
-	}
-	
-	if (*start < CTStringLength(JSON) && CTStringLength(numberString) > 1 && CTStringUTF8String(numberString)[0] == '0')
-	{
-		err = "A number was found that started with zero\n";
-		if (error)
+		if (CTStringLength(numberString) > 1 && CTStringUTF8String(numberString)[0] == '0')
 		{
-			*error = CTErrorCreate(alloc, err, 0);
+			err = "A number was found that started with zero";
+			if (error)
+			{
+				*error = CTErrorCreate(alloc, err, 0);
+			}
+			fputs(err, stderr);
+			while (*start < CTStringLength(JSON) && JSONC[*start] != ',' && JSONC[*start] != ']' && JSONC[*start] != '}') ++(*start);
 		}
-		fputs(err, stderr);
-		while (*start < CTStringLength(JSON) && JSONC[*start] != ',' && JSONC[*start] != ']' && JSONC[*start] != '}') ++(*start);
 	}
 	
 	if (*start < CTStringLength(JSON) && tolower(JSONC[*start]) == 'e')
@@ -270,7 +270,7 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 		
 		if (*start < CTStringLength(JSON) && JSONC[*start] == '.')
 		{
-			err = "E notation cannot be a floating point number\n";
+			err = "E notation cannot be a floating point number";
 			if (error)
 			{
 				*error = CTErrorCreate(alloc, err, 0);
@@ -323,12 +323,12 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 		}
 	}
 	CTAllocatorRelease(allocl);
-	return retVal ? retVal : CTObjectCreate(alloc, NULL, CTOBJECT_NOT_AN_OBJECT);
+	return retVal;
 }
 
 CTObject * CTLiteralFromJSON(CTAllocator * alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTError ** error)
 {
-	const char * err = "A JSON literal that was not true, false or null was found\n";
+	const char * err = "A JSON literal that was not true, false or null was found";
 	unsigned size = 4;
 	
 	const char * JSONC = CTStringUTF8String(JSON);

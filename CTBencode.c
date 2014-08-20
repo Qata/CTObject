@@ -220,6 +220,8 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
             CTStringAppendString(retVal, CTObjectValue(bencoded));
             break;
         }
+		default:
+			break;
     }
 	CTAllocatorRelease(allocl);
     return retVal;

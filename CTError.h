@@ -18,4 +18,4 @@ typedef struct
 
 CTError * CTErrorCreate(CTAllocator * alloc, const char * restrict error, int code);
 void CTErrorRelease(CTError * restrict error);
-const CTString * CTErrorGetError(CTError * restrict error);
+const CTString * CTErrorGetErrorString(CTError * restrict error);

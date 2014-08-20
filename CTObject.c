@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "CTObject.h"
 #include "CTDictionary.h"
 #include "CTArray.h"
@@ -16,19 +17,12 @@
 #include "CTString.h"
 #include "CTNull.h"
 
-CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, int8_t type)
+CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, CTOBJECT_TYPE type)
 {
     CTObject * object = CTAllocatorAllocate(alloc, sizeof(CTObject));
     object->alloc = alloc;
     object->ptr = ptr;
     object->type = type;
-    return object;
-}
-
-CTObject * CTObjectCreate2(CTAllocator * restrict alloc, void * ptr, int8_t type, uint64_t size)
-{
-    CTObject * object = CTObjectCreate(alloc, ptr, type);
-    object->size = size;
     return object;
 }
 
@@ -57,16 +51,19 @@ uint8_t CTObjectCompare(const CTObject * restrict object1, const CTObject * rest
 
 void * CTObjectValue(const CTObject * restrict object)
 {
+	assert(object);
 	return object->ptr;
 }
 
-int8_t CTObjectType(const CTObject * restrict object)
+CTOBJECT_TYPE CTObjectType(const CTObject * restrict object)
 {
+	assert(object);
 	return object->type;
 }
 
 uint64_t CTObjectSize(const CTObject * restrict object)
 {
+	assert(object);
 	return object->size;
 }
 

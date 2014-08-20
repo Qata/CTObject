@@ -24,7 +24,7 @@ void CTErrorRelease(CTError * error)
     CTAllocatorDeallocate(error->alloc, error);
 }
 
-const CTString * CTErrorGetError(CTError * restrict error)
+const CTString * CTErrorGetErrorString(CTError * restrict error)
 {
     return error->error;
 }

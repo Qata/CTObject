@@ -33,12 +33,12 @@ typedef struct
 {
     CTAllocator * alloc;
     union CTNumberValue value;
-    uint64_t size;
     CTNUMBER_TYPE type;
 } CTNumber;
 
 typedef struct
 {
+    CTAllocator * alloc;
     CTNumber * base;
     CTNumber * exponent;
 } CTLargeNumber;
