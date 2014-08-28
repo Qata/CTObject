@@ -229,12 +229,12 @@ CTNUMBER_TYPE CTNumberType(const CTNumber * restrict number)
 	return number->type;
 }
 
-CTObject * CTObjectWithNumber(CTNumber * restrict n)
+CTObject * CTObjectWithNumber(CTAllocator * alloc, CTNumber * restrict n)
 {
-	return CTObjectCreate(n->alloc, n, CTOBJECT_TYPE_NUMBER);
+	return CTObjectCreate(alloc, n, CTOBJECT_TYPE_NUMBER);
 }
 
-CTObject * CTObjectWithLargeNumber(CTLargeNumber * restrict n)
+CTObject * CTObjectWithLargeNumber(CTAllocator * alloc, CTLargeNumber * restrict n)
 {
-	return CTObjectCreate(n->base->alloc, n, CTOBJECT_TYPE_LARGE_NUMBER);
+	return CTObjectCreate(alloc, n, CTOBJECT_TYPE_LARGE_NUMBER);
 }

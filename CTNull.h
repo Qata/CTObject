@@ -19,4 +19,4 @@ typedef struct
 CTNull * CTNullCreate(CTAllocator * restrict alloc);
 const char * CTNullValue(CTNull * null);
 void CTNullRelease(CTNull * null);
-CTObject * CTObjectWithNull(CTNull * restrict n);
+CTObject * CTObjectWithNull(CTAllocator * alloc, CTNull * restrict n);

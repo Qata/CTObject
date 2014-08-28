@@ -184,7 +184,7 @@ int8_t CTStringCompare2(CTString * restrict string1, const char * restrict strin
 	return strcmp(CTStringUTF8String(string1), string2);
 }
 
-CTObject * CTObjectWithString(CTString * restrict str)
+CTObject * CTObjectWithString(CTAllocator * alloc, CTString * restrict str)
 {
-	return CTObjectCreate(str->alloc, str, CTOBJECT_TYPE_STRING);
+	return CTObjectCreate(alloc, str, CTOBJECT_TYPE_STRING);
 }

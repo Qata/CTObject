@@ -53,4 +53,4 @@ uint64_t CTDictionaryCount(const CTDictionary * restrict dict);
  * @param dict	A properly initialised CTDictionary that was created with CTDictionaryCreate*.
  * @return		The CTDictionary wrapped in a CTObject. The result is identical to using CTObjectCreate.
  **/
-CTObject * CTObjectWithDictionary(CTDictionary * restrict dict);
+CTObject * CTObjectWithDictionary(CTAllocator * alloc, CTDictionary * restrict dict);

@@ -156,6 +156,8 @@ void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict
 				}
                 else
                 {
+					CTStringRelease(dict->elements[i]->key);
+					CTObjectRelease(dict->elements[i]->value);
                     CTAllocatorDeallocate(dict->alloc, dict->elements[i]);
                 }
 			}
@@ -204,7 +206,7 @@ uint64_t CTDictionaryCount(const CTDictionary * restrict dict)
 	return dict->count;
 }
 
-CTObject * CTObjectWithDictionary(CTDictionary * restrict dict)
+CTObject * CTObjectWithDictionary(CTAllocator * alloc, CTDictionary * restrict dict)
 {
-	return CTObjectCreate(dict->alloc, dict, CTOBJECT_TYPE_DICTIONARY);
+	return CTObjectCreate(alloc, dict, CTOBJECT_TYPE_DICTIONARY);
 }

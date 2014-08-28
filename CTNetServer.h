@@ -8,7 +8,14 @@
 
 #pragma once
 #include "CTAllocator.h"
+#include <unistd.h>
+#if defined (_POSIX_VERSION) || (__CYGWIN__)
 #include <arpa/inet.h>
+#elif defined _WIN32
+#include <winsock2.h>
+#else
+#error "Unsupported platform"
+#endif
 
 typedef struct
 {

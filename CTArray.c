@@ -152,7 +152,7 @@ uint64_t CTArrayCount(CTArray * restrict array)
 	return array->count;
 }
 
-CTObject * CTObjectWithArray(CTArray * restrict array)
+CTObject * CTObjectWithArray(CTAllocator * alloc, CTArray * restrict array)
 {
-	return CTObjectCreate(array->alloc, array, CTOBJECT_TYPE_ARRAY);
+	return CTObjectCreate(alloc, array, CTOBJECT_TYPE_ARRAY);
 }

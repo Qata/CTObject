@@ -81,5 +81,5 @@ CTNUMBER_TYPE CTNumberType(const CTNumber * restrict number);
  * @param n	A properly initialised CTNumber that was created with CTNumberCreate*.
  * @return	The CTNumber wrapped in a CTObject. The result is identical to using CTObjectCreate.
  **/
-CTObject * CTObjectWithNumber(CTNumber * restrict n);
-CTObject * CTObjectWithLargeNumber(CTLargeNumber * restrict n);
+CTObject * CTObjectWithNumber(CTAllocator * alloc, CTNumber * restrict n);
+CTObject * CTObjectWithLargeNumber(CTAllocator * alloc, CTLargeNumber * restrict n);

@@ -260,13 +260,13 @@ void CTArrayTests()
 		CTNumber * n = CTArrayObjectAtIndex(array1->ptr, 1)->ptr;
 		printf("%i, %lli\n", n->type == CTNUMBER_TYPE_LONG, n->value.Long);
 		
-		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithString(CTStringCreate(allocator, "a"))) == 0);
-		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithNumber(CTNumberCreateWithLong(allocator, 1))) == 1);
-		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithString(CTStringCreate(allocator, "2"))) == 2);
-		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithNumber(CTNumberCreateWithLong(allocator, 2))) == 3);
-		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithArray(CTArrayCreate(allocator))) == 4);
-		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithDictionary(CTDictionaryCreate(allocator))) == 5);
-		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithLargeNumber(CTLargeNumberCreate(allocator, CTNumberCreateWithLong(allocator, 1343), CTNumberCreateWithLong(allocator, 380)))) == 6);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithString(allocator, CTStringCreate(allocator, "a"))) == 0);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithNumber(allocator, CTNumberCreateWithLong(allocator, 1))) == 1);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithString(allocator, CTStringCreate(allocator, "2"))) == 2);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithNumber(allocator, CTNumberCreateWithLong(allocator, 2))) == 3);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithArray(allocator, CTArrayCreate(allocator))) == 4);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithDictionary(allocator, CTDictionaryCreate(allocator))) == 5);
+		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithLargeNumber(allocator, CTLargeNumberCreate(allocator, CTNumberCreateWithLong(allocator, 1343), CTNumberCreateWithLong(allocator, 380)))) == 6);
 		CTAllocatorRelease(allocator);
 	}
 	{
@@ -459,9 +459,10 @@ int main(int argc, const char * argv[])
 	for (int i = 0; i < array->count; ++i)
 	{
 		error = NULL;
-		CTJSONParse(CTAllocatorGetDefault(), CTObjectValue(CTArrayObjectAtIndex(array, i)), 0, &error);
+		CTAllocator * allocll = CTAllocatorCreate();
+		CTJSONParse(allocll, CTObjectValue(CTArrayObjectAtIndex(array, i)), 0, &error);
 		assert(error);
-        CTErrorRelease(error);
+		CTAllocatorRelease(allocll);
 	}
 #pragma mark - CTBencode Test Begin
     CTArrayEmpty(array);

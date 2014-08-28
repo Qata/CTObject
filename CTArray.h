@@ -124,4 +124,4 @@ uint64_t CTArrayCount(CTArray * restrict array);
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		The CTArray wrapped in a CTObject. The result is identical to using CTObjectCreate.
  **/
-CTObject * CTObjectWithArray(CTArray * restrict array);
+CTObject * CTObjectWithArray(CTAllocator * alloc, CTArray * restrict array);

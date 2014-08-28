@@ -47,4 +47,4 @@ int8_t CTStringCompare2(CTString * restrict string1, const char * restrict strin
  * @param str	A properly initialised CTString that was created with CTStringCreate.
  * @return		The CTString wrapped in a CTObject. The result is identical to using CTObjectCreate.
  **/
-CTObject * CTObjectWithString(CTString * restrict str);
+CTObject * CTObjectWithString(CTAllocator * alloc, CTString * restrict str);
