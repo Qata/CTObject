@@ -257,9 +257,6 @@ void CTArrayTests()
 		
 		recurseJSON(array1->ptr, CTOBJECT_TYPE_ARRAY, 0);
 		
-		CTNumber * n = CTArrayObjectAtIndex(array1->ptr, 1)->ptr;
-		printf("%i, %lli\n", n->type == CTNUMBER_TYPE_LONG, n->value.Long);
-		
 		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithString(allocator, CTStringCreate(allocator, "a"))) == 0);
 		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithNumber(allocator, CTNumberCreateWithLong(allocator, 1))) == 1);
 		assert(CTArrayIndexOfEntryByValue(CTObjectValue(array1), CTObjectWithString(allocator, CTStringCreate(allocator, "2"))) == 2);
@@ -493,7 +490,7 @@ int main(int argc, const char * argv[])
 		error = NULL;
         CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &error);
 		assert(error);
-        printf("%s\n", CTStringUTF8String(CTErrorGetErrorString(error)));
+        fprintf(stderr, "%s\n", CTStringUTF8String(CTErrorGetErrorString(error)));
         CTErrorRelease(error);
 	}
     
@@ -501,6 +498,7 @@ int main(int argc, const char * argv[])
     
     CTArrayRelease(array);
     CTAllocatorRelease(CTAllocatorGetDefault());
+	printf("%llu, %llu\n", CTStringHash(CTStringCreate(allocator, "a")), CTStringHash(CTStringCreate(allocator, "yolo")));
     CTAllocatorRelease(allocator);
     
 #pragma mark - CTAllocator Test End

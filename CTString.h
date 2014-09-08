@@ -16,7 +16,9 @@ typedef struct
 {
     CTAllocator * alloc;
     uint64_t length;
+	uint64_t hash;
     char * characters;
+	uint8_t modified;
 } CTString;
 
 CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict characters);
@@ -24,6 +26,7 @@ void CTStringRelease(CTString * string);
 
 const char * CTStringUTF8String(const CTString * restrict string);
 uint64_t CTStringLength(const CTString * restrict string);
+uint64_t CTStringHash(CTString * restrict string);
 void CTStringSetLength(CTString * restrict string, uint64_t length);
 void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters, int64_t limit);
 void CTStringAppendCharacter(CTString * restrict string, char character);

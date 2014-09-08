@@ -56,7 +56,6 @@ uint8_t CTArrayCompare(CTArray * array1, CTArray * array2)
 				CTObject * entryTemp = CTArrayEntry(array2, j);
 				if (CTObjectCompare(entry1, entryTemp))
 				{
-					
 					entry2 = entryTemp;
 					break;
 				}
@@ -76,9 +75,7 @@ void CTArrayAddEntry(CTArray * restrict array, void * value, int8_t type)
 void CTArrayAddEntry2(CTArray * restrict array, CTObject * restrict value)
 {
     uint64_t index = array->count++;
-    
 	assert(array->elements = CTAllocatorReallocate(array->alloc, array->elements, sizeof(CTArray *) * array->count));
-    
     array->elements[index] = value;
 }
 

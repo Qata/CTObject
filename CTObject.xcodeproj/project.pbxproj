@@ -59,6 +59,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2311812C19B7DC7300DC050B /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		232B28861857E643000C93F1 /* CTBencode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTBencode.h; sourceTree = "<group>"; usesTabs = 1; };
 		232B28881857E64F000C93F1 /* CTBencode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; lineEnding = 0; path = CTBencode.c; sourceTree = "<group>"; usesTabs = 1; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		2389585E1817314600096409 /* libCTObject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCTObject.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,6 +145,7 @@
 				2396CA9918178F7A00B86F0A /* CTObject.c */,
 				2389586F1817317200096409 /* CTString.h */,
 				238958701817317200096409 /* CTString.c */,
+				2311812C19B7DC7300DC050B /* Makefile */,
 				2396CA971817516400B86F0A /* LICENSE */,
 				2396CA981817516400B86F0A /* README.md */,
 				23895882181731AA00096409 /* CTObject Tests */,
