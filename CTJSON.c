@@ -234,7 +234,7 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 			while (*start < CTStringLength(JSON) && JSONC[*start] != ',' && JSONC[*start] != ']' && JSONC[*start] != '}') ++(*start);
 		}
 		CTStringAppendCharacter(numberString, JSONC[(*start)++]);
-		if (CTStringLength(numberString) > 1 && CTStringUTF8String(numberString)[0] == '0')
+		if (CTStringLength(numberString) > 1 && CTStringUTF8String(numberString)[0] == '0' && !CTStringContainsString(numberString, "."))
 		{
 			err = "A number was found that started with zero";
 			if (error)

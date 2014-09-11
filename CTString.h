@@ -16,8 +16,8 @@ typedef struct
 {
     CTAllocator * alloc;
     uint64_t length;
-	uint64_t hash;
     char * characters;
+	uint64_t hash;
 	uint8_t modified;
 } CTString;
 

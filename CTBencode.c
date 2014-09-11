@@ -160,9 +160,9 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
 				CTDictionaryEntry * pair = CTDictionaryEntryAtIndex(CTObjectValue(bencoded), i);
                 if (CTStringLength(CTObjectValue(bencoded)))
                 {
-                    char buf[(int)floor(log(CTStringLength(CTDictionaryEntryKey(pair))) + 1)];
+                    char buf[(int)ceil(log10(CTStringLength(CTDictionaryEntryKey(pair))) + 1)];
                     snprintf(buf, sizeof(buf), "%llu", (unsigned long long)CTStringLength(CTDictionaryEntryKey(pair)));
-                    CTStringAppendCharacters(retVal, buf, sizeof(buf));
+                    CTStringAppendCharacters(retVal, buf, CTSTRING_NO_LIMIT);
                     CTStringAppendCharacter(retVal, ':');
                     CTStringAppendString(retVal, CTDictionaryEntryKey(pair));
                 }
@@ -192,9 +192,9 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
             CTStringAppendCharacter(retVal, 'i');
             if (CTNumberUnsignedLongValue(CTObjectValue(bencoded)))
             {
-                char buf[(int)floor(log(CTNumberUnsignedLongValue(CTObjectValue(bencoded))) + 1)];
+                char buf[(int)ceil(log10(CTNumberUnsignedLongValue(CTObjectValue(bencoded))) + 1)];
                 snprintf(buf, sizeof(buf), "%llu", (unsigned long long)CTNumberUnsignedLongValue(CTObjectValue(bencoded)));
-                CTStringAppendCharacters(retVal, buf, sizeof(buf));
+                CTStringAppendCharacters(retVal, buf, CTSTRING_NO_LIMIT);
             }
             else
             {
@@ -208,9 +208,9 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
         {
             if (CTStringLength(CTObjectValue(bencoded)))
             {
-                char buf[(int)floor(log(CTStringLength(CTObjectValue(bencoded))) + 1)];
+                char buf[(unsigned)ceil(log10(CTStringLength(CTObjectValue(bencoded))) + 1)];
                 snprintf(buf, sizeof(buf), "%llu", (unsigned long long)CTStringLength(CTObjectValue(bencoded)));
-                CTStringAppendCharacters(retVal, buf, sizeof(buf));
+                CTStringAppendCharacters(retVal, buf, CTSTRING_NO_LIMIT);
             }
             else
             {

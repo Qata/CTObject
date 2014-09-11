@@ -386,7 +386,9 @@ int main(int argc, const char * argv[])
     char * append = ". Appended Characters";
     
     CTString * string = CTStringCreate(allocator, stringTest);
+	printf("%llu\n", CTStringHash(string));
     CTStringAppendCharacters(string, append, CTSTRING_NO_LIMIT);
+	printf("%llu\n", CTStringHash(string));
     CTStringPrependCharacters(string, prepend, CTSTRING_NO_LIMIT);
     assert(strcmp(CTStringUTF8String(string), "Prepended Characters. Test of string. Appended Characters") == 0);
     assert(strcmp(CTStringStringBetween(string, prepend, append), "Test of string") == 0);
@@ -470,13 +472,15 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "d4:yoloi3ee", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "i-3240.0e", CTOBJECT_NOT_AN_OBJECT);
     CTArrayAddEntry(array, "l0:e", CTOBJECT_NOT_AN_OBJECT);
+    CTArrayAddEntry(array, "5:12345", CTOBJECT_NOT_AN_OBJECT);
 	
     error = NULL;
 	for (int i = 0; i < array->count; ++i)
 	{
 		CTObject * obj = CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &error);
 		assert(!error);
-        CTBencodeSerialise(allocator, obj, &error);
+        CTString * string = CTBencodeSerialise(allocator, obj, &error);
+		puts(string->characters);
 		assert(!error);
 	}
     

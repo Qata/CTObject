@@ -141,7 +141,8 @@ void CTArrayEmpty(CTArray * restrict array)
 
 CTObject * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index)
 {
-	return index < array->count ? array->elements[index] : NULL;
+	assert(index < array->count);
+	return array->elements[index];
 }
 
 uint64_t CTArrayCount(CTArray * restrict array)
