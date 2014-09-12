@@ -408,7 +408,7 @@ void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, 
 			break;
 		case CTOBJECT_TYPE_LARGE_NUMBER:
 		{
-			char * str = CTAllocatorAllocate(alloc, (unsigned)(ceil(log10(CTNumberDoubleValue(CTLargeNumberBase(obj)))) + 7 + ceil(log10(CTNumberLongValue(CTLargeNumberBase(obj)) + 1))) + 1);
+			char str[(unsigned)(ceil(log10(CTNumberDoubleValue(CTLargeNumberBase(obj)))) + 7 + ceil(log10(CTNumberLongValue(CTLargeNumberBase(obj)) + 1))) + 1];
 			switch (CTNumberType(CTLargeNumberBase(obj)))
 			{
 				case CTNUMBER_TYPE_DOUBLE:
@@ -419,7 +419,6 @@ void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, 
 					break;
 			}
 			CTStringAppendCharacters(JSON, str, CTSTRING_NO_LIMIT);
-			CTAllocatorDeallocate(alloc, str);
 			break;
 		}
 			
