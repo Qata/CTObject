@@ -388,22 +388,19 @@ void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, 
 			break;
 		case CTOBJECT_TYPE_NUMBER:
 		{
-			char * str = NULL;
 			if (CTNumberType(obj) == CTNUMBER_TYPE_DOUBLE)
 			{
-				str = CTAllocatorAllocate(alloc, (unsigned)ceil(log10(CTNumberDoubleValue(obj)) + 7));
+				char str[(unsigned)ceil(log10(CTNumberDoubleValue(obj)) + 0x10)];
 				sprintf(str, "%Lf", CTNumberDoubleValue(obj));
 				CTStringAppendCharacters(JSON, str, CTSTRING_NO_LIMIT);
-				CTAllocatorDeallocate(alloc, str);
 			}
 			else
 			{
-				str = CTAllocatorAllocate(alloc, (unsigned)ceil(log10(CTNumberLongValue(obj)) + 1));
+				char str[(unsigned)ceil(log10(CTNumberLongValue(obj)) + 1)];
 				sprintf(str, "%lli", CTNumberLongValue(obj));
 				CTStringAppendCharacters(JSON, str, CTSTRING_NO_LIMIT);
 			}
 			
-			CTAllocatorDeallocate(alloc, str);
 			break;
 		}
 		case CTOBJECT_TYPE_NULL:
