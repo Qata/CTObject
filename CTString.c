@@ -54,12 +54,18 @@ uint64_t CTStringHash(CTString * restrict string)
 		return string->hash;
 	}
 	string->modified = 0;
-	string->hash = 0;
-	for(uint64_t count = 0; count < CTStringLength(string); ++count)
+	return string->hash = CTStringCharHash(CTStringUTF8String(string));
+}
+
+uint64_t CTStringCharHash(const char * restrict string)
+{
+	uint64_t hash = 0;
+	size_t len = strlen(string);
+	for(uint64_t count = 0; count < len; ++count)
 	{
-		string->hash += (string->hash << 5) + CTStringUTF8String(string)[count];
+		hash += (hash << 5) + string[count];
 	}
-	return string->hash;
+	return hash;
 }
 
 void CTStringPrependCharacters(CTString * restrict string, const char * restrict characters, int64_t limit)

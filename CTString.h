@@ -24,6 +24,8 @@ typedef struct
 CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict characters);
 void CTStringRelease(CTString * string);
 
+uint64_t CTStringCharHash(const char * restrict string);
+
 const char * CTStringUTF8String(const CTString * restrict string);
 uint64_t CTStringLength(const CTString * restrict string);
 uint64_t CTStringHash(CTString * restrict string);
