@@ -436,7 +436,6 @@ int main(int argc, const char * argv[])
 	CTArrayAddEntry(array, "\"hello\"", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "1.0e7", CTOBJECT_NOT_AN_OBJECT);
 	CTArrayAddEntry(array, "1", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{\"method\":\"runcommand\",\"params\":[{\"type\":\"target\",\"line\":[1]}, {\"type\":\"indirect\",\"value\":\"on\"}],\"id\":59916}", CTOBJECT_NOT_AN_OBJECT);
     
     CTError * error = NULL;
 	for (int i = 0; i < array->count; ++i)
