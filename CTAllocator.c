@@ -50,7 +50,8 @@ CTAllocator * CTAllocatorCreate()
 
 void CTAllocatorRelease(CTAllocator * restrict allocator)
 {
-	if (allocator != CTAllocatorGetDefault() && allocator)
+	assert(allocator);
+	if (allocator != CTAllocatorGetDefault())
 	{
 		CTAllocatorReleasePrivate(allocator);
 	}
@@ -124,39 +125,38 @@ void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, uint6
 void CTAllocatorTransferOwnership(CTAllocator * restrict allocator, CTAllocator * restrict dest, void * ptr)
 {
 	assert(allocator);
-	if (dest && dest != allocator)
+	assert(dest);
+	assert(dest != allocator);
+	if (allocator->count)
 	{
-		if (allocator->count)
+		int countOfKeys = 0;
+		for (unsigned long i = 0; i < allocator->count; ++i)
 		{
-			int countOfKeys = 0;
-			for (unsigned long i = 0; i < allocator->count; ++i)
+			if (allocator->objects[i] == ptr)
 			{
-				if (allocator->objects[i] == ptr)
-				{
-					++countOfKeys;
-				}
+				++countOfKeys;
 			}
-			if (countOfKeys)
+		}
+		if (countOfKeys)
+		{
+			void ** objects = calloc(sizeof(void *), allocator->count - countOfKeys);
+			for (unsigned long i = 0, count = 0; i < allocator->count; ++i)
 			{
-				void ** objects = calloc(sizeof(void *), allocator->count - countOfKeys);
-				for (unsigned long i = 0, count = 0; i < allocator->count; ++i)
+				if (allocator->objects[i] != ptr)
 				{
-					if (allocator->objects[i] != ptr)
+					objects[count++] = allocator->objects[i];
+				}
+				else
+				{
+					if ((dest->objects = realloc(dest->objects, sizeof(void *) * dest->count + 1)))
 					{
-						objects[count++] = allocator->objects[i];
-					}
-					else
-					{
-						if ((dest->objects = realloc(dest->objects, sizeof(void *) * dest->count + 1)))
-						{
-							dest->objects[dest->count++] = allocator->objects[i];
-						}
+						dest->objects[dest->count++] = allocator->objects[i];
 					}
 				}
-				free(allocator->objects);
-				allocator->objects = objects;
-				allocator->count = allocator->count - countOfKeys;
 			}
+			free(allocator->objects);
+			allocator->objects = objects;
+			allocator->count = allocator->count - countOfKeys;
 		}
 	}
 }
