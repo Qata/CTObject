@@ -10,7 +10,7 @@
 #include "CTAllocator.h"
 #include "CTObject.h"
 /**
- * An object that keeps an array of type independent elements.
+ * An object that keeps an array of type independent, dynamically allocated elements.
  **/
 typedef struct
 {
