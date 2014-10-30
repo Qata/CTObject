@@ -281,7 +281,7 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 		{
 			if (CTStringLength(exponentString))
 			{
-				if (exponent >= -6 && exponent <= 15)
+				if (exponent <= 15)
 				{
 					retVal = CTObjectWithNumber(alloc, CTNumberCreateWithDouble(alloc, Double * pow(10, exponent)));
 				}
@@ -301,9 +301,9 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 		int64_t Long = strtoll(CTStringUTF8String(numberString), &pEnd, 0);
 		if (CTStringLength(exponentString))
 		{
-			if (exponent >= -6 && exponent <= 15)
+			if (exponent <= 15)
 			{
-				retVal = CTObjectWithNumber(alloc, CTNumberCreateWithLong(alloc, Long * pow(10, exponent)));
+				retVal = CTObjectWithNumber(alloc, CTNumberCreateWithDouble(alloc, Long * pow(10, exponent)));
 			}
 			else
 			{
