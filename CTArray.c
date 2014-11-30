@@ -33,6 +33,16 @@ CTArray * CTArrayCreateWithObjects(CTAllocator * restrict alloc, ...)
 	return retVal;
 }
 
+CTArray * CTArrayCopy(CTAllocator * alloc, CTArray * array)
+{
+	CTArray * new_array = CTArrayCreate(alloc);
+	for (uint64_t i = 0; i < array->count; ++i)
+	{
+		CTArrayAddEntry2(new_array, CTObjectCopy(alloc, CTArrayObjectAtIndex(array, i)));
+	}
+	return new_array;
+}
+
 void CTArrayRelease(CTArray * restrict array)
 {
 	for (uint64_t i = 0; i < array->count; ++i)
@@ -133,19 +143,25 @@ uint64_t CTArrayIndexOfEntryByValue(CTArray * restrict array, CTObject * value)
 
 void CTArrayEmpty(CTArray * restrict array)
 {
-	for (long long i = array->count; i >= 0; i--)
-    {
-        CTArrayDeleteEntry(array, i);
-    }
+	if (array->count)
+	{
+		for (uint64_t i = 0; i < array->count; ++i)
+		{
+			CTObjectRelease(array->elements[i]);
+		}
+		array->count = 0;
+		CTAllocatorDeallocate(array->alloc, array->elements);
+		array->elements = NULL;
+	}
 }
 
-CTObject * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index)
+inline CTObject * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index)
 {
 	assert(index < array->count);
 	return array->elements[index];
 }
 
-uint64_t CTArrayCount(CTArray * restrict array)
+inline uint64_t CTArrayCount(CTArray * restrict array)
 {
 	return array->count;
 }

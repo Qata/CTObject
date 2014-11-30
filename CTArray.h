@@ -27,6 +27,13 @@ typedef struct
 CTArray * CTArrayCreate(CTAllocator * restrict alloc);
 
 /**
+ * Copy the specified array and everything within using the supplied allocator.
+ * @param alloc	A properly initialised CTAllocator that was created with CTAllocatorCreate.
+ * @return		Returns an initialised CTArray with the same count as the array supplied. All objects in the array will also be allocated with the supplied allocator.
+ **/
+CTArray * CTArrayCopy(CTAllocator * restrict alloc, CTArray * array);
+
+/**
  * Create an array with the specified allocator and initialise it with a NULL-terminated list of CTObjects.
  * @param alloc	A properly initialised CTAllocator that was created with CTAllocatorCreate.
  * @return		Returns an initialised CTArray with a count of the amount of passed CTObjects.

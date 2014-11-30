@@ -17,17 +17,7 @@ typedef enum
     CTOBJECT_TYPE_STRING,
     CTOBJECT_TYPE_NUMBER,
     CTOBJECT_TYPE_NULL,
-    CTOBJECT_TYPE_LARGE_NUMBER,
-
-    CTOBJECT_TYPE_UINT8_ARRAY,
-    CTOBJECT_TYPE_UINT16_ARRAY,
-    CTOBJECT_TYPE_UINT32_ARRAY,
-    CTOBJECT_TYPE_UINT64_ARRAY,
-    CTOBJECT_TYPE_INT8_ARRAY,
-    CTOBJECT_TYPE_INT16_ARRAY,
-    CTOBJECT_TYPE_INT32_ARRAY,
-    CTOBJECT_TYPE_INT64_ARRAY,
-    CTOBJECT_TYPE_LONG_DOUBLE_ARRAY
+    CTOBJECT_TYPE_LARGE_NUMBER
 } CTOBJECT_TYPE;
 
 typedef struct
@@ -35,10 +25,11 @@ typedef struct
     CTAllocator * alloc;
     uint64_t size;
     void * ptr;
-    int8_t type;
+    CTOBJECT_TYPE type;
 } CTObject;
 
 CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, CTOBJECT_TYPE type);
+CTObject * CTObjectCopy(CTAllocator * restrict alloc, CTObject * restrict object);
 void * CTObjectValue(const CTObject * restrict object);
 CTOBJECT_TYPE CTObjectType(const CTObject * restrict object);
 uint64_t CTObjectSize(const CTObject * restrict object);

@@ -14,7 +14,7 @@
 #include <assert.h>
 #include <math.h>
 
-CTString * CTBencodeExtractString(CTAllocator * alloc, CTString * bencodedString, uint64_t * start, CTError ** error)
+CTString * CTBencodeExtractString(CTAllocator * alloc, CTString * bencodedString, uint64_t * start)
 {
     CTString * retVal = CTStringCreate(alloc, "");
     uint64_t length = strtoull(CTStringUTF8String(bencodedString) + *start, NULL, 10);
@@ -76,7 +76,7 @@ CTArray * CTBencodeExtractList(CTAllocator * alloc, CTString * bencodedString, u
     return list;
 }
 
-CTNumber * CTBencodeExtractInteger(CTAllocator * alloc, CTString * bencodedString, uint64_t * start, CTError ** error)
+CTNumber * CTBencodeExtractInteger(CTAllocator * alloc, CTString * bencodedString, uint64_t * start)
 {
     ++(*start);
     CTString * string = CTStringCreate(alloc, "");
@@ -116,7 +116,7 @@ CTObject * CTBencodeParse2(CTAllocator * alloc, const char * bencoded, uint64_t 
                     retVal = CTObjectCreate(alloc, CTBencodeExtractList(alloc, bencodedString, start, error), CTOBJECT_TYPE_ARRAY);
                     break;
                 case 'i':
-                    retVal = CTObjectCreate(alloc, CTBencodeExtractInteger(alloc, bencodedString, start, error), CTOBJECT_TYPE_NUMBER);
+                    retVal = CTObjectCreate(alloc, CTBencodeExtractInteger(alloc, bencodedString, start), CTOBJECT_TYPE_NUMBER);
                     break;
                 case '-':
                 case '0':
@@ -129,7 +129,7 @@ CTObject * CTBencodeParse2(CTAllocator * alloc, const char * bencoded, uint64_t 
                 case '7':
                 case '8':
                 case '9':
-                    retVal = CTObjectCreate(alloc, CTBencodeExtractString(alloc, bencodedString,start, error), CTOBJECT_TYPE_STRING);
+                    retVal = CTObjectCreate(alloc, CTBencodeExtractString(alloc, bencodedString, start), CTOBJECT_TYPE_STRING);
                     break;
                 default:
                     *error = CTErrorCreate(alloc, "Incorrect starting character", 0);

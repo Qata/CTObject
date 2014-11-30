@@ -25,6 +25,7 @@ typedef struct
 
 CTDictionary * CTDictionaryCreate(CTAllocator * restrict alloc);
 CTDictionary * CTDictionaryCreateWithKeysPairedWithValues(CTAllocator * restrict alloc, ...);
+CTDictionary * CTDictionaryCopy(CTAllocator * restrict alloc, CTDictionary * dict);
 void CTDictionaryRelease(CTDictionary * dict);
 
 /**

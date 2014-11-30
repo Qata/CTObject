@@ -54,12 +54,23 @@ CTDictionary * CTDictionaryCreateWithKeysPairedWithValues(CTAllocator * restrict
 	return retVal;
 }
 
+CTDictionary * CTDictionaryCopy(CTAllocator * restrict alloc, CTDictionary * dict)
+{
+	CTDictionary * new_dict = CTDictionaryCreate(alloc);
+	for (uint64_t i = 0; i < dict->count; ++i)
+	{
+		CTDictionaryAddEntry(new_dict, dict->elements[i]->key->characters, CTObjectCopy(alloc, dict->elements[i]->value));
+	}
+	return new_dict;
+}
+
 void CTDictionaryRelease(CTDictionary * dict)
 {
 	for (uint64_t i = 0; i < dict->count; ++i)
     {
         CTStringRelease(dict->elements[i]->key);
-        CTObjectRelease(dict->elements[i]->value);
+		CTObjectRelease(dict->elements[i]->value);
+		CTAllocatorDeallocate(dict->alloc, dict->elements[i]);
     }
 	CTAllocatorDeallocate(dict->alloc, dict->elements);
 	CTAllocatorDeallocate(dict->alloc, dict);
@@ -179,9 +190,10 @@ CTDictionaryEntry * CTDictionaryEntryAtIndex(const CTDictionary * restrict dict,
 
 CTObject * CTDictionaryValueForKey(const CTDictionary * restrict dict, const char * restrict key)
 {
+	uint64_t key_hash = CTStringCharHash(key);
     for (unsigned long i = 0; i < dict->count; ++i)
     {
-        if (!strcmp(CTStringUTF8String(dict->elements[i]->key), key))
+        if (CTStringHash(dict->elements[i]->key) == key_hash)
         {
             return dict->elements[i]->value;
         }

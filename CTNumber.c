@@ -50,11 +50,29 @@ CTNumber * CTNumberCreateWithDouble(CTAllocator * restrict alloc, long double va
     return number;
 }
 
+CTNumber * CTNumberCopy(CTAllocator * restrict alloc, CTNumber * number)
+{
+	switch (number->type)
+	{
+		case CTNUMBER_TYPE_INT:
+			return CTNumberCreateWithInt(alloc, number->value.Int);
+		case CTNUMBER_TYPE_UINT:
+			return CTNumberCreateWithUnsignedInt(alloc, number->value.UInt);
+		case CTNUMBER_TYPE_LONG:
+			return CTNumberCreateWithLong(alloc, number->value.Long);
+		case CTNUMBER_TYPE_ULONG:
+			return CTNumberCreateWithUnsignedLong(alloc, number->value.ULong);
+		default:
+			return CTNumberCreateWithDouble(alloc, number->value.Double);
+	}
+}
+
 uint8_t CTNumberCompare(const CTNumber * restrict number1, const CTNumber * restrict number2)
 {
 	if (number1->type == number2->type)
 	{
-		switch (number1->type) {
+		switch (number1->type)
+		{
 			case CTNUMBER_TYPE_INT:
 				return number1->value.Int == number2->value.Int;
 			case CTNUMBER_TYPE_UINT:
@@ -82,6 +100,11 @@ CTLargeNumber * CTLargeNumberCreate(CTAllocator * restrict alloc, CTNumber * bas
     lnumber->base = base;
     lnumber->exponent = exponent;
     return lnumber;
+}
+
+CTLargeNumber * CTLargeNumberCopy(CTAllocator * restrict alloc, CTLargeNumber * number)
+{
+	return CTLargeNumberCreate(alloc, CTNumberCopy(alloc, number->base), CTNumberCopy(alloc, number->exponent));
 }
 
 CTNumber * CTLargeNumberBase(const CTLargeNumber * restrict number)

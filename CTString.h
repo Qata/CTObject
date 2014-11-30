@@ -22,6 +22,7 @@ typedef struct
 } CTString;
 
 CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict characters);
+CTString * CTStringCopy(CTAllocator * restrict alloc, CTString * string);
 void CTStringRelease(CTString * string);
 
 uint64_t CTStringCharHash(const char * restrict string);

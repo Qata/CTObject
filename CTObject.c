@@ -26,6 +26,25 @@ CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, CTOBJECT_TYP
     return object;
 }
 
+CTObject * CTObjectCopy(CTAllocator * restrict alloc, CTObject * object)
+{
+	switch(object->type)
+	{
+		case CTOBJECT_TYPE_DICTIONARY:
+			return CTObjectWithDictionary(alloc, CTDictionaryCopy(alloc, object->ptr));
+		case CTOBJECT_TYPE_ARRAY:
+			return CTObjectWithArray(alloc, CTArrayCopy(alloc, object->ptr));
+		case CTOBJECT_TYPE_NUMBER:
+			return CTObjectWithNumber(alloc, CTNumberCopy(alloc, object->ptr));
+		case CTOBJECT_TYPE_LARGE_NUMBER:
+			return CTObjectWithLargeNumber(alloc, CTLargeNumberCopy(alloc, object->ptr));
+		case CTOBJECT_TYPE_STRING:
+			return CTObjectWithString(alloc, CTStringCopy(alloc, object->ptr));
+		default:
+			return CTObjectWithNull(alloc, CTNullCreate(alloc));
+	}
+}
+
 uint8_t CTObjectCompare(const CTObject * restrict object1, const CTObject * restrict object2)
 {
 	if (object1->type == object2->type)
@@ -44,24 +63,26 @@ uint8_t CTObjectCompare(const CTObject * restrict object1, const CTObject * rest
 				return CTStringCompare(object1->ptr, object2->ptr) == 0;
 			case CTOBJECT_TYPE_NULL:
 				return 1;
+			case CTOBJECT_NOT_AN_OBJECT:
+				return 0;
 		}
 	}
 	return 0;
 }
 
-void * CTObjectValue(const CTObject * restrict object)
+inline void * CTObjectValue(const CTObject * restrict object)
 {
 	assert(object);
 	return object->ptr;
 }
 
-CTOBJECT_TYPE CTObjectType(const CTObject * restrict object)
+inline CTOBJECT_TYPE CTObjectType(const CTObject * restrict object)
 {
 	assert(object);
 	return object->type;
 }
 
-uint64_t CTObjectSize(const CTObject * restrict object)
+inline uint64_t CTObjectSize(const CTObject * restrict object)
 {
 	assert(object);
 	return object->size;
@@ -81,7 +102,10 @@ void CTObjectRelease(CTObject * object)
             
         case CTOBJECT_TYPE_NUMBER:
             CTNumberRelease(object->ptr);
-            break;
+			break;
+			
+		case CTOBJECT_TYPE_LARGE_NUMBER:
+			break;
             
         case CTOBJECT_TYPE_STRING:
             CTStringRelease(object->ptr);
@@ -90,7 +114,9 @@ void CTObjectRelease(CTObject * object)
 		case CTOBJECT_TYPE_NULL:
 			CTNullRelease(object->ptr);
 			break;
+			
+		case CTOBJECT_NOT_AN_OBJECT:
+			break;
     }
-    
     CTAllocatorDeallocate(object->alloc, object);
 }

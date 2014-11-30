@@ -26,18 +26,23 @@ CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict ch
     return string;
 }
 
+CTString * CTStringCopy(CTAllocator * restrict alloc, CTString * string)
+{
+	return CTStringCreate(alloc, string->characters);
+}
+
 void CTStringRelease(CTString * string)
 {
     CTAllocatorDeallocate(string->alloc, string->characters);
     CTAllocatorDeallocate(string->alloc, string);
 }
 
-const char * CTStringUTF8String(const CTString * restrict string)
+inline const char * CTStringUTF8String(const CTString * restrict string)
 {
 	return string->characters;
 }
 
-uint64_t CTStringLength(const CTString * restrict string)
+inline uint64_t CTStringLength(const CTString * restrict string)
 {
 	return string->length;
 }

@@ -9,9 +9,15 @@
 #pragma once
 #include <stdint.h>
 
-enum
+enum CTJSON_OPTIONS
 {
 	CTJSONOptionsSingleQuoteStrings = (1UL << 0)
+};
+
+enum CTJSON_ERROR_CODES
+{
+	CTJSON_UNEXPECTED_TOKEN = -100,
+	CTJSON_STRUCTURE_OMISSION = -101
 };
 
 typedef uint64_t CTJSONOptions;
