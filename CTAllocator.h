@@ -19,6 +19,11 @@ typedef struct
 } CTAllocator;
 
 /**
+ * Initialise the default allocator mutex and the cleanup functions to be used at exit.
+ **/
+void CTAllocatorInit(void);
+
+/**
  * Get the CTAllocator used by the entire program for allocation and destruction of smaller objects.
  * @return	Returns the program's CTAllocator that can be used to allocate and deallocate memory.
  **/

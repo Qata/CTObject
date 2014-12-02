@@ -23,7 +23,7 @@
 
 CTObject * CTStringFromJSON(CTAllocator * alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTError ** error);
 CTObject * CTObjectFromJSON(CTAllocator * alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTError ** error);
-void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, CTOBJECT_TYPE type, CTJSONOptions options, CTError ** error);
+void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, CTOBJECT_TYPE type, CTJSONOptions options);
 CTObject * CTJSONParse2(CTAllocator * alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTError ** error);
 CTObject * CTDictionaryFromJSON(CTAllocator * alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTError ** error);
 CTObject * CTLiteralFromJSON(CTAllocator * alloc, const CTString * restrict JSON, uint64_t * start, CTError ** error);
@@ -353,14 +353,14 @@ CTObject * CTLiteralFromJSON(CTAllocator * alloc, const CTString * restrict JSON
 	return CTObjectCreate(alloc, NULL, CTOBJECT_NOT_AN_OBJECT);
 }
 
-CTString * CTJSONSerialise(CTAllocator * alloc, CTObject * JSON, CTJSONOptions options, CTError ** error)
+CTString * CTJSONSerialise(CTAllocator * alloc, CTObject * JSON, CTJSONOptions options)
 {
     CTString * retVal = CTStringCreate(alloc, "");
-    CTJSONSerialiseRecursive(alloc, retVal, CTObjectValue(JSON), CTObjectType(JSON), options, error);
+    CTJSONSerialiseRecursive(alloc, retVal, CTObjectValue(JSON), CTObjectType(JSON), options);
     return retVal;
 }
 
-void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, CTOBJECT_TYPE type, CTJSONOptions options, CTError ** error)
+void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, CTOBJECT_TYPE type, CTJSONOptions options)
 {
     uint64_t count = 0;
     CTOBJECT_TYPE valueType = 0;
@@ -442,7 +442,7 @@ void CTJSONSerialiseRecursive(CTAllocator * alloc, CTString * JSON, void * obj, 
 						break;
 				}
 				
-				CTJSONSerialiseRecursive(alloc, JSON, ptr, valueType, options, error);
+				CTJSONSerialiseRecursive(alloc, JSON, ptr, valueType, options);
 				
 				if (i < (count - 1))
 				{

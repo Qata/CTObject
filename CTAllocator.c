@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <pthread.h>
 #include "CTAllocator.h"
 
 static CTAllocator * defaultAllocator;
@@ -29,17 +30,22 @@ void CTAllocatorReleaseDefaultAllocator()
 	CTAllocatorReleasePrivate(defaultAllocator);
 }
 
-CTAllocator * CTAllocatorGetDefault()
+pthread_mutex_t default_lock;
+
+void CTAllocatorInit()
 {
-	static int initialized = 0;
-	
+	static volatile int initialized = 0;
 	if (!initialized)
 	{
+		pthread_mutex_init(&default_lock, NULL);
 		defaultAllocator = CTAllocatorCreate();
 		atexit(CTAllocatorReleaseDefaultAllocator);
 		initialized = 1;
 	}
-	
+}
+
+CTAllocator * CTAllocatorGetDefault()
+{
 	return defaultAllocator;
 }
 
@@ -64,21 +70,32 @@ void CTAllocatorRelease(CTAllocator * restrict allocator)
 void * CTAllocatorAllocate(CTAllocator * restrict allocator, uint64_t size)
 {
 	assert(allocator);
-	#ifdef DEBUG
-	assert(allocator->objects = realloc(allocator->objects, sizeof(void *) * allocator->count + 1));
-	assert(allocator->objects[allocator->count] = calloc(1, size));
-	return allocator->objects[allocator->count++];
-	#endif
+	if (allocator == defaultAllocator)
+	{
+		pthread_mutex_lock(&default_lock);
+	}
+	
 	if (!(allocator->objects = realloc(allocator->objects, sizeof(void *) * allocator->count + 1)))
 	{
 		abort();
 	}
-	return allocator->objects[allocator->count++] = calloc(1, size);
+	
+	void * retVal = allocator->objects[allocator->count++] = calloc(1, size);
+	if (allocator == defaultAllocator)
+	{
+		pthread_mutex_unlock(&default_lock);
+	}
+	
+	return retVal;
 }
 
 void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 {
 	assert(allocator);
+	if (allocator == defaultAllocator)
+	{
+		pthread_mutex_lock(&default_lock);
+	}
     if (allocator->count > 0)
 	{
 		int countOfKeys = 0;
@@ -121,21 +138,35 @@ void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 			}
         }
 	}
+	if (allocator == defaultAllocator)
+	{
+		pthread_mutex_unlock(&default_lock);
+	}
 }
 
 void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, uint64_t size)
 {
 	assert(allocator);
     if (ptr)
-    {
+	{
+		if (allocator == defaultAllocator)
+		{
+			pthread_mutex_lock(&default_lock);
+		}
+		void * retVal = NULL;
         for (uint64_t i = 0; i < allocator->count; ++i)
         {
             if (allocator->objects[i] == ptr)
             {
-                return allocator->objects[i] = realloc(ptr, size);
+                retVal = allocator->objects[i] = realloc(ptr, size);
+				break;
             }
-        }
-        return NULL;
+		}
+		if (allocator == defaultAllocator)
+		{
+			pthread_mutex_unlock(&default_lock);
+		}
+        return retVal;
     }
     return CTAllocatorAllocate(allocator, size);
 }
@@ -145,6 +176,10 @@ void CTAllocatorTransferOwnership(CTAllocator * restrict allocator, CTAllocator 
 	assert(allocator);
 	assert(dest);
 	assert(dest != allocator);
+	if (allocator == defaultAllocator || dest == defaultAllocator)
+	{
+		pthread_mutex_lock(&default_lock);
+	}
 	if (allocator->count)
 	{
 		int countOfKeys = 0;
@@ -191,5 +226,9 @@ void CTAllocatorTransferOwnership(CTAllocator * restrict allocator, CTAllocator 
 				allocator->count = 0;
 			}
 		}
+	}
+	if (allocator == defaultAllocator || dest == defaultAllocator)
+	{
+		pthread_mutex_unlock(&default_lock);
 	}
 }
