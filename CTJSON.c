@@ -98,39 +98,44 @@ CTObject * CTDictionaryFromJSON(CTAllocator * alloc, const CTString * restrict J
 	const char * err = "Formatting error in dictionary";
 	++(*start);
 	const char * JSONC = CTStringUTF8String(JSON);
-    while (*start < CTStringLength(JSON) && JSONC[*start] != '}')
+	
+	if (*start < CTStringLength(JSON))
 	{
-		if (isgraph(JSONC[*start]))
+		do
 		{
-			switch (JSONC[*start])
+			if (JSONC[*start] != '}')
 			{
-				case '"':
-				case '\'':
-					key = CTJSONParse2(alloc, JSON, start, options, error);
-					break;
-				case ':':
-					++(*start);
-					value = CTJSONParse2(alloc, JSON, start, options, error);
-					break;
-				case ',':
-					break;
-				default:
-					if (error)
+				if (isgraph(JSONC[*start]))
+				{
+					switch (JSONC[*start])
 					{
-						*error = CTErrorCreate(alloc, err, 0);
+						case '"':
+						case '\'':
+							key = CTJSONParse2(alloc, JSON, start, options, error);
+							break;
+						case ':':
+							++(*start);
+							value = CTJSONParse2(alloc, JSON, start, options, error);
+							break;
+						case ',':
+							break;
+						default:
+							if (error)
+							{
+								*error = CTErrorCreate(alloc, err, 0);
+							}
+							return CTObjectCreate(alloc, dictionary, CTOBJECT_TYPE_DICTIONARY);
+							break;
 					}
-					return CTObjectCreate(alloc, dictionary, CTOBJECT_TYPE_DICTIONARY);
-					break;
+					if (key && value && CTObjectType(key) == CTOBJECT_TYPE_STRING)
+					{
+						CTDictionaryAddEntry(dictionary, CTStringUTF8String(CTObjectValue(key)), value);
+						CTObjectRelease(key);
+						key = value = NULL;
+					}
+				}
 			}
-			if (key && value && CTObjectType(key) == CTOBJECT_TYPE_STRING)
-			{
-				CTDictionaryAddEntry2(dictionary, CTObjectValue(key), value);
-				CTAllocatorDeallocate(alloc, key);
-				key = value = NULL;
-			}
-		}
-		if (JSONC[(*start)++] == '}')
-			break;
+		} while (*start < CTStringLength(JSON) && JSONC[(*start)++] != '}');
 	}
 	
 	if ((key || value) && !(key && value))
@@ -139,9 +144,7 @@ CTObject * CTDictionaryFromJSON(CTAllocator * alloc, const CTString * restrict J
 		{
 			*error = CTErrorCreate(alloc, err, 0);
 		}
-		return CTObjectCreate(alloc, dictionary, CTOBJECT_TYPE_DICTIONARY);
 	}
-	
 	return CTObjectCreate(alloc, dictionary, CTOBJECT_TYPE_DICTIONARY);
 }
 

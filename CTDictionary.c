@@ -190,7 +190,7 @@ CTDictionaryEntry * CTDictionaryEntryAtIndex(const CTDictionary * restrict dict,
 
 CTObject * CTDictionaryObjectForKey(const CTDictionary * restrict dict, const char * restrict key)
 {
-	uint64_t key_hash = CTStringCharHash(key);
+	hash_t key_hash = CTStringCharHash(key);
     for (unsigned long i = 0; i < dict->count; ++i)
     {
         if (CTStringHash(dict->elements[i]->key) == key_hash)

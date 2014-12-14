@@ -12,6 +12,8 @@
 
 #define CTSTRING_NO_LIMIT -1
 
+typedef uint64_t hash_t;
+
 typedef struct
 {
     CTAllocator * alloc;
@@ -25,11 +27,11 @@ CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict ch
 CTString * CTStringCopy(CTAllocator * restrict alloc, CTString * string);
 void CTStringRelease(CTString * string);
 
-uint64_t CTStringCharHash(const char * restrict string);
+hash_t CTStringCharHash(const char * restrict string);
 
 const char * CTStringUTF8String(const CTString * restrict string);
 uint64_t CTStringLength(const CTString * restrict string);
-uint64_t CTStringHash(CTString * restrict string);
+hash_t CTStringHash(CTString * restrict string);
 void CTStringSetLength(CTString * restrict string, uint64_t length);
 void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters, int64_t limit);
 void CTStringAppendCharacter(CTString * restrict string, char character);

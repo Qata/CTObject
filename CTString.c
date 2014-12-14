@@ -52,7 +52,7 @@ void CTStringSetLength(CTString * restrict string, uint64_t length)
 	string->length = length;
 }
 
-uint64_t CTStringHash(CTString * restrict string)
+hash_t CTStringHash(CTString * restrict string)
 {
 	if (!string->modified)
 	{
@@ -62,7 +62,7 @@ uint64_t CTStringHash(CTString * restrict string)
 	return string->hash = CTStringCharHash(CTStringUTF8String(string));
 }
 
-uint64_t CTStringCharHash(const char * restrict string)
+hash_t CTStringCharHash(const char * restrict string)
 {
 	uint64_t hash = 0;
 	size_t len = strlen(string);

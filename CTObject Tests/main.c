@@ -86,6 +86,9 @@ void recurseJSON(void * obj, int type, int indentation)
 						}
 						printf("e%lli\n", (long long)((CTLargeNumber *)ptr)->exponent->value.Long);
 						break;
+					case CTOBJECT_NOT_AN_OBJECT:
+						printf("'%s' = %p\n", CTStringUTF8String(key), ptr);
+						break;
 				}
             }
             for (int i = 0; i < indentation; ++i) printf("\t");
@@ -159,6 +162,9 @@ void recurseJSON(void * obj, int type, int indentation)
                     case CTOBJECT_TYPE_NULL:
                         printf("'%s'\n", ((CTNull *)ptr)->value);
                         break;
+					case CTOBJECT_NOT_AN_OBJECT:
+						printf("'%p'\n", ((CTNull *)ptr)->value);
+						break;
                 }
             }
             for (int i = 0; i < indentation; ++i) printf("\t");
@@ -196,6 +202,12 @@ void recurseBencode(CTObject * obj, int indentation)
                     case CTOBJECT_TYPE_NUMBER:
                         printf("'%s' = '%i'\n", CTStringUTF8String(key), ((CTNumber *)ptr)->value.Int);
                         break;
+					case CTOBJECT_TYPE_NULL:
+						break;
+					case CTOBJECT_TYPE_LARGE_NUMBER:
+						break;
+					case CTOBJECT_NOT_AN_OBJECT:
+						break;
                 }
             }
             for (int i = 0; i < indentation; ++i) printf("\t");
@@ -224,6 +236,12 @@ void recurseBencode(CTObject * obj, int indentation)
                     case CTOBJECT_TYPE_NUMBER:
                         printf("'%i'\n", ((CTNumber *)ptr)->value.Int);
                         break;
+					case CTOBJECT_TYPE_LARGE_NUMBER:
+						break;
+					case CTOBJECT_TYPE_NULL:
+						break;
+					case CTOBJECT_NOT_AN_OBJECT:
+						break;
                 }
             }
             for (int i = 0; i < indentation; ++i) printf("\t");
@@ -235,12 +253,17 @@ void recurseBencode(CTObject * obj, int indentation)
             printf("'%s'\n", CTStringUTF8String(CTObjectValue(obj)));
             break;
         }
-            
         case CTOBJECT_TYPE_NUMBER:
         {
             printf("'%lli'\n", CTNumberLongValue(CTObjectValue(obj)));
             break;
         }
+		case CTOBJECT_TYPE_LARGE_NUMBER:
+			break;
+		case CTOBJECT_TYPE_NULL:
+			break;
+		case CTOBJECT_NOT_AN_OBJECT:
+			break;
     }
 }
 
@@ -318,7 +341,10 @@ void CTArrayTests()
 
 int main(int argc, const char * argv[])
 {
-	
+	CTAllocatorInit();
+	CTObject * object = CTJSONParse(CTAllocatorGetDefault(), "{\"schedules\":[{\"schedule\":{},\"command\":[]}]}", 0, NULL);
+	recurseJSON(object->ptr, object->type, 0);
+	return 0;
     clock_t t = clock();
 #pragma mark - CTAllocator Test Begin
     CTAllocator * allocator = CTAllocatorCreate();
@@ -373,12 +399,12 @@ int main(int argc, const char * argv[])
     
     assert(dict->count == 0x10);
     assert(CTDictionaryIndexOfEntry(dict, "not found in dictionary") == CT_NOT_FOUND);
-    assert(CTDictionaryValueForKey(dict, "not found in dictionary") == NULL);
+    assert(CTDictionaryObjectForKey(dict, "not found in dictionary") == NULL);
     
     for (int i = 0; i < 0x10; ++i)
     {
         assert(CTDictionaryIndexOfEntry(dict, testStrings[i]) == i);
-        assert(strcmp(CTDictionaryValueForKey(dict, testStrings[i])->ptr, testStrings2[i]) == 0);
+        assert(strcmp(CTDictionaryObjectForKey(dict, testStrings[i])->ptr, testStrings2[i]) == 0);
     }
     
     for (int i = 0; i < 0x10; ++i)
@@ -454,7 +480,7 @@ int main(int argc, const char * argv[])
 		CTObject * dict = CTJSONParse(allocator, array->elements[i]->ptr, 0, &error);
 		recurseJSON(CTObjectValue(dict), dict->type, 0);
 		assert(!error);
-		CTJSONSerialise(allocator, dict, 0, &error);
+		CTJSONSerialise(allocator, dict, 0);
 		assert(!error);
 	}
     CTArrayEmpty(array);
