@@ -342,9 +342,6 @@ void CTArrayTests()
 int main(int argc, const char * argv[])
 {
 	CTAllocatorInit();
-	CTObject * object = CTJSONParse(CTAllocatorGetDefault(), "{\"schedules\":[{\"schedule\":{},\"command\":[]}]}", 0, NULL);
-	recurseJSON(object->ptr, object->type, 0);
-	return 0;
     clock_t t = clock();
 #pragma mark - CTAllocator Test Begin
     CTAllocator * allocator = CTAllocatorCreate();
