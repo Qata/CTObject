@@ -10,4 +10,4 @@
 #include "CTAllocator.h"
 #include "CTString.h"
 
-char * stringDuplicate(CTAllocator * restrict alloc, const char * restrict str);
+char * stringDuplicate(CTAllocatorRef restrict alloc, const char * restrict str);

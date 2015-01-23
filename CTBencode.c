@@ -14,9 +14,9 @@
 #include <assert.h>
 #include <math.h>
 
-CTString * CTBencodeExtractString(CTAllocator * alloc, CTString * bencodedString, uint64_t * start)
+CTStringRef CTBencodeExtractString(CTAllocatorRef alloc, CTStringRef bencodedString, uint64_t * start)
 {
-    CTString * retVal = CTStringCreate(alloc, "");
+    CTStringRef retVal = CTStringCreate(alloc, "");
     uint64_t length = strtoull(CTStringUTF8String(bencodedString) + *start, NULL, 10);
 	
 	*start += length > 0 ? ceil(log10(length + 1)) + 1 : 2;
@@ -28,14 +28,14 @@ CTString * CTBencodeExtractString(CTAllocator * alloc, CTString * bencodedString
     return retVal;
 }
 
-CTDictionary * CTBencodeExtractDictionary(CTAllocator * alloc, CTString * bencodedString, uint64_t * start, CTError ** error)
+CTDictionaryRef CTBencodeExtractDictionary(CTAllocatorRef alloc, CTStringRef bencodedString, uint64_t * start, CTErrorRef* error)
 {
     ++(*start);
-    CTDictionary * dict = CTDictionaryCreate(alloc);
+    CTDictionaryRef dict = CTDictionaryCreate(alloc);
     while (*start < CTStringLength(bencodedString) && CTStringUTF8String(bencodedString)[*start] != 'e' && !*error)
     {
-        CTString * key = CTObjectValue(CTBencodeParse2(alloc, CTStringUTF8String(bencodedString), start, error));
-        CTObject * value = CTBencodeParse2(alloc, CTStringUTF8String(bencodedString), start, error);
+        CTStringRef key = CTObjectValue(CTBencodeParse2(alloc, CTStringUTF8String(bencodedString), start, error));
+        CTObjectRef value = CTBencodeParse2(alloc, CTStringUTF8String(bencodedString), start, error);
         
         if (key && value)
         {
@@ -60,10 +60,10 @@ CTDictionary * CTBencodeExtractDictionary(CTAllocator * alloc, CTString * bencod
     return dict;
 }
 
-CTArray * CTBencodeExtractList(CTAllocator * alloc, CTString * bencodedString, uint64_t * start, CTError ** error)
+CTArrayRef CTBencodeExtractList(CTAllocatorRef alloc, CTStringRef bencodedString, uint64_t * start, CTErrorRef* error)
 {
     ++(*start);
-    CTArray * list = CTArrayCreate(alloc);
+    CTArrayRef list = CTArrayCreate(alloc);
     while (*start < CTStringLength(bencodedString) && CTStringUTF8String(bencodedString)[*start] != 'e' && !*error)
     {
         CTArrayAddEntry2(list, CTBencodeParse2(alloc, CTStringUTF8String(bencodedString), start, error));
@@ -76,10 +76,10 @@ CTArray * CTBencodeExtractList(CTAllocator * alloc, CTString * bencodedString, u
     return list;
 }
 
-CTNumber * CTBencodeExtractInteger(CTAllocator * alloc, CTString * bencodedString, uint64_t * start)
+CTNumberRef CTBencodeExtractInteger(CTAllocatorRef alloc, CTStringRef bencodedString, uint64_t * start)
 {
     ++(*start);
-    CTString * string = CTStringCreate(alloc, "");
+    CTStringRef string = CTStringCreate(alloc, "");
     
     while ((CTStringUTF8String(bencodedString)[*start] >= '0' && CTStringUTF8String(bencodedString)[*start] <= '9' ) || CTStringUTF8String(bencodedString)[*start] == '.' || CTStringUTF8String(bencodedString)[*start] == '-' || CTStringUTF8String(bencodedString)[*start] == '+')
     {
@@ -91,17 +91,17 @@ CTNumber * CTBencodeExtractInteger(CTAllocator * alloc, CTString * bencodedStrin
     return CTNumberCreateWithLong(alloc, value);
 }
 
-CTObject * CTBencodeParse(CTAllocator * alloc, const char * bencoded, CTError ** error)
+CTObjectRef CTBencodeParse(CTAllocatorRef alloc, const char * bencoded, CTErrorRef* error)
 {
     uint64_t start = 0;
 	return CTBencodeParse2(alloc, bencoded, &start, error);
 }
 
-CTObject * CTBencodeParse2(CTAllocator * alloc, const char * bencoded, uint64_t * start, CTError ** error)
+CTObjectRef CTBencodeParse2(CTAllocatorRef alloc, const char * bencoded, uint64_t * start, CTErrorRef* error)
 {
-	CTObject * retVal = NULL;
-    CTAllocator * lalloc = CTAllocatorCreate();
-    CTString * bencodedString = CTStringCreate(lalloc, bencoded);
+	CTObjectRef retVal = NULL;
+    CTAllocatorRef lalloc = CTAllocatorCreate();
+    CTStringRef bencodedString = CTStringCreate(lalloc, bencoded);
     
     if (CTStringLength(bencodedString))
     {
@@ -146,10 +146,10 @@ CTObject * CTBencodeParse2(CTAllocator * alloc, const char * bencoded, uint64_t 
     return retVal;
 }
 
-CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict bencoded, CTError ** error)
+CTStringRef CTBencodeSerialise(CTAllocatorRef restrict alloc, CTObjectRef restrict bencoded, CTErrorRef* error)
 {
-    CTString * retVal = CTStringCreate(alloc, "");
-    CTAllocator * allocl = CTAllocatorCreate();
+    CTStringRef retVal = CTStringCreate(alloc, "");
+    CTAllocatorRef allocl = CTAllocatorCreate();
     switch (CTObjectType(bencoded))
     {
         case CTOBJECT_TYPE_DICTIONARY:
@@ -157,7 +157,7 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
             CTStringAppendCharacter(retVal, 'd');
             for (uint64_t i = 0; i < CTDictionaryCount(CTObjectValue(bencoded)); ++i)
             {
-				CTDictionaryEntry * pair = CTDictionaryEntryAtIndex(CTObjectValue(bencoded), i);
+				CTDictionaryEntryRef pair = CTDictionaryEntryAtIndex(CTObjectValue(bencoded), i);
                 if (CTStringLength(CTObjectValue(bencoded)))
                 {
                     char buf[(int)ceil(log10(CTStringLength(CTDictionaryEntryKey(pair))) + 1)];
@@ -179,7 +179,7 @@ CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict 
         case CTOBJECT_TYPE_ARRAY:
         {
             CTStringAppendCharacter(retVal, 'l');
-            for (uint64_t i = 0; i < ((CTArray *)CTObjectValue(bencoded))->count; ++i)
+            for (uint64_t i = 0; i < ((CTArrayRef)CTObjectValue(bencoded))->count; ++i)
             {
                 CTStringAppendString(retVal, CTBencodeSerialise(allocl, CTArrayObjectAtIndex(CTObjectValue(bencoded), i), error));
             }

@@ -12,9 +12,9 @@
 #include <stdio.h>
 #include <ctype.h>
 
-CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict characters)
+CTStringRef CTStringCreate(CTAllocatorRef restrict alloc, const char * restrict characters)
 {
-    CTString * string = CTAllocatorAllocate(alloc, sizeof(CTString));
+    CTStringRef string = CTAllocatorAllocate(alloc, sizeof(CTString));
     string->alloc = alloc;
 	
     string->characters = stringDuplicate(alloc, characters ? characters : "");
@@ -26,33 +26,33 @@ CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict ch
     return string;
 }
 
-CTString * CTStringCopy(CTAllocator * restrict alloc, CTString * string)
+CTStringRef CTStringCopy(CTAllocatorRef restrict alloc, CTStringRef string)
 {
 	return CTStringCreate(alloc, string->characters);
 }
 
-void CTStringRelease(CTString * string)
+void CTStringRelease(CTStringRef string)
 {
     CTAllocatorDeallocate(string->alloc, string->characters);
     CTAllocatorDeallocate(string->alloc, string);
 }
 
-inline const char * CTStringUTF8String(const CTString * restrict string)
+inline const char * CTStringUTF8String(const CTStringRef restrict string)
 {
 	return string->characters;
 }
 
-inline uint64_t CTStringLength(const CTString * restrict string)
+inline uint64_t CTStringLength(const CTStringRef restrict string)
 {
 	return string->length;
 }
 
-void CTStringSetLength(CTString * restrict string, uint64_t length)
+void CTStringSetLength(CTStringRef restrict string, uint64_t length)
 {
 	string->length = length;
 }
 
-hash_t CTStringHash(CTString * restrict string)
+hash_t CTStringHash(CTStringRef restrict string)
 {
 	if (!string->modified)
 	{
@@ -73,7 +73,7 @@ hash_t CTStringCharHash(const char * restrict string)
 	return hash;
 }
 
-void CTStringPrependCharacters(CTString * restrict string, const char * restrict characters, int64_t limit)
+void CTStringPrependCharacters(CTStringRef restrict string, const char * restrict characters, int64_t limit)
 {
 	const uint64_t length = limit < 0 ? strlen(characters) : limit;
 	string->characters = CTAllocatorReallocate(string->alloc, string->characters, string->length + length + 1);
@@ -83,7 +83,7 @@ void CTStringPrependCharacters(CTString * restrict string, const char * restrict
 	string->modified = 1;
 }
 
-void CTStringPrependCharacter(CTString * restrict string, char character)
+void CTStringPrependCharacter(CTStringRef restrict string, char character)
 {
 	string->characters = CTAllocatorReallocate(string->alloc, string->characters, string->length + 2);
 	memmove(string->characters + 1, string->characters, string->length + 1);
@@ -92,7 +92,7 @@ void CTStringPrependCharacter(CTString * restrict string, char character)
 	string->modified = 1;
 }
 
-void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters, int64_t limit)
+void CTStringAppendCharacters(CTStringRef restrict string, const char * restrict characters, int64_t limit)
 {
 	const uint64_t length = limit < 0 ? strlen(characters) : limit;
 	string->characters = CTAllocatorReallocate(string->alloc, string->characters, CTStringLength(string) + length + 1);
@@ -105,7 +105,7 @@ void CTStringAppendCharacters(CTString * restrict string, const char * restrict 
 	}
 }
 
-void CTStringAppendCharacter(CTString * restrict string, char character)
+void CTStringAppendCharacter(CTStringRef restrict string, char character)
 {
 	string->characters = CTAllocatorReallocate(string->alloc, string->characters, string->length + 2);
 	string->characters[string->length] = character;
@@ -114,7 +114,7 @@ void CTStringAppendCharacter(CTString * restrict string, char character)
 	string->hash += (string->hash << 5) + character;
 }
 
-void CTStringSet(CTString * restrict string, const char * restrict characters)
+void CTStringSet(CTStringRef restrict string, const char * restrict characters)
 {
     CTAllocatorDeallocate(string->alloc, string->characters);
     string->characters = stringDuplicate(string->alloc, characters);
@@ -122,7 +122,7 @@ void CTStringSet(CTString * restrict string, const char * restrict characters)
 	string->modified = 1;
 }
 
-void CTStringRemoveCharactersFromStart(CTString * restrict string, unsigned long count)
+void CTStringRemoveCharactersFromStart(CTStringRef restrict string, unsigned long count)
 {
     if (count < CTStringLength(string))
     {
@@ -139,7 +139,7 @@ void CTStringRemoveCharactersFromStart(CTString * restrict string, unsigned long
 	string->modified = 1;
 }
 
-void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long count)
+void CTStringRemoveCharactersFromEnd(CTStringRef restrict string, unsigned long count)
 {
     if (count < CTStringLength(string))
     {
@@ -156,12 +156,12 @@ void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long c
 	string->modified = 1;
 }
 
-void CTStringAppendString(CTString * restrict string1, CTString * restrict string2)
+void CTStringAppendString(CTStringRef restrict string1, CTStringRef restrict string2)
 {
 	CTStringAppendCharacters(string1, CTStringUTF8String(string2), CTStringLength(string2));
 }
 
-void CTStringToUpper(CTString * restrict string)
+void CTStringToUpper(CTStringRef restrict string)
 {
 	for (uint64_t i = 0; i < CTStringLength(string); ++i)
 	{
@@ -170,7 +170,7 @@ void CTStringToUpper(CTString * restrict string)
 	string->modified = 1;
 }
 
-void CTStringToLower(CTString * restrict string)
+void CTStringToLower(CTStringRef restrict string)
 {
 	for (uint64_t i = 0; i < CTStringLength(string); ++i)
 	{
@@ -179,7 +179,7 @@ void CTStringToLower(CTString * restrict string)
 	string->modified = 1;
 }
 
-const char * CTStringStringBetween(CTString * restrict string, const char * restrict search1, const char * restrict search2)
+const char * CTStringStringBetween(CTStringRef restrict string, const char * restrict search1, const char * restrict search2)
 {
 	uint64_t index = 0;
 	char * ret1 = NULL, * ret2 = NULL;
@@ -202,17 +202,17 @@ const char * CTStringStringBetween(CTString * restrict string, const char * rest
 	return NULL;
 }
 
-uint8_t CTStringContainsString(CTString * restrict string, const char * restrict search)
+uint8_t CTStringContainsString(CTStringRef restrict string, const char * restrict search)
 {
 	return strstr(CTStringUTF8String(string), search) != NULL;
 }
 
-int8_t CTStringCompare(CTString * restrict string1, CTString * restrict string2)
+int8_t CTStringCompare(CTStringRef restrict string1, CTStringRef restrict string2)
 {
 	return CTStringHash(string1) != CTStringHash(string2);
 }
 
-int8_t CTStringCompare2(CTString * restrict string1, const char * restrict string2)
+int8_t CTStringCompare2(CTStringRef restrict string1, const char * restrict string2)
 {
 	uint64_t ret = 0;
 	uint64_t length = strlen(string2);
@@ -223,12 +223,12 @@ int8_t CTStringCompare2(CTString * restrict string1, const char * restrict strin
 	return CTStringHash(string1) != ret;
 }
 
-uint8_t CTStringIsEqual2(CTString * restrict string1, const char * restrict string2)
+uint8_t CTStringIsEqual2(CTStringRef restrict string1, const char * restrict string2)
 {
 	return CTStringHash(string1) == CTStringCharHash(string2);
 }
 
-CTObject * CTObjectWithString(CTAllocator * alloc, CTString * restrict str)
+CTObjectRef CTObjectWithString(CTAllocatorRef alloc, CTStringRef restrict str)
 {
 	return CTObjectCreate(alloc, str, CTOBJECT_TYPE_STRING);
 }

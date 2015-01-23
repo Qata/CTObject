@@ -14,9 +14,9 @@ typedef struct
 {
     const void * bytes;
     uint64_t length;
-} CTData;
+} CTData, * CTDataRef;
 
-CTData * CTDataCreate(CTAllocator * restrict alloc, const void * restrict bytes, uint64_t length);
-const void * CTDataGetBytes(const CTData * restrict data);
-uint8_t CTDataGetByteAtIndex(const CTData * restrict data, uint64_t index);
-uint64_t CTDataGetLength(const CTData * restrict data);
+CTDataRef CTDataCreate(CTAllocatorRef restrict alloc, const void * restrict bytes, uint64_t length);
+const void * CTDataGetBytes(const CTDataRef restrict data);
+uint8_t CTDataGetByteAtIndex(const CTDataRef restrict data, uint64_t index);
+uint64_t CTDataGetLength(const CTDataRef restrict data);

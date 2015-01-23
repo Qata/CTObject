@@ -13,9 +13,9 @@
 #include <pthread.h>
 #include "CTAllocator.h"
 
-static CTAllocator * defaultAllocator;
+static CTAllocatorRef defaultAllocator;
 
-void CTAllocatorReleasePrivate(CTAllocator * restrict allocator)
+void CTAllocatorReleasePrivate(CTAllocatorRef restrict allocator)
 {
 	for (int i = 0; i < allocator->count; ++i)
 	{
@@ -44,17 +44,17 @@ void CTAllocatorInit()
 	}
 }
 
-CTAllocator * CTAllocatorGetDefault()
+CTAllocatorRef CTAllocatorGetDefault()
 {
 	return defaultAllocator;
 }
 
-CTAllocator * CTAllocatorCreate()
+CTAllocatorRef CTAllocatorCreate()
 {
 	return calloc(1, sizeof(CTAllocator));
 }
 
-void CTAllocatorRelease(CTAllocator * restrict allocator)
+void CTAllocatorRelease(CTAllocatorRef restrict allocator)
 {
 	assert(allocator);
 	if (allocator != CTAllocatorGetDefault())
@@ -67,7 +67,7 @@ void CTAllocatorRelease(CTAllocator * restrict allocator)
 	}
 }
 
-void * CTAllocatorAllocate(CTAllocator * restrict allocator, uint64_t size)
+void * CTAllocatorAllocate(CTAllocatorRef restrict allocator, uint64_t size)
 {
 	assert(allocator);
 	if (allocator == defaultAllocator)
@@ -89,7 +89,7 @@ void * CTAllocatorAllocate(CTAllocator * restrict allocator, uint64_t size)
 	return retVal;
 }
 
-void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
+void CTAllocatorDeallocate(CTAllocatorRef restrict allocator, void * ptr)
 {
 	assert(allocator);
 	if (allocator == defaultAllocator)
@@ -144,7 +144,7 @@ void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 	}
 }
 
-void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, uint64_t size)
+void * CTAllocatorReallocate(CTAllocatorRef restrict allocator, void * ptr, uint64_t size)
 {
 	assert(allocator);
     if (ptr)
@@ -171,7 +171,7 @@ void * CTAllocatorReallocate(CTAllocator * restrict allocator, void * ptr, uint6
     return CTAllocatorAllocate(allocator, size);
 }
 
-void CTAllocatorTransferOwnership(CTAllocator * restrict allocator, CTAllocator * restrict dest, void * ptr)
+void CTAllocatorTransferOwnership(CTAllocatorRef restrict allocator, CTAllocatorRef restrict dest, void * ptr)
 {
 	assert(allocator);
 	assert(dest);

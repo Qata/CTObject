@@ -9,9 +9,9 @@
 #include "CTData.h"
 #include <string.h>
 
-CTData * CTDataCreate(CTAllocator * restrict alloc, const void * restrict bytes, uint64_t length)
+CTDataRef CTDataCreate(CTAllocatorRef restrict alloc, const void * restrict bytes, uint64_t length)
 {
-    CTData * data = CTAllocatorAllocate(alloc, sizeof(CTData));
+    CTDataRef data = CTAllocatorAllocate(alloc, sizeof(CTData));
     void * copy = CTAllocatorAllocate(alloc, length);
     memcpy(copy, bytes, length);
     data->bytes = copy;
@@ -19,17 +19,17 @@ CTData * CTDataCreate(CTAllocator * restrict alloc, const void * restrict bytes,
     return data;
 }
 
-const void * CTDataGetBytes(const CTData * restrict data)
+const void * CTDataGetBytes(const CTDataRef restrict data)
 {
     return data->bytes;
 }
 
-uint64_t CTDataGetLength(const CTData * restrict data)
+uint64_t CTDataGetLength(const CTDataRef restrict data)
 {
     return data->length;
 }
 
-uint8_t CTDataGetByteAtIndex(const CTData * restrict data, uint64_t index)
+uint8_t CTDataGetByteAtIndex(const CTDataRef restrict data, uint64_t index)
 {
     if (index < data->length)
     {

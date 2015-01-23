@@ -8,9 +8,9 @@
 
 #include "CTError.h"
 
-CTError * CTErrorCreate(CTAllocator * alloc, const char * restrict error, int code)
+CTErrorRef CTErrorCreate(CTAllocatorRef alloc, const char * restrict error, int code)
 {
-    CTError * retVal = CTAllocatorAllocate(alloc, sizeof(CTError));
+    CTErrorRef retVal = CTAllocatorAllocate(alloc, sizeof(CTError));
     retVal->alloc = alloc;
     retVal->error = CTStringCreate(alloc, error);
     retVal->code = code;
@@ -18,13 +18,13 @@ CTError * CTErrorCreate(CTAllocator * alloc, const char * restrict error, int co
     return retVal;
 }
 
-void CTErrorRelease(CTError * error)
+void CTErrorRelease(CTErrorRef error)
 {
     CTStringRelease(error->error);
     CTAllocatorDeallocate(error->alloc, error);
 }
 
-const CTString * CTErrorGetErrorString(CTError * restrict error)
+const CTStringRef CTErrorGetErrorString(CTErrorRef restrict error)
 {
     return error->error;
 }

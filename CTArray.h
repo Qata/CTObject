@@ -14,45 +14,45 @@
  **/
 typedef struct
 {
-    CTAllocator * alloc;
+    CTAllocatorRef alloc;
     uint64_t count;
-    CTObject ** elements;
-} CTArray;
+    CTObjectRef* elements;
+} CTArray, * CTArrayRef;
 
 /**
  * Create an array with the specified allocator.
  * @param alloc	A properly initialised CTAllocator that was created with CTAllocatorCreate.
  * @return		Returns an initialised CTArray with a count of zero.
  **/
-CTArray * CTArrayCreate(CTAllocator * restrict alloc);
+CTArrayRef CTArrayCreate(CTAllocatorRef restrict alloc);
 
 /**
  * Copy the specified array and everything within using the supplied allocator.
  * @param alloc	A properly initialised CTAllocator that was created with CTAllocatorCreate.
  * @return		Returns an initialised CTArray with the same count as the array supplied. All objects in the array will also be allocated with the supplied allocator.
  **/
-CTArray * CTArrayCopy(CTAllocator * restrict alloc, CTArray * array);
+CTArrayRef CTArrayCopy(CTAllocatorRef restrict alloc, CTArrayRef array);
 
 /**
  * Create an array with the specified allocator and initialise it with a NULL-terminated list of CTObjects.
  * @param alloc	A properly initialised CTAllocator that was created with CTAllocatorCreate.
  * @return		Returns an initialised CTArray with a count of the amount of passed CTObjects.
  **/
-CTArray * CTArrayCreateWithObjects(CTAllocator * restrict alloc, ...);
+CTArrayRef CTArrayCreateWithObjects(CTAllocatorRef restrict alloc, ...);
 
 /**
  * Release an allocated array and all objects within.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
  **/
-void CTArrayRelease(CTArray * restrict array);
+void CTArrayRelease(CTArrayRef restrict array);
 
 /**
  * Compare two CTArray objects
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		A value indicating equality, 0 = false, 1 = true.
  **/
-uint8_t CTArrayCompare(CTArray * array1, CTArray * array2);
+uint8_t CTArrayCompare(CTArrayRef array1, CTArrayRef array2);
 
 /**
  * Add a CTObject to the end of the array.
@@ -62,7 +62,7 @@ uint8_t CTArrayCompare(CTArray * array1, CTArray * array2);
  * @return		A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
  * @see CTObjectCreate
  **/
-void CTArrayAddEntry(CTArray * restrict array, void * value, int8_t type);
+void CTArrayAddEntry(CTArrayRef restrict array, void * value, int8_t type);
 
 /**
  * Add a CTObject to the end of the array.
@@ -71,14 +71,14 @@ void CTArrayAddEntry(CTArray * restrict array, void * value, int8_t type);
  * @return		A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
  * @see CTObjectCreate
  **/
-void CTArrayAddEntry2(CTArray * restrict array, CTObject * restrict value);
+void CTArrayAddEntry2(CTArrayRef restrict array, CTObjectRef restrict value);
 
 /**
  * Return the CTObject at the specified index.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		A CTObject stored at the specified index, or NULL if the index oversteps the array size.
  **/
-CTObject * CTArrayEntry(const CTArray * restrict array, uint64_t index);
+CTObjectRef CTArrayEntry(const CTArrayRef restrict array, uint64_t index);
 
 /**
  * Delete the CTObject at the specified index.
@@ -86,14 +86,14 @@ CTObject * CTArrayEntry(const CTArray * restrict array, uint64_t index);
  * @param index	The index of the object to be deleted.
  * @return		A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
  **/
-void CTArrayDeleteEntry(CTArray * restrict array, uint64_t index);
+void CTArrayDeleteEntry(CTArrayRef restrict array, uint64_t index);
 
 /**
  * Delete every CTObject in the specified array.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
  **/
-void CTArrayEmpty(CTArray * restrict array);
+void CTArrayEmpty(CTArrayRef restrict array);
 
 /**
  * Return the CTObject at the specified index.
@@ -101,34 +101,34 @@ void CTArrayEmpty(CTArray * restrict array);
  * @param index	The index of the object to be returned.
  * @return		The CTObject to be found at the specified index, if the index is beyond the bounds of the array, NULL is returned.
  **/
-CTObject * CTArrayObjectAtIndex(CTArray * restrict array, uint64_t index);
+CTObjectRef CTArrayObjectAtIndex(CTArrayRef restrict array, uint64_t index);
 
 /**
- * Return the index of the CTObject * in the array.
+ * Return the index of the CTObjectRef in the array.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @param value	The CTObject pointer to search for in the array.
  * @return		The index of the CTObject, if not found, NULL is returned.
  **/
-uint64_t CTArrayIndexOfEntryByReference(CTArray * restrict array, CTObject * value);
+uint64_t CTArrayIndexOfEntryByReference(CTArrayRef restrict array, CTObjectRef value);
 
 /**
- * Return the index of the CTObject * in the array.
+ * Return the index of the CTObjectRef in the array.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @param value	The CTObject to search for in the array.
  * @return		The index of the CTObject, if not found, NULL is returned.
  **/
-uint64_t CTArrayIndexOfEntryByValue(CTArray * restrict array, CTObject * value);
+uint64_t CTArrayIndexOfEntryByValue(CTArrayRef restrict array, CTObjectRef value);
 
 /**
  * Return the count of the array.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		The count of the CTArray. The result is identical to using array->count.
  **/
-uint64_t CTArrayCount(CTArray * restrict array);
+uint64_t CTArrayCount(CTArrayRef restrict array);
 
 /**
  * Return a CTObject encasing the CTArray passed.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		The CTArray wrapped in a CTObject. The result is identical to using CTObjectCreate.
  **/
-CTObject * CTObjectWithArray(CTAllocator * alloc, CTArray * restrict array);
+CTObjectRef CTObjectWithArray(CTAllocatorRef alloc, CTArrayRef restrict array);

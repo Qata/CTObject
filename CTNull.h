@@ -12,11 +12,11 @@
 
 typedef struct
 {
-    CTAllocator * alloc;
+    CTAllocatorRef alloc;
     char * value;
-} CTNull;
+} CTNull, * CTNullRef;
 
-CTNull * CTNullCreate(CTAllocator * restrict alloc);
-const char * CTNullValue(CTNull * null);
-void CTNullRelease(CTNull * null);
-CTObject * CTObjectWithNull(CTAllocator * alloc, CTNull * restrict n);
+CTNullRef CTNullCreate(CTAllocatorRef restrict alloc);
+const char * CTNullValue(CTNullRef null);
+void CTNullRelease(CTNullRef null);
+CTObjectRef CTObjectWithNull(CTAllocatorRef alloc, CTNullRef restrict n);

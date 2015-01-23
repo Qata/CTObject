@@ -16,44 +16,44 @@ typedef uint64_t hash_t;
 
 typedef struct
 {
-    CTAllocator * alloc;
+    CTAllocatorRef alloc;
     uint64_t length;
     char * characters;
 	uint64_t hash;
 	uint8_t modified;
-} CTString;
+} CTString, * CTStringRef;
 
-CTString * CTStringCreate(CTAllocator * restrict alloc, const char * restrict characters);
-CTString * CTStringCopy(CTAllocator * restrict alloc, CTString * string);
-void CTStringRelease(CTString * string);
+CTStringRef CTStringCreate(CTAllocatorRef restrict alloc, const char * restrict characters);
+CTStringRef CTStringCopy(CTAllocatorRef restrict alloc, CTStringRef string);
+void CTStringRelease(CTStringRef string);
 
 hash_t CTStringCharHash(const char * restrict string);
 
-const char * CTStringUTF8String(const CTString * restrict string);
-uint64_t CTStringLength(const CTString * restrict string);
-hash_t CTStringHash(CTString * restrict string);
-void CTStringSetLength(CTString * restrict string, uint64_t length);
-void CTStringAppendCharacters(CTString * restrict string, const char * restrict characters, int64_t limit);
-void CTStringAppendCharacter(CTString * restrict string, char character);
-void CTStringPrependCharacters(CTString * restrict string, const char * restrict characters, int64_t limit);
-void CTStringPrependCharacter(CTString * restrict string, char character);
-void CTStringSet(CTString * restrict string, const char * restrict characters);
-void CTStringRemoveCharactersFromStart(CTString * restrict string, unsigned long count);
-void CTStringRemoveCharactersFromEnd(CTString * restrict string, unsigned long count);
+const char * CTStringUTF8String(const CTStringRef restrict string);
+uint64_t CTStringLength(const CTStringRef restrict string);
+hash_t CTStringHash(CTStringRef restrict string);
+void CTStringSetLength(CTStringRef restrict string, uint64_t length);
+void CTStringAppendCharacters(CTStringRef restrict string, const char * restrict characters, int64_t limit);
+void CTStringAppendCharacter(CTStringRef restrict string, char character);
+void CTStringPrependCharacters(CTStringRef restrict string, const char * restrict characters, int64_t limit);
+void CTStringPrependCharacter(CTStringRef restrict string, char character);
+void CTStringSet(CTStringRef restrict string, const char * restrict characters);
+void CTStringRemoveCharactersFromStart(CTStringRef restrict string, unsigned long count);
+void CTStringRemoveCharactersFromEnd(CTStringRef restrict string, unsigned long count);
 
-void CTStringAppendString(CTString * restrict string1, CTString * restrict string2);
-void CTStringToUpper(CTString * restrict string);
-void CTStringToLower(CTString * restrict string);
+void CTStringAppendString(CTStringRef restrict string1, CTStringRef restrict string2);
+void CTStringToUpper(CTStringRef restrict string);
+void CTStringToLower(CTStringRef restrict string);
 
-const char * CTStringStringBetween(CTString * restrict string, const char * restrict search1, const char * restrict search2);
-uint8_t CTStringContainsString(CTString * restrict string, const char * restrict search);
-int8_t CTStringCompare(CTString * restrict string1, CTString * restrict string2);
-int8_t CTStringCompare2(CTString * restrict string1, const char * restrict string2);
-uint8_t CTStringIsEqual2(CTString * restrict string1, const char * restrict string2);
+const char * CTStringStringBetween(CTStringRef restrict string, const char * restrict search1, const char * restrict search2);
+uint8_t CTStringContainsString(CTStringRef restrict string, const char * restrict search);
+int8_t CTStringCompare(CTStringRef restrict string1, CTStringRef restrict string2);
+int8_t CTStringCompare2(CTStringRef restrict string1, const char * restrict string2);
+uint8_t CTStringIsEqual2(CTStringRef restrict string1, const char * restrict string2);
 
 /**
  * Return a CTObject encasing the CTString passed.
  * @param str	A properly initialised CTString that was created with CTStringCreate.
  * @return		The CTString wrapped in a CTObject. The result is identical to using CTObjectCreate.
  **/
-CTObject * CTObjectWithString(CTAllocator * alloc, CTString * restrict str);
+CTObjectRef CTObjectWithString(CTAllocatorRef alloc, CTStringRef restrict str);

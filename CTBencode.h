@@ -21,7 +21,7 @@
  * @param error		An error container to warn of issues with processing the data. Should be passed as the address of a pointer that has been initialised to NULL.
  * @return			Returns a CTObject created from the bencoded data.
  **/
-CTObject * CTBencodeParse(CTAllocator * restrict alloc, const char * restrict bencoded, CTError ** error);
+CTObjectRef CTBencodeParse(CTAllocatorRef restrict alloc, const char * restrict bencoded, CTErrorRef* error);
 /**
  * Turn a string of bencoded data into a meaningful CTObject chain.
  * @param alloc		A properly initialised CTAllocator that was created with CTAllocatorCreate.
@@ -30,7 +30,7 @@ CTObject * CTBencodeParse(CTAllocator * restrict alloc, const char * restrict be
  * @param error		An error container to warn of issues with processing the data. Should be passed as the address of a pointer that has been initialised to NULL.
  * @return			Returns a CTObject created from the bencoded data.
  **/
-CTObject * CTBencodeParse2(CTAllocator * restrict alloc, const char * restrict bencoded, uint64_t * start, CTError ** error);
+CTObjectRef CTBencodeParse2(CTAllocatorRef restrict alloc, const char * restrict bencoded, uint64_t * start, CTErrorRef* error);
 /**
  * Turn a CTObject chain into a CTString of bencoded data.
  * @param alloc		A properly initialised CTAllocator that was created with CTAllocatorCreate.
@@ -38,4 +38,4 @@ CTObject * CTBencodeParse2(CTAllocator * restrict alloc, const char * restrict b
  * @param error		An error container to warn of issues with processing the data. Should be passed as the address of a pointer that has been initialised to NULL.
  * @return			Returns a CTString created from the CTObject by parsing it into bencoded data.
  **/
-CTString * CTBencodeSerialise(CTAllocator * restrict alloc, CTObject * restrict bencoded, CTError ** error);
+CTStringRef CTBencodeSerialise(CTAllocatorRef restrict alloc, CTObjectRef restrict bencoded, CTErrorRef* error);

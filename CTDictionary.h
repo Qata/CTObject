@@ -12,46 +12,46 @@
 
 typedef struct
 {
-	CTString * key;
-	CTObject * value;
-} CTDictionaryEntry;
+	CTStringRef key;
+	CTObjectRef value;
+} CTDictionaryEntry, * CTDictionaryEntryRef;
 
 typedef struct
 {
-    CTAllocator * alloc;
+    CTAllocatorRef alloc;
     uint64_t count;
-    CTDictionaryEntry ** elements;
-} CTDictionary;
+    CTDictionaryEntryRef* elements;
+} CTDictionary, * CTDictionaryRef;
 
-CTDictionary * CTDictionaryCreate(CTAllocator * restrict alloc);
-CTDictionary * CTDictionaryCreateWithKeysPairedWithValues(CTAllocator * restrict alloc, ...);
-CTDictionary * CTDictionaryCopy(CTAllocator * restrict alloc, CTDictionary * dict);
-void CTDictionaryRelease(CTDictionary * dict);
+CTDictionaryRef CTDictionaryCreate(CTAllocatorRef restrict alloc);
+CTDictionaryRef CTDictionaryCreateWithKeysPairedWithValues(CTAllocatorRef restrict alloc, ...);
+CTDictionaryRef CTDictionaryCopy(CTAllocatorRef restrict alloc, CTDictionaryRef dict);
+void CTDictionaryRelease(CTDictionaryRef dict);
 
 /**
  * Compare two CTDictionary objects
  * @param array	A properly initialised CTDictionary that was created with CTDictionaryCreate*.
  * @return		A value indicating equality, 0 = false, 1 = true.
  **/
-uint8_t CTDictionaryCompare(CTDictionary * dict1, CTDictionary * dict2);
+uint8_t CTDictionaryCompare(CTDictionaryRef dict1, CTDictionaryRef dict2);
 
-CTDictionaryEntry * CTDictionaryEntryAtIndex(const CTDictionary * restrict dict, uint64_t index);
+CTDictionaryEntryRef CTDictionaryEntryAtIndex(const CTDictionaryRef restrict dict, uint64_t index);
 
-CTString * CTDictionaryEntryKey(const CTDictionaryEntry * restrict entry);
-CTObject * CTDictionaryEntryValue(const CTDictionaryEntry * restrict entry);
+CTStringRef CTDictionaryEntryKey(const CTDictionaryEntryRef restrict entry);
+CTObjectRef CTDictionaryEntryValue(const CTDictionaryEntryRef restrict entry);
 
-void CTDictionaryAddEntriesFromQueryString(CTDictionary * restrict dict, const char * restrict query);
+void CTDictionaryAddEntriesFromQueryString(CTDictionaryRef restrict dict, const char * restrict query);
 
-void CTDictionaryAddEntry(CTDictionary * restrict dict, const char * restrict key, CTObject * restrict value);
-void CTDictionaryAddEntry2(CTDictionary * restrict dict, CTString * restrict key, CTObject * restrict value);
-void CTDictionaryDeleteEntry(CTDictionary * restrict dict, const char * restrict key);
-CTObject * CTDictionaryObjectForKey(const CTDictionary * restrict dict, const char * restrict key);
-uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key);
-uint64_t CTDictionaryCount(const CTDictionary * restrict dict);
+void CTDictionaryAddEntry(CTDictionaryRef restrict dict, const char * restrict key, CTObjectRef restrict value);
+void CTDictionaryAddEntry2(CTDictionaryRef restrict dict, CTStringRef restrict key, CTObjectRef restrict value);
+void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restrict key);
+CTObjectRef CTDictionaryObjectForKey(const CTDictionaryRef restrict dict, const char * restrict key);
+uint64_t CTDictionaryIndexOfEntry(const CTDictionaryRef restrict dict, const char * restrict key);
+uint64_t CTDictionaryCount(const CTDictionaryRef restrict dict);
 
 /**
  * Return a CTObject encasing the CTDictionary passed.
  * @param dict	A properly initialised CTDictionary that was created with CTDictionaryCreate*.
  * @return		The CTDictionary wrapped in a CTObject. The result is identical to using CTObjectCreate.
  **/
-CTObject * CTObjectWithDictionary(CTAllocator * alloc, CTDictionary * restrict dict);
+CTObjectRef CTObjectWithDictionary(CTAllocatorRef alloc, CTDictionaryRef restrict dict);

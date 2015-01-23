@@ -18,25 +18,25 @@ typedef enum
     CTOBJECT_TYPE_NUMBER,
     CTOBJECT_TYPE_NULL,
     CTOBJECT_TYPE_LARGE_NUMBER
-} CTOBJECT_TYPE;
+} CTOBJECT_TYPE, * CTOBJECT_TYPERef;
 
 typedef struct
 {
-    CTAllocator * alloc;
+    CTAllocatorRef alloc;
     uint64_t size;
     void * ptr;
     CTOBJECT_TYPE type;
-} CTObject;
+} CTObject, * CTObjectRef;
 
-CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, CTOBJECT_TYPE type);
-CTObject * CTObjectCopy(CTAllocator * restrict alloc, const CTObject * restrict object);
-void * CTObjectValue(const CTObject * restrict object);
-CTOBJECT_TYPE CTObjectType(const CTObject * restrict object);
-uint64_t CTObjectSize(const CTObject * restrict object);
+CTObjectRef CTObjectCreate(CTAllocatorRef restrict alloc, void * ptr, CTOBJECT_TYPE type);
+CTObjectRef CTObjectCopy(CTAllocatorRef restrict alloc, const CTObjectRef restrict object);
+void * CTObjectValue(const CTObjectRef restrict object);
+CTOBJECT_TYPE CTObjectType(const CTObjectRef restrict object);
+uint64_t CTObjectSize(const CTObjectRef restrict object);
 /**
  * Compare two CTObject objects
  * @param array	A properly initialised CTObject that was created with CTObjectCreate* or CTObjectWith*.
  * @return		A value indicating equality, 0 = false, 1 = true.
  **/
-uint8_t CTObjectCompare(const CTObject * restrict object1, const CTObject * restrict object2);
-void CTObjectRelease(CTObject * object);
+uint8_t CTObjectCompare(const CTObjectRef restrict object1, const CTObjectRef restrict object2);
+void CTObjectRelease(CTObjectRef object);

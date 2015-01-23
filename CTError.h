@@ -11,11 +11,11 @@
 
 typedef struct
 {
-    CTAllocator * alloc;
-	CTString * error;
+    CTAllocatorRef alloc;
+	CTStringRef error;
 	int code;
-} CTError;
+} CTError, * CTErrorRef;
 
-CTError * CTErrorCreate(CTAllocator * alloc, const char * restrict error, int code);
-void CTErrorRelease(CTError * restrict error);
-const CTString * CTErrorGetErrorString(CTError * restrict error);
+CTErrorRef CTErrorCreate(CTAllocatorRef alloc, const char * restrict error, int code);
+void CTErrorRelease(CTErrorRef restrict error);
+const CTStringRef CTErrorGetErrorString(CTErrorRef restrict error);

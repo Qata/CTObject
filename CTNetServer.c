@@ -15,9 +15,9 @@
 #include <netdb.h>
 #include <string.h>
 
-CTNetServer * CTNetServerOpen(CTAllocator * restrict alloc, const char * restrict address, unsigned short port)
+CTNetServerRef CTNetServerOpen(CTAllocatorRef restrict alloc, const char * restrict address, unsigned short port)
 {
-    CTNetServer * server = CTAllocatorAllocate(alloc, sizeof(CTNetServer));
+    CTNetServerRef server = CTAllocatorAllocate(alloc, sizeof(CTNetServer));
     server->alloc = alloc;
     if ((server->handle = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -49,26 +49,26 @@ CTNetServer * CTNetServerOpen(CTAllocator * restrict alloc, const char * restric
     return server;
 }
 
-void CTNetServerRelease(CTNetServer * server)
+void CTNetServerRelease(CTNetServerRef server)
 {
 	CTNetServerClose(server);
     CTAllocatorDeallocate(server->alloc, server->address);
     CTAllocatorDeallocate(server->alloc, server);
 }
 
-void CTNetServerClose(const CTNetServer * restrict server)
+void CTNetServerClose(const CTNetServerRef restrict server)
 {
     close(server->handle);
 }
 
-long CTNetServerSend(const CTNetServer * restrict server, const char * restrict bytes, uint64_t size)
+long CTNetServerSend(const CTNetServerRef restrict server, const char * restrict bytes, uint64_t size)
 {
     return send(server->handle, bytes, size, 0);
 }
 
-const char * CTNetServerReceive(const CTNetServer * restrict server, uint64_t size)
+const char * CTNetServerReceive(const CTNetServerRef restrict server, uint64_t size)
 {
-    CTAllocator * alloc = CTAllocatorCreate();
+    CTAllocatorRef alloc = CTAllocatorCreate();
     char * receive = CTAllocatorAllocate(alloc, size);
     long receivedLength = recv(server->handle, receive, size, 0);
     char * retVal = CTAllocatorAllocate(server->alloc, receivedLength + 1);
