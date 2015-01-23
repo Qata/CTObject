@@ -223,6 +223,11 @@ int8_t CTStringCompare2(CTString * restrict string1, const char * restrict strin
 	return CTStringHash(string1) != ret;
 }
 
+uint8_t CTStringIsEqual2(CTString * restrict string1, const char * restrict string2)
+{
+	return CTStringHash(string1) == CTStringCharHash(string2);
+}
+
 CTObject * CTObjectWithString(CTAllocator * alloc, CTString * restrict str)
 {
 	return CTObjectCreate(alloc, str, CTOBJECT_TYPE_STRING);

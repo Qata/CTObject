@@ -26,7 +26,7 @@ CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, CTOBJECT_TYP
     return object;
 }
 
-CTObject * CTObjectCopy(CTAllocator * restrict alloc, CTObject * object)
+CTObject * CTObjectCopy(CTAllocator * restrict alloc, const CTObject * restrict object)
 {
 	switch(object->type)
 	{

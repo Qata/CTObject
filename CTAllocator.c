@@ -72,7 +72,7 @@ void * CTAllocatorAllocate(CTAllocator * restrict allocator, uint64_t size)
 	assert(allocator);
 	if (allocator == defaultAllocator)
 	{
-		pthread_mutex_lock(&default_lock);
+		assert(!pthread_mutex_lock(&default_lock));
 	}
 	
 	if (!(allocator->objects = realloc(allocator->objects, sizeof(void *) * allocator->count + 1)))
@@ -94,7 +94,7 @@ void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 	assert(allocator);
 	if (allocator == defaultAllocator)
 	{
-		pthread_mutex_lock(&default_lock);
+		assert(!pthread_mutex_lock(&default_lock));
 	}
     if (allocator->count > 0)
 	{
@@ -140,7 +140,7 @@ void CTAllocatorDeallocate(CTAllocator * restrict allocator, void * ptr)
 	}
 	if (allocator == defaultAllocator)
 	{
-		pthread_mutex_unlock(&default_lock);
+		assert(!pthread_mutex_unlock(&default_lock));
 	}
 }
 
@@ -178,7 +178,7 @@ void CTAllocatorTransferOwnership(CTAllocator * restrict allocator, CTAllocator 
 	assert(dest != allocator);
 	if (allocator == defaultAllocator || dest == defaultAllocator)
 	{
-		pthread_mutex_lock(&default_lock);
+		assert(!pthread_mutex_lock(&default_lock));
 	}
 	if (allocator->count)
 	{
@@ -229,6 +229,6 @@ void CTAllocatorTransferOwnership(CTAllocator * restrict allocator, CTAllocator 
 	}
 	if (allocator == defaultAllocator || dest == defaultAllocator)
 	{
-		pthread_mutex_unlock(&default_lock);
+		assert(!pthread_mutex_unlock(&default_lock));
 	}
 }

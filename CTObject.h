@@ -29,7 +29,7 @@ typedef struct
 } CTObject;
 
 CTObject * CTObjectCreate(CTAllocator * restrict alloc, void * ptr, CTOBJECT_TYPE type);
-CTObject * CTObjectCopy(CTAllocator * restrict alloc, CTObject * restrict object);
+CTObject * CTObjectCopy(CTAllocator * restrict alloc, const CTObject * restrict object);
 void * CTObjectValue(const CTObject * restrict object);
 CTOBJECT_TYPE CTObjectType(const CTObject * restrict object);
 uint64_t CTObjectSize(const CTObject * restrict object);

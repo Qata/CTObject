@@ -25,5 +25,5 @@ typedef uint64_t CTJSONOptions;
 #include "CTAllocator.h"
 #include "CTError.h"
 
-CTObject * CTJSONParse(CTAllocator * alloc, const char * JSON, CTJSONOptions options, CTError ** error);
-CTString * CTJSONSerialise(CTAllocator * alloc, CTObject * JSON, CTJSONOptions options);
+CTObject * CTJSONParse(CTAllocator * restrict alloc, const char * restrict JSON, CTJSONOptions options, CTError ** error);
+CTString * CTJSONSerialise(CTAllocator * restrict alloc, const CTObject * restrict JSON, CTJSONOptions options);

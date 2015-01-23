@@ -49,6 +49,7 @@ const char * CTStringStringBetween(CTString * restrict string, const char * rest
 uint8_t CTStringContainsString(CTString * restrict string, const char * restrict search);
 int8_t CTStringCompare(CTString * restrict string1, CTString * restrict string2);
 int8_t CTStringCompare2(CTString * restrict string1, const char * restrict string2);
+uint8_t CTStringIsEqual2(CTString * restrict string1, const char * restrict string2);
 
 /**
  * Return a CTObject encasing the CTString passed.

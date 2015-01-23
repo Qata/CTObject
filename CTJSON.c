@@ -31,7 +31,7 @@ CTObject * CTNumberFromJSON(CTAllocator * alloc, const CTString * restrict JSON,
 CTObject * CTArrayFromJSON(CTAllocator * alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTError ** error);
 
 
-CTObject * CTJSONParse(CTAllocator * alloc, const char * restrict JSON, CTJSONOptions options, CTError ** error)
+CTObject * CTJSONParse(CTAllocator * restrict alloc, const char * restrict JSON, CTJSONOptions options, CTError ** error)
 {
 	uint64_t start = 0;
 	CTAllocator * lalloc = CTAllocatorCreate();
@@ -356,7 +356,7 @@ CTObject * CTLiteralFromJSON(CTAllocator * alloc, const CTString * restrict JSON
 	return CTObjectCreate(alloc, NULL, CTOBJECT_NOT_AN_OBJECT);
 }
 
-CTString * CTJSONSerialise(CTAllocator * alloc, CTObject * JSON, CTJSONOptions options)
+CTString * CTJSONSerialise(CTAllocator * alloc, const CTObject * restrict JSON, CTJSONOptions options)
 {
     CTString * retVal = CTStringCreate(alloc, "");
     CTJSONSerialiseRecursive(alloc, retVal, CTObjectValue(JSON), CTObjectType(JSON), options);
