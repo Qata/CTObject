@@ -16,6 +16,7 @@ typedef struct
 {
     CTAllocatorRef alloc;
     uint64_t count;
+	uint64_t size;
     CTObjectRef* elements;
 } CTArray, * CTArrayRef;
 

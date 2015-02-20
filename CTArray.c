@@ -13,6 +13,8 @@
 #include <stdarg.h>
 #include "CTArray.h"
 
+const double kArrayGrowthFactor = 1.625;
+
 CTArrayRef CTArrayCreate(CTAllocatorRef restrict alloc)
 {
     CTArrayRef array = CTAllocatorAllocate(alloc, sizeof(CTArray));
@@ -84,8 +86,13 @@ void CTArrayAddEntry(CTArrayRef restrict array, void * value, int8_t type)
 
 void CTArrayAddEntry2(CTArrayRef restrict array, CTObjectRef restrict value)
 {
+	assert(value);
     uint64_t index = array->count++;
-	assert(array->elements = CTAllocatorReallocate(array->alloc, array->elements, sizeof(CTArrayRef) * array->count));
+	if (index >= array->size)
+	{
+		array->size = kArrayGrowthFactor * array->count;
+		assert(array->elements = CTAllocatorReallocate(array->alloc, array->elements, sizeof(CTArrayRef) * array->size));
+	}
     array->elements[index] = value;
 }
 
@@ -98,23 +105,22 @@ CTObjectRef CTArrayEntry(const CTArrayRef restrict array, uint64_t index)
 	return NULL;
 }
 
+
 void CTArrayDeleteEntry(CTArrayRef restrict array, uint64_t index)
 {
-    if (array->count > index)
+	assert(array->count > index);
+	for (uint64_t i = 0; i < array->count; ++i)
 	{
-        for (uint64_t i = 0; i < array->count; ++i)
-        {
-            if (i != index)
-            {
-				array->elements[i - (i >= index)] = array->elements[i];
-            }
-            else
-            {
-				CTObjectRelease(array->elements[i]);
-            }
-        }
-        array->elements = CTAllocatorReallocate(array->alloc, array->elements, sizeof(CTObjectRef) * --array->count);
+		if (i != index)
+		{
+			array->elements[i - (i >= index)] = array->elements[i];
+		}
+		else
+		{
+			CTObjectRelease(array->elements[i]);
+		}
 	}
+	--array->count;
 }
 
 uint64_t CTArrayIndexOfEntryByReference(CTArrayRef restrict array, CTObjectRef restrict value)
@@ -150,6 +156,7 @@ void CTArrayEmpty(CTArrayRef restrict array)
 			CTObjectRelease(array->elements[i]);
 		}
 		array->count = 0;
+		array->size = 0;
 		CTAllocatorDeallocate(array->alloc, array->elements);
 		array->elements = NULL;
 	}
