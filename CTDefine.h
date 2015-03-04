@@ -12,3 +12,5 @@
 #include <limits.h>
 
 #define CT_NOT_FOUND UINT64_MAX
+
+static const double kArrayGrowthFactor = 1.625;

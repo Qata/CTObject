@@ -11,9 +11,8 @@
 #include <string.h>
 #include <assert.h>
 #include <stdarg.h>
+#include <math.h>
 #include "CTArray.h"
-
-const double kArrayGrowthFactor = 1.625;
 
 CTArrayRef CTArrayCreate(CTAllocatorRef restrict alloc)
 {
@@ -98,29 +97,16 @@ void CTArrayAddEntry2(CTArrayRef restrict array, CTObjectRef restrict value)
 
 CTObjectRef CTArrayEntry(const CTArrayRef restrict array, uint64_t index)
 {
-	if (index < array->count)
-	{
-		return array->elements[index];
-	}
-	return NULL;
+	assert(index < array->count);
+	return array->elements[index];
 }
 
 
 void CTArrayDeleteEntry(CTArrayRef restrict array, uint64_t index)
 {
 	assert(array->count > index);
-	for (uint64_t i = 0; i < array->count; ++i)
-	{
-		if (i != index)
-		{
-			array->elements[i - (i >= index)] = array->elements[i];
-		}
-		else
-		{
-			CTObjectRelease(array->elements[i]);
-		}
-	}
-	--array->count;
+	CTObjectRelease(array->elements[index]);
+	memmove(array->elements + index, array->elements + index + 1, sizeof(CTObjectRef *) * (--array->count - index));
 }
 
 uint64_t CTArrayIndexOfEntryByReference(CTArrayRef restrict array, CTObjectRef restrict value)

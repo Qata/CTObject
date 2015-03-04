@@ -60,6 +60,7 @@ uint8_t CTNumberCompare(const CTNumberRef restrict number1, const CTNumberRef re
 uint8_t CTLargeNumberCompare(const CTLargeNumberRef restrict number1, const CTLargeNumberRef restrict number2);
 
 void CTNumberRelease(CTNumberRef number);
+void CTLargeNumberRelease(CTLargeNumberRef lnumber);
 
 CTLargeNumberRef CTLargeNumberCreate(CTAllocatorRef restrict alloc, CTNumberRef base, CTNumberRef exponent);
 CTLargeNumberRef CTLargeNumberCopy(CTAllocatorRef restrict alloc, CTLargeNumberRef number);

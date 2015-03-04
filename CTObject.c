@@ -47,6 +47,11 @@ CTObjectRef CTObjectCopy(CTAllocatorRef restrict alloc, const CTObjectRef restri
 
 uint8_t CTObjectCompare(const CTObjectRef restrict object1, const CTObjectRef restrict object2)
 {
+	if (object1 == object2)
+	{
+		return 1;
+	}
+	
 	if (object1->type == object2->type)
 	{
 		switch(object1->type)
@@ -105,6 +110,7 @@ void CTObjectRelease(CTObjectRef object)
 			break;
 			
 		case CTOBJECT_TYPE_LARGE_NUMBER:
+			CTLargeNumberRelease(object->ptr);
 			break;
             
         case CTOBJECT_TYPE_STRING:

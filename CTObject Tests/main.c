@@ -14,6 +14,7 @@
 
 void recurseJSON(void * obj, int type, int indentation)
 {
+	return;
     for (int i = 0; i < indentation; ++i) printf("\t");
     switch (type)
     {
@@ -341,203 +342,207 @@ void CTArrayTests()
 
 int main(int argc, const char * argv[])
 {
-	CTAllocatorInit();
-    clock_t t = clock();
+	uint64_t clock_values = 0;
+	uint64_t smoothing_factor = 100;
+	for (uint64_t i = 0; i < smoothing_factor; ++i)
+	{
+		clock_t t = clock();
 #pragma mark - CTAllocator Test Begin
-    CTAllocatorRef allocator = CTAllocatorCreate();
-    CTAllocatorRelease(allocator);
-    allocator = CTAllocatorCreate();
-    
-    char ** testStrings = CTAllocatorAllocate(allocator, sizeof(void *) * 0x10);
-    char ** testStrings2 = CTAllocatorAllocate(allocator, sizeof(void *) * 0x10);
-    
-    for (int i = 0; i < 0x10; ++i)
-    {
-        char string[0x10];
-        char string2[0x10];
-        memset(string, 0, 0x10);
-        sprintf(string, "Test%i", i);
-        sprintf(string2, "Test%i", i + 0x10);
-        testStrings[i] = stringDuplicate(allocator, string);
-        testStrings2[i] = stringDuplicate(allocator, string);
-    }
-	
+		CTAllocatorRef allocator = CTAllocatorCreate();
+		CTAllocatorRelease(allocator);
+		allocator = CTAllocatorCreate();
+		
+		char ** testStrings = CTAllocatorAllocate(allocator, sizeof(void *) * 0x10);
+		char ** testStrings2 = CTAllocatorAllocate(allocator, sizeof(void *) * 0x10);
+		
+		for (int i = 0; i < 0x10; ++i)
+		{
+			char string[0x10];
+			char string2[0x10];
+			memset(string, 0, 0x10);
+			sprintf(string, "Test%i", i);
+			sprintf(string2, "Test%i", i + 0x10);
+			testStrings[i] = stringDuplicate(allocator, string);
+			testStrings2[i] = stringDuplicate(allocator, string);
+		}
+		
 #pragma mark - CTArray Test Begin
-	CTArrayTests();
-    CTArrayRef array = CTArrayCreate(allocator);
-    
-    for (int i = 0; i < 0x10; ++i)
-    {
-        CTArrayAddEntry(array, testStrings[i], CTOBJECT_NOT_AN_OBJECT);
-    }
-    
-    assert(array->count == 0x10);
-    assert(CTArrayIndexOfEntryByReference(array, (void *)"not found in array") == CT_NOT_FOUND);
-    
-    for (int i = 0; i < 0x10; ++i)
-    {
-        assert(strcmp(array->elements[i]->ptr, testStrings[i]) == 0);
-    }
-    
-    for (int i = 0xF; i >= 0x0; --i)
-    {
-        CTArrayDeleteEntry(array, i);
-    }
-    
-    assert(array->count == 0x0);
-    
+		CTArrayTests();
+		CTArrayRef array = CTArrayCreate(allocator);
+		
+		for (int i = 0; i < 0x10; ++i)
+		{
+			CTArrayAddEntry(array, testStrings[i], CTOBJECT_NOT_AN_OBJECT);
+		}
+		
+		assert(array->count == 0x10);
+		assert(CTArrayIndexOfEntryByReference(array, (void *)"not found in array") == CT_NOT_FOUND);
+		
+		for (int i = 0; i < 0x10; ++i)
+		{
+			assert(strcmp(array->elements[i]->ptr, testStrings[i]) == 0);
+		}
+		
+		for (int i = 0xF; i >= 0x0; --i)
+		{
+			CTArrayDeleteEntry(array, i);
+		}
+		
+		assert(array->count == 0x0);
+		
 #pragma mark - CTDictionary Test Begin
-    CTDictionaryRef dict = CTDictionaryCreate(allocator);
-    
-    for (int i = 0; i < 0x10; ++i)
-    {
-        CTDictionaryAddEntry(dict, testStrings[i], CTObjectCreate(allocator, testStrings2[i], CTOBJECT_NOT_AN_OBJECT));
-    }
-    
-    assert(dict->count == 0x10);
-    assert(CTDictionaryIndexOfEntry(dict, "not found in dictionary") == CT_NOT_FOUND);
-    assert(CTDictionaryObjectForKey(dict, "not found in dictionary") == NULL);
-    
-    for (int i = 0; i < 0x10; ++i)
-    {
-        assert(CTDictionaryIndexOfEntry(dict, testStrings[i]) == i);
-        assert(strcmp(CTDictionaryObjectForKey(dict, testStrings[i])->ptr, testStrings2[i]) == 0);
-    }
-    
-    for (int i = 0; i < 0x10; ++i)
-    {
-        CTDictionaryDeleteEntry(dict, testStrings[i]);
-    }
-    
-    assert(dict->count == 0x0);
-    
+		CTDictionaryRef dict = CTDictionaryCreate(allocator);
+		
+		for (int i = 0; i < 0x10; ++i)
+		{
+			CTDictionaryAddEntry(dict, testStrings[i], CTObjectCreate(allocator, testStrings2[i], CTOBJECT_NOT_AN_OBJECT));
+		}
+		
+		assert(dict->count == 0x10);
+		assert(CTDictionaryIndexOfEntry(dict, "not found in dictionary") == CT_NOT_FOUND);
+		assert(CTDictionaryObjectForKey(dict, "not found in dictionary") == NULL);
+		
+		for (int i = 0; i < 0x10; ++i)
+		{
+			assert(CTDictionaryIndexOfEntry(dict, testStrings[i]) == i);
+			assert(strcmp(CTDictionaryObjectForKey(dict, testStrings[i])->ptr, testStrings2[i]) == 0);
+		}
+		
+		for (int i = 0; i < 0x10; ++i)
+		{
+			CTDictionaryDeleteEntry(dict, testStrings[i]);
+		}
+		
+		assert(dict->count == 0x0);
+		
 #pragma mark - CTString Test Begin
-    char * stringTest = "Test of string";
-    char * prepend = "Prepended Characters. ";
-    char * append = ". Appended Characters";
-    
-    CTStringRef string = CTStringCreate(allocator, stringTest);
-	printf("%llu\n", CTStringHash(string));
-    CTStringAppendCharacters(string, append, CTSTRING_NO_LIMIT);
-	printf("%llu\n", CTStringHash(string));
-    CTStringPrependCharacters(string, prepend, CTSTRING_NO_LIMIT);
-    assert(strcmp(CTStringUTF8String(string), "Prepended Characters. Test of string. Appended Characters") == 0);
-    assert(strcmp(CTStringStringBetween(string, prepend, append), "Test of string") == 0);
-    assert(CTStringStringBetween(string, append, prepend) == NULL);
-    assert(CTStringStringBetween(string, "not found", "in string") == NULL);
-    CTStringRemoveCharactersFromEnd(string, strlen(append));
-    assert(strcmp(CTStringUTF8String(string), "Prepended Characters. Test of string") == 0);
-    CTStringRemoveCharactersFromStart(string, strlen(prepend));
-    assert(strcmp(CTStringUTF8String(string), stringTest) == 0);
-    
+		char * stringTest = "Test of string";
+		char * prepend = "Prepended Characters. ";
+		char * append = ". Appended Characters";
+		
+		CTStringRef string = CTStringCreate(allocator, stringTest);
+		printf("%llu\n", CTStringHash(string));
+		CTStringAppendCharacters(string, append, CTSTRING_NO_LIMIT);
+		printf("%llu\n", CTStringHash(string));
+		CTStringPrependCharacters(string, prepend, CTSTRING_NO_LIMIT);
+		assert(strcmp(CTStringUTF8String(string), "Prepended Characters. Test of string. Appended Characters") == 0);
+		assert(strcmp(CTStringStringBetween(string, prepend, append), "Test of string") == 0);
+		assert(CTStringStringBetween(string, append, prepend) == NULL);
+		assert(CTStringStringBetween(string, "not found", "in string") == NULL);
+		CTStringRemoveCharactersFromEnd(string, strlen(append));
+		assert(strcmp(CTStringUTF8String(string), "Prepended Characters. Test of string") == 0);
+		CTStringRemoveCharactersFromStart(string, strlen(prepend));
+		assert(strcmp(CTStringUTF8String(string), stringTest) == 0);
+		
 #pragma mark - CTNumber Test Begin
-    CTNumberRef number = CTNumberCreateWithLong(allocator, 0xFF);
-    assert((number->value.Int & number->value.UInt & number->value.ULong & number->value.Long) == 0xFF);
-    CTNumberSetDoubleValue(number, 255.5);
-    assert(number->value.Double == 255.5);
-    
+		CTNumberRef number = CTNumberCreateWithLong(allocator, 0xFF);
+		assert((number->value.Int & number->value.UInt & number->value.ULong & number->value.Long) == 0xFF);
+		CTNumberSetDoubleValue(number, 255.5);
+		assert(number->value.Double == 255.5);
+		
 #pragma mark - CTJSON Test Begin
-    
-    CTAllocatorRelease(allocator);
-    allocator = CTAllocatorCreate();
-    
-    array = CTArrayCreate(allocator);
-	CTArrayAddEntry(array, "{}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":\"1\"}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":\"1\"\r\n}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":1}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":\"ab'c\"}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"PI\":3141593e-6}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"PI\":3141593.0E-6}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"PI\":0.3141593e1}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":12345123456789}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":123456789123456789123456789}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":[ 0,-1,2,3,4]}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":[ \"1\",\"2\",\"3\",\"4\"]}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":[ { \n}, { },[]]}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":\"\u03bc\u00bf\"}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":\"\u00B1\u00B6\"}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"a\":\"hp://foo\"}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"a\":null}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"a\":true}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"a\":\n \tfalse}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"a\" : true }", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"a\" : 1.0e7 }", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"a\" : 1.0 }", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"a\" : 4095e-8 }", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{ \"v\":1.797693134E308}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{\"menu\": {\"header\": \"SVG Viewer\",\"items\": [1.7, true, false, {\"id\": \"Open\"},{\"id\": \"OpenNew\", \"label\": \"Open New\"},null,{\"id\": \"ZoomIn\", \"label\": \"Zoom In\"},{\"id\": \"ZoomOut\", \"label\": \"Zoom Out\"},{\"id\": \"OriginalView\", \"label\": \"Original View\"},null,{\"id\": \"Quality\"},{\"id\": \"Pause\"},{\"id\": \"Mute\"},null,{\"id\": \"Find\", \"label\": \"Find...\"},{\"id\": \"FindAgain\", \"label\": \"Find Again\"},{\"id\": \"Copy\"},{\"id\": \"CopyAgain\", \"label\": \"Copy Again\"},{\"id\": \"CopySVG\", \"label\": \"Copy SVG\"},{\"id\": \"ViewSVG\", \"label\": \"View SVG\"},{\"id\": \"ViewSource\", \"label\": \"View Source\"},{\"id\": \"SaveAs\", \"label\": \"Save As\"},null,{\"id\": \"Help\"},{\"id\": \"About\", \"label\": \"About Adobe CVG Viewer...\"}]}}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "\"hello\"", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "1.0e7", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "1", CTOBJECT_NOT_AN_OBJECT);
-    
-    CTErrorRef error = NULL;
-	for (int i = 0; i < array->count; ++i)
-	{
-		CTObjectRef dict = CTJSONParse(allocator, array->elements[i]->ptr, 0, &error);
-		recurseJSON(CTObjectValue(dict), dict->type, 0);
-		assert(!error);
-		CTJSONSerialise(allocator, dict, 0);
-		assert(!error);
-	}
-    CTArrayEmpty(array);
-	
-	CTArrayAddEntry(array, "", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{'X':'s", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{{\"k\":\"v\"}}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "{\"l\":[\"e\",\"]}", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "1.3.3", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "01", CTOBJECT_NOT_AN_OBJECT);
-	for (int i = 0; i < array->count; ++i)
-	{
-		error = NULL;
-		CTAllocatorRef allocll = CTAllocatorCreate();
-		CTJSONParse(allocll, CTObjectValue(CTArrayObjectAtIndex(array, i)), 0, &error);
-		assert(error);
-		CTAllocatorRelease(allocll);
-	}
+		
+		CTAllocatorRelease(allocator);
+		allocator = CTAllocatorCreate();
+		
+		array = CTArrayCreate(allocator);
+		CTArrayAddEntry(array, "{}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":\"1\"}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":\"1\"\r\n}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":1}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":\"ab'c\"}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"PI\":3141593e-6}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"PI\":3141593.0E-6}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"PI\":0.3141593e1}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":12345123456789}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":123456789123456789123456789}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":[ 0,-1,2,3,4]}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":[ \"1\",\"2\",\"3\",\"4\"]}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":[ { \n}, { },[]]}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":\"\u03bc\u00bf\"}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":\"\u00B1\u00B6\"}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"a\":\"hp://foo\"}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"a\":null}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"a\":true}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"a\":\n \tfalse}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"a\" : true }", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"a\" : 1.0e7 }", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"a\" : 1.0 }", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"a\" : 4095e-8 }", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{ \"v\":1.797693134E308}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{\"menu\": {\"header\": \"SVG Viewer\",\"items\": [1.7, true, false, {\"id\": \"Open\"},{\"id\": \"OpenNew\", \"label\": \"Open New\"},null,{\"id\": \"ZoomIn\", \"label\": \"Zoom In\"},{\"id\": \"ZoomOut\", \"label\": \"Zoom Out\"},{\"id\": \"OriginalView\", \"label\": \"Original View\"},null,{\"id\": \"Quality\"},{\"id\": \"Pause\"},{\"id\": \"Mute\"},null,{\"id\": \"Find\", \"label\": \"Find...\"},{\"id\": \"FindAgain\", \"label\": \"Find Again\"},{\"id\": \"Copy\"},{\"id\": \"CopyAgain\", \"label\": \"Copy Again\"},{\"id\": \"CopySVG\", \"label\": \"Copy SVG\"},{\"id\": \"ViewSVG\", \"label\": \"View SVG\"},{\"id\": \"ViewSource\", \"label\": \"View Source\"},{\"id\": \"SaveAs\", \"label\": \"Save As\"},null,{\"id\": \"Help\"},{\"id\": \"About\", \"label\": \"About Adobe CVG Viewer...\"}]}}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "\"hello\"", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "1.0e7", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "1", CTOBJECT_NOT_AN_OBJECT);
+		
+		CTErrorRef error = NULL;
+		for (int i = 0; i < array->count; ++i)
+		{
+			CTObjectRef dict = CTJSONParse(allocator, array->elements[i]->ptr, 0, &error);
+			recurseJSON(CTObjectValue(dict), dict->type, 0);
+			assert(!error);
+			CTJSONSerialise(allocator, dict, 0);
+			assert(!error);
+		}
+		CTArrayEmpty(array);
+		
+		CTArrayAddEntry(array, "", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{'X':'s", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{{\"k\":\"v\"}}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "{\"l\":[\"e\",\"]}", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "1.3.3", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "01", CTOBJECT_NOT_AN_OBJECT);
+		for (int i = 0; i < array->count; ++i)
+		{
+			error = NULL;
+			CTAllocatorRef allocll = CTAllocatorCreate();
+			CTJSONParse(allocll, CTObjectValue(CTArrayObjectAtIndex(array, i)), 0, &error);
+			assert(error);
+			CTAllocatorRelease(allocll);
+		}
 #pragma mark - CTBencode Test Begin
-    CTArrayEmpty(array);
-	
-    CTArrayAddEntry(array, "de", CTOBJECT_NOT_AN_OBJECT);
-    CTArrayAddEntry(array, "li7483ee", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "d4:yololllleeeleli720eeli-230eld4:hulli-233eeeeee", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "d4:yoloi3ee", CTOBJECT_NOT_AN_OBJECT);
-	CTArrayAddEntry(array, "i-3240.0e", CTOBJECT_NOT_AN_OBJECT);
-    CTArrayAddEntry(array, "l0:e", CTOBJECT_NOT_AN_OBJECT);
-    CTArrayAddEntry(array, "5:12345", CTOBJECT_NOT_AN_OBJECT);
-	
-    error = NULL;
-	for (int i = 0; i < array->count; ++i)
-	{
-		CTObjectRef obj = CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &error);
-		assert(!error);
-        CTStringRef string = CTBencodeSerialise(allocator, obj, &error);
-		puts(string->characters);
-		assert(!error);
-	}
-    
-    CTArrayEmpty(array);
-	CTArrayAddEntry(array, "", CTOBJECT_NOT_AN_OBJECT);
-    CTArrayAddEntry(array, "d", CTOBJECT_NOT_AN_OBJECT);
-    CTArrayAddEntry(array, "l", CTOBJECT_NOT_AN_OBJECT);
-    CTArrayAddEntry(array, "di0ee", CTOBJECT_NOT_AN_OBJECT);
-    for (int i = 0; i < array->count; ++i)
-	{
+		CTArrayEmpty(array);
+		
+		CTArrayAddEntry(array, "de", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "li7483ee", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "d4:yololllleeeleli720eeli-230eld4:hulli-233eeeeee", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "d4:yoloi3ee", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "i-3240.0e", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "l0:e", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "5:12345", CTOBJECT_NOT_AN_OBJECT);
+		
 		error = NULL;
-        CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &error);
-		assert(error);
-        fprintf(stderr, "%s\n", CTStringUTF8String(CTErrorGetErrorString(error)));
-        CTErrorRelease(error);
-	}
-	
+		for (int i = 0; i < array->count; ++i)
+		{
+			CTObjectRef obj = CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &error);
+			assert(!error);
+			CTStringRef string = CTBencodeSerialise(allocator, obj, &error);
+			puts(string->characters);
+			assert(!error);
+		}
+		
+		CTArrayEmpty(array);
+		CTArrayAddEntry(array, "", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "d", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "l", CTOBJECT_NOT_AN_OBJECT);
+		CTArrayAddEntry(array, "di0ee", CTOBJECT_NOT_AN_OBJECT);
+		for (int i = 0; i < array->count; ++i)
+		{
+			error = NULL;
+			CTBencodeParse(allocator, CTArrayObjectAtIndex(array, i)->ptr, &error);
+			assert(error);
+			fprintf(stderr, "%s\n", CTStringUTF8String(CTErrorGetErrorString(error)));
+			CTErrorRelease(error);
+		}
+		
 #pragma mark - CTBencode Test End
-    
-    CTArrayRelease(array);
-    CTAllocatorRelease(CTAllocatorGetDefault());
-    CTAllocatorRelease(allocator);
-    
+		
+		CTArrayRelease(array);
+		CTAllocatorRelease(allocator);
+		
 #pragma mark - CTAllocator Test End
-    printf("%.0f µseconds (%lu ticks)\n", ((clock() - t) / (double)CLOCKS_PER_SEC) * 1e6, clock() - t);
+		clock_values += clock() - t;
+	}
+	printf("%.0f µseconds\n", ((clock_values / (double)smoothing_factor) / (double)CLOCKS_PER_SEC) * 1e6);
     return 0;
 }

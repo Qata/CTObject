@@ -122,6 +122,13 @@ void CTNumberRelease(CTNumberRef number)
     CTAllocatorDeallocate(number->alloc, number);
 }
 
+void CTLargeNumberRelease(CTLargeNumberRef lnumber)
+{
+	CTNumberRelease(lnumber->base);
+	CTNumberRelease(lnumber->exponent);
+	CTAllocatorDeallocate(lnumber->alloc, lnumber);
+}
+
 void CTNumberSetUnsignedIntValue(CTNumberRef restrict number, uint32_t value)
 {
     number->value.UInt = value;

@@ -137,7 +137,7 @@ void CTDictionaryAddEntry(CTDictionaryRef restrict dict, const char * restrict k
 
 void CTDictionaryAddEntry2(CTDictionaryRef restrict dict, CTStringRef restrict key, CTObjectRef restrict value)
 {
-    unsigned long index = dict->count++;
+    uint64_t index = dict->count++;
 	assert((dict->elements = CTAllocatorReallocate(dict->alloc, dict->elements, sizeof(CTDictionaryEntryRef) * dict->count)));
     dict->elements[index] = CTDictionaryCreateEntry(dict->alloc);
 	dict->elements[index]->key = key;
@@ -149,7 +149,7 @@ void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restric
     if (dict->count)
 	{
 		int countOfKeys = 0;
-		for (unsigned long i = 0; i < dict->count; ++i)
+		for (uint64_t i = 0; i < dict->count; ++i)
 		{
 			if (!strcmp(CTStringUTF8String(dict->elements[i]->key), key))
 			{
@@ -159,7 +159,7 @@ void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restric
 		if (countOfKeys)
 		{
 			CTDictionaryEntryRef* retVal = CTAllocatorAllocate(dict->alloc, sizeof(CTDictionaryEntryRef) * dict->count - countOfKeys);
-			for (unsigned long i = 0, count = 0; i < dict->count; ++i)
+			for (uint64_t i = 0, count = 0; i < dict->count; ++i)
 			{
 				if (strcmp(CTStringUTF8String(dict->elements[i]->key), key))
 				{
@@ -191,7 +191,7 @@ CTDictionaryEntryRef CTDictionaryEntryAtIndex(const CTDictionaryRef restrict dic
 CTObjectRef CTDictionaryObjectForKey(const CTDictionaryRef restrict dict, const char * restrict key)
 {
 	hash_t key_hash = CTStringCharHash(key);
-    for (unsigned long i = 0; i < dict->count; ++i)
+    for (uint64_t i = 0; i < dict->count; ++i)
     {
         if (CTStringHash(dict->elements[i]->key) == key_hash)
         {
@@ -203,7 +203,7 @@ CTObjectRef CTDictionaryObjectForKey(const CTDictionaryRef restrict dict, const 
 
 uint64_t CTDictionaryIndexOfEntry(const CTDictionaryRef restrict dict, const char * restrict key)
 {
-    for (unsigned long i = 0; i < dict->count; ++i)
+    for (uint64_t i = 0; i < dict->count; ++i)
     {
         if (!strcmp(CTStringUTF8String(dict->elements[i]->key), key))
         {
