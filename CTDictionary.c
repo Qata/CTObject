@@ -14,6 +14,7 @@
 #include <stdarg.h>
 #include "CTDictionary.h"
 #include "CTFunctions.h"
+#include "CTNumber.h"
 
 CTDictionaryEntryRef CTDictionaryCreateEntry(CTAllocatorRef restrict alloc)
 {
@@ -49,6 +50,22 @@ CTDictionaryRef CTDictionaryCreateWithKeysPairedWithValues(CTAllocatorRef restri
 		if (!value)
 			break;
 		CTDictionaryAddEntry(retVal, key, value);
+	}
+	va_end(list);
+	return retVal;
+}
+
+CTDictionaryRef CTDictionaryCreateWithKeysPairedWithNumbers(CTAllocatorRef restrict alloc, ...)
+{
+	CTDictionaryRef retVal = CTDictionaryCreate(alloc);
+	va_list list;
+	va_start(list, alloc);
+	for (const char * key = va_arg(list, const char*); key != NULL; key = va_arg(list, const char*))
+	{
+		CTNumberRef value = va_arg(list, CTNumberRef);
+		if (!value)
+			break;
+		CTDictionaryAddEntry(retVal, key, CTObjectWithNumber(alloc, value));
 	}
 	va_end(list);
 	return retVal;

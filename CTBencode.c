@@ -28,7 +28,7 @@ CTStringRef CTBencodeExtractString(CTAllocatorRef alloc, CTStringRef bencodedStr
     return retVal;
 }
 
-CTDictionaryRef CTBencodeExtractDictionary(CTAllocatorRef alloc, CTStringRef bencodedString, uint64_t * start, CTErrorRef* error)
+CTDictionaryRef CTBencodeExtractDictionary(CTAllocatorRef alloc, CTStringRef bencodedString, uint64_t * start, CTErrorRef * error)
 {
     ++(*start);
     CTDictionaryRef dict = CTDictionaryCreate(alloc);
@@ -60,7 +60,7 @@ CTDictionaryRef CTBencodeExtractDictionary(CTAllocatorRef alloc, CTStringRef ben
     return dict;
 }
 
-CTArrayRef CTBencodeExtractList(CTAllocatorRef alloc, CTStringRef bencodedString, uint64_t * start, CTErrorRef* error)
+CTArrayRef CTBencodeExtractList(CTAllocatorRef alloc, CTStringRef bencodedString, uint64_t * start, CTErrorRef * error)
 {
     ++(*start);
     CTArrayRef list = CTArrayCreate(alloc);
@@ -91,13 +91,13 @@ CTNumberRef CTBencodeExtractInteger(CTAllocatorRef alloc, CTStringRef bencodedSt
     return CTNumberCreateWithLong(alloc, value);
 }
 
-CTObjectRef CTBencodeParse(CTAllocatorRef alloc, const char * bencoded, CTErrorRef* error)
+CTObjectRef CTBencodeParse(CTAllocatorRef alloc, const char * bencoded, CTErrorRef * error)
 {
     uint64_t start = 0;
 	return CTBencodeParse2(alloc, bencoded, &start, error);
 }
 
-CTObjectRef CTBencodeParse2(CTAllocatorRef alloc, const char * bencoded, uint64_t * start, CTErrorRef* error)
+CTObjectRef CTBencodeParse2(CTAllocatorRef alloc, const char * bencoded, uint64_t * start, CTErrorRef * error)
 {
 	CTObjectRef retVal = NULL;
     CTAllocatorRef lalloc = CTAllocatorCreate();
@@ -146,7 +146,7 @@ CTObjectRef CTBencodeParse2(CTAllocatorRef alloc, const char * bencoded, uint64_
     return retVal;
 }
 
-CTStringRef CTBencodeSerialise(CTAllocatorRef restrict alloc, CTObjectRef restrict bencoded, CTErrorRef* error)
+CTStringRef CTBencodeSerialise(CTAllocatorRef restrict alloc, CTObjectRef restrict bencoded, CTErrorRef * error)
 {
     CTStringRef retVal = CTStringCreate(alloc, "");
     CTAllocatorRef allocl = CTAllocatorCreate();

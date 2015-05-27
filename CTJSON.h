@@ -17,7 +17,8 @@ enum CTJSON_OPTIONS
 enum CTJSON_ERROR_CODES
 {
 	CTJSON_UNEXPECTED_TOKEN = -100,
-	CTJSON_STRUCTURE_OMISSION = -101
+	CTJSON_STRUCTURE_OMISSION = -101,
+	CTJSON_PARSE_ERROR = -32700
 };
 
 typedef uint64_t CTJSONOptions;
@@ -25,5 +26,5 @@ typedef uint64_t CTJSONOptions;
 #include "CTAllocator.h"
 #include "CTError.h"
 
-CTObjectRef CTJSONParse(CTAllocatorRef restrict alloc, const char * restrict JSON, CTJSONOptions options, CTErrorRef* error);
+CTObjectRef CTJSONParse(CTAllocatorRef restrict alloc, const char * restrict JSON, CTJSONOptions options, CTErrorRef * error);
 CTStringRef CTJSONSerialise(CTAllocatorRef restrict alloc, const CTObjectRef restrict JSON, CTJSONOptions options);
