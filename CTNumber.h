@@ -13,8 +13,6 @@
 
 typedef enum
 {
-    CTNUMBER_TYPE_UINT,
-    CTNUMBER_TYPE_INT,
     CTNUMBER_TYPE_ULONG,
     CTNUMBER_TYPE_LONG,
     CTNUMBER_TYPE_DOUBLE
@@ -22,8 +20,6 @@ typedef enum
 
 union CTNumberValue
 {
-    uint32_t UInt;
-    int32_t Int;
     uint64_t ULong;
     int64_t Long;
     long double Double;
@@ -67,8 +63,6 @@ CTLargeNumberRef CTLargeNumberCopy(CTAllocatorRef restrict alloc, CTLargeNumberR
 CTNumberRef CTLargeNumberBase(const CTLargeNumberRef restrict number);
 CTNumberRef CTLargeNumberExponent(const CTLargeNumberRef restrict number);
 
-void CTNumberSetUnsignedIntValue(CTNumberRef restrict number, uint32_t integer);
-void CTNumberSetIntValue(CTNumberRef restrict number, int32_t integer);
 void CTNumberSetUnsignedLongValue(CTNumberRef restrict number, uint64_t longInteger);
 void CTNumberSetLongValue(CTNumberRef restrict number, int64_t longInteger);
 void CTNumberSetDoubleValue(CTNumberRef restrict number, long double floatingPoint);

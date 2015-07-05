@@ -127,7 +127,7 @@ CTObjectRef CTDictionaryFromJSON(CTAllocatorRef alloc, const CTStringRef restric
 							return CTObjectCreate(alloc, dictionary, CTOBJECT_TYPE_DICTIONARY);
 							break;
 					}
-					if (key && value && CTObjectType(key) == CTOBJECT_TYPE_STRING)
+					if (CTObjectNonNilAndType(key, CTOBJECT_TYPE_STRING) && value)
 					{
 						CTDictionaryAddEntry(dictionary, CTStringUTF8String(CTObjectValue(key)), value);
 						CTObjectRelease(key);
@@ -174,25 +174,103 @@ CTObjectRef CTStringFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JS
     CTStringRef string = CTStringCreate(alloc, "");
 	const char * JSONC = CTStringUTF8String(JSON);
 	char character[3];
-	for (++(*start); *start < CTStringLength(JSON) && JSONC[*start] != (options & CTJSONOptionsSingleQuoteStrings ? '\'' : '"'); (*start)++)
+	uint64_t string_start_for_errors = *start;
+	for (++(*start); *start < CTStringLength(JSON) && JSONC[*start] != (options & CTJSONOptionsSingleQuoteStrings ? '\'' : '"'); ++(*start))
 	{
 		character[2] = 0;
 		switch (JSONC[*start])
 		{
 			case '\\':
-				memcpy(character, JSONC + (*start)++, 2);
-				CTStringAppendCharacters(string, character, 2);
+				if (*start + 1 < CTStringLength(JSON))
+				{
+					++(*start);
+					switch (JSONC[*start])
+					{
+						case '/':
+						case '\\':
+						case '"':
+							CTStringAppendCharacter(string, JSONC[*start]);
+							break;
+						case 'b':
+							CTStringAppendCharacter(string, '\b');
+							break;
+						case 'f':
+							CTStringAppendCharacter(string, '\f');
+							break;
+						case 'n':
+							CTStringAppendCharacter(string, '\n');
+							break;
+						case 'r':
+							CTStringAppendCharacter(string, '\r');
+							break;
+						case 't':
+							CTStringAppendCharacter(string, '\t');
+							break;
+						case 'u':
+							if (*start + 4 < CTStringLength(JSON))
+							{
+								const char * unicode = &JSONC[*start + 1];
+								char just_hex[5];
+								strncpy(just_hex, unicode, 4);
+								uint32_t unicode_as_uint = (uint32_t)strtoul(just_hex, NULL, 0x10);
+								uint8_t count = 0;
+								if (unicode_as_uint < 0x80)
+								{
+									count = 1;
+								}
+								else if (unicode_as_uint < 0x800)
+								{
+									count = 2;
+								}
+								else if (unicode_as_uint < 0x10000)
+								{
+									count = 3;
+								}
+								
+								if (count != 0)
+								{
+									char result[4] = {0};
+									for (uint8_t i = count - 1; i > 0; --i)
+									{
+										result[i] = (char) 0x80 | (unicode_as_uint & 0x3F);
+										unicode_as_uint >>= 6;
+									}
+									
+									for (uint8_t i = 0; i < count; ++i)
+									{
+										unicode_as_uint |= 1 << (7 - i);
+									}
+									
+									result[0] = unicode_as_uint;
+									CTStringAppendCharacters(string, result, count);
+								}
+								*start += 4;
+							}
+							break;
+							
+						default:
+							if (error)
+							{
+								char err[0x100];
+								memset(err, 0, 0x100);
+								sprintf(err, "Invalid escaped character at index %llu", string_start_for_errors);
+								*error = CTErrorCreate(alloc, err, CTJSON_PARSE_ERROR);
+							}
+							break;
+					}
+				}
 				break;
 			default:
 				CTStringAppendCharacter(string, JSONC[*start]);
 				break;
 		}
 	}
+	
 	if (JSONC[*start] != (options & CTJSONOptionsSingleQuoteStrings ? '\'' : '"'))
 	{
 		char err[0x100];
 		memset(err, 0, 0x100);
-		sprintf(err, "Non-terminated string in JSON at index %llu", *start);
+		sprintf(err, "Non-terminated string in JSON at index %llu", string_start_for_errors);
 		if (error)
 		{
 			*error = CTErrorCreate(alloc, err, CTJSON_PARSE_ERROR);

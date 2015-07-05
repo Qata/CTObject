@@ -118,9 +118,6 @@ void CTObjectRelease(CTObjectRef object)
             break;
 			
 		case CTOBJECT_TYPE_NULL:
-			CTNullRelease(object->ptr);
-			break;
-			
 		case CTOBJECT_NOT_AN_OBJECT:
 			break;
     }

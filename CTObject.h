@@ -9,6 +9,9 @@
 #pragma once
 #include "CTAllocator.h"
 
+#define CTObjectNonNilAndType(OBJECT, TYPE) \
+	(OBJECT != NULL && CTObjectType(OBJECT) == TYPE)
+
 typedef enum
 {
     CTOBJECT_NOT_AN_OBJECT = -1,
@@ -18,7 +21,7 @@ typedef enum
     CTOBJECT_TYPE_NUMBER,
     CTOBJECT_TYPE_NULL,
     CTOBJECT_TYPE_LARGE_NUMBER
-} CTOBJECT_TYPE, * CTOBJECT_TYPERef;
+} CTOBJECT_TYPE;
 
 typedef struct
 {

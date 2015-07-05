@@ -7,6 +7,7 @@
 //
 
 #include "CTNumber.h"
+#include <math.h>
 
 CTNumberRef CTNumberCreate(CTAllocatorRef alloc)
 {
@@ -17,16 +18,12 @@ CTNumberRef CTNumberCreate(CTAllocatorRef alloc)
 
 CTNumberRef CTNumberCreateWithUnsignedInt(CTAllocatorRef restrict alloc, uint32_t value)
 {
-	CTNumberRef number = CTNumberCreate(alloc);
-    CTNumberSetUnsignedIntValue(number, value);
-    return number;
+    return CTNumberCreateWithUnsignedLong(alloc, value);
 }
 
 CTNumberRef CTNumberCreateWithInt(CTAllocatorRef restrict alloc, int32_t value)
 {
-	CTNumberRef number = CTNumberCreate(alloc);
-    CTNumberSetIntValue(number, value);
-    return number;
+	return CTNumberCreateWithLong(alloc, value);
 }
 
 CTNumberRef CTNumberCreateWithUnsignedLong(CTAllocatorRef restrict alloc, uint64_t value)
@@ -54,10 +51,6 @@ CTNumberRef CTNumberCopy(CTAllocatorRef restrict alloc, CTNumberRef number)
 {
 	switch (number->type)
 	{
-		case CTNUMBER_TYPE_INT:
-			return CTNumberCreateWithInt(alloc, number->value.Int);
-		case CTNUMBER_TYPE_UINT:
-			return CTNumberCreateWithUnsignedInt(alloc, number->value.UInt);
 		case CTNUMBER_TYPE_LONG:
 			return CTNumberCreateWithLong(alloc, number->value.Long);
 		case CTNUMBER_TYPE_ULONG:
@@ -73,10 +66,6 @@ uint8_t CTNumberCompare(const CTNumberRef restrict number1, const CTNumberRef re
 	{
 		switch (number1->type)
 		{
-			case CTNUMBER_TYPE_INT:
-				return number1->value.Int == number2->value.Int;
-			case CTNUMBER_TYPE_UINT:
-				return number1->value.UInt == number2->value.UInt;
 			case CTNUMBER_TYPE_LONG:
 				return number1->value.Long == number2->value.Long;
 			case CTNUMBER_TYPE_ULONG:
@@ -129,18 +118,6 @@ void CTLargeNumberRelease(CTLargeNumberRef lnumber)
 	CTAllocatorDeallocate(lnumber->alloc, lnumber);
 }
 
-void CTNumberSetUnsignedIntValue(CTNumberRef restrict number, uint32_t value)
-{
-    number->value.UInt = value;
-    number->type = CTNUMBER_TYPE_UINT;
-}
-
-void CTNumberSetIntValue(CTNumberRef restrict number, int32_t value)
-{
-    number->value.Int = value;
-    number->type = CTNUMBER_TYPE_INT;
-}
-
 void CTNumberSetUnsignedLongValue(CTNumberRef restrict number, uint64_t value)
 {
     number->value.ULong = value;
@@ -162,19 +139,15 @@ void CTNumberSetDoubleValue(CTNumberRef restrict number, long double value)
 uint32_t CTNumberUnsignedIntValue(const CTNumberRef restrict number)
 {
     switch (number->type)
-    {
-        case CTNUMBER_TYPE_UINT:
-            return number->value.UInt;
-        case CTNUMBER_TYPE_INT:
-            return (uint32_t)number->value.Int;
-        case CTNUMBER_TYPE_LONG:
-            return (uint32_t)number->value.Long;
+	{
+		case CTNUMBER_TYPE_LONG:
+			return (uint32_t)number->value.Long;
         case CTNUMBER_TYPE_ULONG:
             return (uint32_t)number->value.ULong;
         case CTNUMBER_TYPE_DOUBLE:
             return (uint32_t)number->value.Double;
         default:
-            return 0;
+            return UINT_MAX;
     }
 }
 
@@ -182,10 +155,6 @@ int32_t CTNumberIntValue(const CTNumberRef restrict number)
 {
     switch (number->type)
     {
-        case CTNUMBER_TYPE_INT:
-            return number->value.Int;
-        case CTNUMBER_TYPE_UINT:
-            return (int32_t)number->value.UInt;
         case CTNUMBER_TYPE_LONG:
             return (int32_t)number->value.Long;
         case CTNUMBER_TYPE_ULONG:
@@ -193,7 +162,7 @@ int32_t CTNumberIntValue(const CTNumberRef restrict number)
         case CTNUMBER_TYPE_DOUBLE:
             return (int32_t)number->value.Double;
         default:
-            return 0;
+            return INT_MAX;
     }
 }
 
@@ -205,14 +174,10 @@ uint64_t CTNumberUnsignedLongValue(const CTNumberRef restrict number)
             return number->value.ULong;
         case CTNUMBER_TYPE_LONG:
             return (uint64_t)number->value.Long;
-        case CTNUMBER_TYPE_INT:
-            return (uint64_t)number->value.Int;
-        case CTNUMBER_TYPE_UINT:
-            return (uint64_t)number->value.UInt;
         case CTNUMBER_TYPE_DOUBLE:
             return (uint64_t)number->value.Double;
         default:
-            return 0;
+            return ULONG_MAX;
     }
 }
 
@@ -224,14 +189,10 @@ int64_t CTNumberLongValue(const CTNumberRef restrict number)
             return number->value.Long;
         case CTNUMBER_TYPE_ULONG:
             return (int64_t)number->value.ULong;
-        case CTNUMBER_TYPE_INT:
-            return (int64_t)number->value.Int;
-        case CTNUMBER_TYPE_UINT:
-            return (int64_t)number->value.UInt;
         case CTNUMBER_TYPE_DOUBLE:
             return (int64_t)number->value.Double;
         default:
-            return 0;
+            return LONG_MAX;
     }
 }
 
@@ -245,12 +206,8 @@ long double CTNumberDoubleValue(const CTNumberRef restrict number)
             return (long double)number->value.Long;
         case CTNUMBER_TYPE_ULONG:
             return (long double)number->value.ULong;
-        case CTNUMBER_TYPE_INT:
-            return (long double)number->value.Int;
-        case CTNUMBER_TYPE_UINT:
-            return (long double)number->value.UInt;
         default:
-            return 0;
+            return INFINITY;
     }
 }
 

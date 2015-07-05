@@ -11,22 +11,16 @@
 #endif
 #include "CTNull.h"
 
-CTNullRef CTNullCreate(CTAllocatorRef restrict alloc)
+CTNull global_null = {.value = "null"};
+
+CTNullRef CTNullCreate()
 {
-    CTNullRef null = CTAllocatorAllocate(alloc, sizeof(CTNull));
-    null->value = "null";
-    null->alloc = alloc;
-    return null;
+    return &global_null;
 }
 
 const char * CTNullValue(CTNullRef null)
 {
 	return null->value;
-}
-
-void CTNullRelease(CTNullRef null)
-{
-    CTAllocatorDeallocate(null->alloc, null);
 }
 
 CTObjectRef CTObjectWithNull(CTAllocatorRef alloc, CTNullRef restrict n)

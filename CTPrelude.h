@@ -20,3 +20,8 @@
 #include "CTNumber.h"
 #include "CTObject.h"
 #include "CTString.h"
+
+#ifdef __OBJC__
+#include "CTObject+ObjC.h"
+#include "CTNumber+ObjC.h"
+#endif
