@@ -444,7 +444,6 @@ CTStringRef CTJSONSerialise(CTAllocatorRef alloc, const CTObjectRef restrict JSO
 void CTJSONSerialiseRecursive(CTAllocatorRef alloc, CTStringRef JSON, void * obj, CTOBJECT_TYPE type, CTJSONOptions options)
 {
     uint64_t count = 0;
-    CTOBJECT_TYPE valueType = 0;
     
     if (type == CTOBJECT_TYPE_DICTIONARY)
     {
@@ -503,6 +502,7 @@ void CTJSONSerialiseRecursive(CTAllocatorRef alloc, CTStringRef JSON, void * obj
 		default:
 		{
 			void * ptr = NULL;
+			CTOBJECT_TYPE valueType = 0;
 			for (uint64_t i = 0; i < count; ++i)
 			{
 				switch (type)
