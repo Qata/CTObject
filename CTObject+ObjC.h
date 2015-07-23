@@ -1,5 +1,5 @@
 #pragma once
-#include "CTObject.h"
+#include "CTPrelude.h"
 
 #define CTObjectWrap(alloc, value) \
 _CTObjectWrap(alloc, value, @encode(__typeof__((value))))
