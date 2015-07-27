@@ -17,6 +17,15 @@
 #include "CTString.h"
 #include "CTNull.h"
 
+inline void * CTObjectValueIfNonNilAndType(CTObjectRef object, CTOBJECT_TYPE type)
+{
+	if (CTObjectNonNilAndType(object, type))
+	{
+		return CTObjectValue(object);
+	}
+	return NULL;
+}
+
 CTObjectRef CTObjectCreate(CTAllocatorRef restrict alloc, void * ptr, CTOBJECT_TYPE type)
 {
     CTObjectRef object = CTAllocatorAllocate(alloc, sizeof(CTObject));

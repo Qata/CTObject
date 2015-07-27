@@ -128,6 +128,40 @@ uint64_t CTArrayIndexOfEntryByValue(CTArrayRef restrict array, CTObjectRef value
 uint64_t CTArrayCount(CTArrayRef restrict array);
 
 /**
+ * Apply a function to every element of the array.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param mapFn	A function to apply to every CTObject in the array.
+ * @return		An eldritch void.
+ **/
+void CTArrayMap(CTArrayRef restrict array, void (^mapFn)(CTObjectRef));
+
+/**
+ * Copy the array and apply a function to every element then return the new array.
+ * @param alloc	A properly initialised CTAllocator that was created with CTAllocatorCreate.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param mapFn	A function to apply to every CTObject in the array.
+ * @return		An eldritch void.
+ **/
+
+CTArrayRef CTArrayCopyMap(CTAllocatorRef alloc, CTArrayRef restrict array, void (^mapFn)(CTObjectRef));
+
+/**
+ * Remove all objects in the array that the filter block doesn't return true for.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param filterFn	A function to apply to every CTObject in the array.
+ * @return		An eldritch void.
+ **/
+void CTArrayFilter(CTArrayRef restrict array, uint8_t (^filterFn)(CTObjectRef));
+
+/**
+ * Copy all the elements from the array for which the filter block returns true and return the new array.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param filterFn	A function to apply to every CTObject in the array.
+ * @return		An eldritch void.
+ **/
+CTArrayRef CTArrayCopyFilter(CTAllocatorRef alloc, CTArrayRef restrict array, uint8_t (^filterFn)(CTObjectRef));
+
+/**
  * Return a CTObject encasing the CTArray passed.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		The CTArray wrapped in a CTObject. The result is identical to using CTObjectCreate.

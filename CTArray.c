@@ -159,6 +159,45 @@ inline uint64_t CTArrayCount(CTArrayRef restrict array)
 	return array->count;
 }
 
+void CTArrayMap(CTArrayRef restrict array, void (^mapFn)(CTObjectRef))
+{
+	for (uint64_t i = 0; i < array->count; ++i)
+	{
+		mapFn(array->elements[i]);
+	}
+}
+
+CTArrayRef CTArrayCopyMap(CTAllocatorRef alloc, CTArrayRef restrict array, void (^mapFn)(CTObjectRef))
+{
+	CTArrayRef newArray = CTArrayCopy(alloc, array);
+	CTArrayMap(newArray, mapFn);
+	return newArray;
+}
+
+void CTArrayFilter(CTArrayRef restrict array, uint8_t (^filterFn)(CTObjectRef))
+{
+	for (int64_t i = array->count - 1; i >= 0; --i)
+	{
+		if (!filterFn(array->elements[i]))
+		{
+			CTArrayDeleteEntry(array, i);
+		}
+	}
+}
+
+CTArrayRef CTArrayCopyFilter(CTAllocatorRef alloc, CTArrayRef restrict array, uint8_t (^filterFn)(CTObjectRef))
+{
+	CTArrayRef newArray = CTArrayCreate(alloc);
+	for (uint64_t i = 0; i < array->count; ++i)
+	{
+		if (filterFn(array->elements[i]))
+		{
+			CTArrayAddEntry2(newArray, CTObjectCopy(alloc, array->elements[i]));
+		}
+	}
+	return newArray;
+}
+
 CTObjectRef CTObjectWithArray(CTAllocatorRef alloc, CTArrayRef restrict array)
 {
 	return CTObjectCreate(alloc, array, CTOBJECT_TYPE_ARRAY);

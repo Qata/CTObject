@@ -12,6 +12,7 @@
 #define CTObjectNonNilAndType(OBJECT, TYPE) \
 	(OBJECT != NULL && CTObjectType(OBJECT) == TYPE)
 
+
 typedef enum
 {
     CTOBJECT_NOT_AN_OBJECT = -1,
@@ -31,6 +32,7 @@ typedef struct
     CTOBJECT_TYPE type;
 } CTObject, * CTObjectRef;
 
+inline void * CTObjectValueIfNonNilAndType(CTObjectRef object, CTOBJECT_TYPE type);
 CTObjectRef CTObjectCreate(CTAllocatorRef restrict alloc, void * ptr, CTOBJECT_TYPE type);
 CTObjectRef CTObjectCopy(CTAllocatorRef restrict alloc, const CTObjectRef restrict object);
 void * CTObjectValue(const CTObjectRef restrict object);
