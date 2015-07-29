@@ -140,9 +140,8 @@ void CTArrayMap(CTArrayRef restrict array, void (^mapFn)(CTObjectRef));
  * @param alloc	A properly initialised CTAllocator that was created with CTAllocatorCreate.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @param mapFn	A function to apply to every CTObject in the array.
- * @return		An eldritch void.
+ * @return		A new CTArrayRef
  **/
-
 CTArrayRef CTArrayCopyMap(CTAllocatorRef alloc, CTArrayRef restrict array, void (^mapFn)(CTObjectRef));
 
 /**
@@ -157,9 +156,25 @@ void CTArrayFilter(CTArrayRef restrict array, uint8_t (^filterFn)(CTObjectRef));
  * Copy all the elements from the array for which the filter block returns true and return the new array.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @param filterFn	A function to apply to every CTObject in the array.
- * @return		An eldritch void.
+ * @return		A new CTArrayRef
  **/
 CTArrayRef CTArrayCopyFilter(CTAllocatorRef alloc, CTArrayRef restrict array, uint8_t (^filterFn)(CTObjectRef));
+
+/**
+ * Apply a comparison function to every element of the array and return true if they all pass.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param cmpFn	A function to apply to every CTObject in the array.
+ * @return		An 8-bit boolean.
+ **/
+uint8_t CTArrayAll(CTArrayRef restrict array, uint8_t (^cmpFn)(const CTObjectRef));
+
+/**
+ * Apply a comparison function to every element of the array and return true if any of them pass.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param cmpFn	A function to apply to every CTObject in the array.
+ * @return		An 8-bit boolean.
+ **/
+uint8_t CTArrayAny(CTArrayRef restrict array, uint8_t (^cmpFn)(const CTObjectRef));
 
 /**
  * Return a CTObject encasing the CTArray passed.

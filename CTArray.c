@@ -198,6 +198,30 @@ CTArrayRef CTArrayCopyFilter(CTAllocatorRef alloc, CTArrayRef restrict array, ui
 	return newArray;
 }
 
+uint8_t CTArrayAll(CTArrayRef restrict array, uint8_t (^cmpFn)(const CTObjectRef))
+{
+	uint8_t retVal = 1;
+	
+	for (uint64_t i = 0; i < array->count && retVal; ++i)
+	{
+		retVal &= cmpFn(array->elements[i]);
+	}
+	
+	return retVal;
+}
+
+uint8_t CTArrayAny(CTArrayRef restrict array, uint8_t (^cmpFn)(const CTObjectRef))
+{
+	uint8_t retVal = 0;
+	
+	for (uint64_t i = 0; i < array->count && !retVal; ++i)
+	{
+		retVal |= cmpFn(array->elements[i]);
+	}
+	
+	return retVal;
+}
+
 CTObjectRef CTObjectWithArray(CTAllocatorRef alloc, CTArrayRef restrict array)
 {
 	return CTObjectCreate(alloc, array, CTOBJECT_TYPE_ARRAY);
