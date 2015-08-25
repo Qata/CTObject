@@ -130,19 +130,16 @@ void CTDictionaryAddEntriesFromQueryString(CTDictionaryRef restrict dict, const 
         char val[0x1000];
         
         char * pointer = strtok(queryCopy, "&");
-        if (pointer)
-        {
-            while (pointer)
-            {
-                str[0] = 0;
-                val[0] = 0;
-                memset(str, 0, sizeof(str));
-                memset(val, 0, sizeof(val));
-                sscanf(pointer, "%[^=]=%s", str, val);
-                CTDictionaryAddEntry(dict, str, CTObjectCreate(dict->alloc, CTStringCreate(dict->alloc, val), CTOBJECT_TYPE_STRING));
-                pointer = strtok(NULL, "&");
-            }
-        }
+		while (pointer)
+		{
+			str[0] = 0;
+			val[0] = 0;
+			memset(str, 0, sizeof(str));
+			memset(val, 0, sizeof(val));
+			sscanf(pointer, "%[^=]=%s", str, val);
+			CTDictionaryAddEntry(dict, str, CTObjectCreate(dict->alloc, CTStringCreate(dict->alloc, val), CTOBJECT_TYPE_STRING));
+			pointer = strtok(NULL, "&");
+		}
         CTAllocatorRelease(alloc);
     }
 }
