@@ -36,19 +36,19 @@ void CTDictionaryRelease(CTDictionaryRef dict);
  **/
 uint8_t CTDictionaryCompare(CTDictionaryRef dict1, CTDictionaryRef dict2);
 
-CTDictionaryEntryRef CTDictionaryEntryAtIndex(const CTDictionaryRef restrict dict, uint64_t index);
+CTDictionaryEntryRef CTDictionaryEntryAtIndex(const CTDictionary * restrict dict, uint64_t index);
 
-CTStringRef CTDictionaryEntryKey(const CTDictionaryEntryRef restrict entry);
-CTObjectRef CTDictionaryEntryValue(const CTDictionaryEntryRef restrict entry);
+CTStringRef CTDictionaryEntryKey(const CTDictionaryEntry * restrict entry);
+CTObjectRef CTDictionaryEntryValue(const CTDictionaryEntry * restrict entry);
 
 void CTDictionaryAddEntriesFromQueryString(CTDictionaryRef restrict dict, const char * restrict query);
 
 void CTDictionaryAddEntry(CTDictionaryRef restrict dict, const char * restrict key, CTObjectRef restrict value);
 void CTDictionaryAddEntry2(CTDictionaryRef restrict dict, CTStringRef restrict key, CTObjectRef restrict value);
 void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restrict key);
-CTObjectRef CTDictionaryObjectForKey(const CTDictionaryRef restrict dict, const char * restrict key);
-uint64_t CTDictionaryIndexOfEntry(const CTDictionaryRef restrict dict, const char * restrict key);
-uint64_t CTDictionaryCount(const CTDictionaryRef restrict dict);
+CTObjectRef CTDictionaryObjectForKey(const CTDictionary * restrict dict, const char * restrict key);
+uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key);
+uint64_t CTDictionaryCount(const CTDictionary * restrict dict);
 
 /**
  * Return a CTObject encasing the CTDictionary passed.

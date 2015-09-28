@@ -33,7 +33,7 @@ CTArrayRef CTArrayCreate(CTAllocatorRef restrict alloc);
  * @param alloc	A properly initialised CTAllocator that was created with CTAllocatorCreate.
  * @return		Returns an initialised CTArray with the same count as the array supplied. All objects in the array will also be allocated with the supplied allocator.
  **/
-CTArrayRef CTArrayCopy(CTAllocatorRef restrict alloc, CTArrayRef array);
+CTArrayRef CTArrayCopy(CTAllocatorRef restrict alloc, const CTArray * restrict array);
 
 /**
  * Create an array with the specified allocator and initialise it with a NULL-terminated list of CTObjects.
@@ -54,7 +54,7 @@ void CTArrayRelease(CTArrayRef restrict array);
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		A value indicating equality, 0 = false, 1 = true.
  **/
-uint8_t CTArrayCompare(CTArrayRef array1, CTArrayRef array2);
+uint8_t CTArrayCompare(const CTArray * array1, const CTArray * array2);
 
 /**
  * Add a CTObject to the end of the array.
@@ -80,7 +80,7 @@ void CTArrayAddEntry2(CTArrayRef restrict array, CTObjectRef restrict value);
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		A CTObject stored at the specified index, or NULL if the index oversteps the array size.
  **/
-CTObjectRef CTArrayEntry(const CTArrayRef restrict array, uint64_t index);
+CTObjectRef CTArrayEntry(const CTArray * restrict array, uint64_t index);
 
 /**
  * Delete the CTObject at the specified index.
@@ -103,7 +103,7 @@ void CTArrayEmpty(CTArrayRef restrict array);
  * @param index	The index of the object to be returned.
  * @return		The CTObject to be found at the specified index, if the index is beyond the bounds of the array, NULL is returned.
  **/
-CTObjectRef CTArrayObjectAtIndex(CTArrayRef restrict array, uint64_t index);
+CTObjectRef CTArrayObjectAtIndex(const CTArray * restrict array, uint64_t index);
 
 /**
  * Return the index of the CTObjectRef in the array.
@@ -134,7 +134,7 @@ uint64_t CTArrayCount(CTArrayRef restrict array);
  * @param mapFn	A function to apply to every CTObject in the array.
  * @return		An eldritch void.
  **/
-void CTArrayMap(CTArrayRef restrict array, void (^mapFn)(CTObjectRef));
+void CTArrayMap(CTArray * restrict array, void (^mapFn)(CTObjectRef));
 
 /**
  * Copy the array and apply a function to every element then return the new array.
@@ -143,7 +143,7 @@ void CTArrayMap(CTArrayRef restrict array, void (^mapFn)(CTObjectRef));
  * @param mapFn	A function to apply to every CTObject in the array.
  * @return		A new CTArrayRef
  **/
-CTArrayRef CTArrayCopyMap(CTAllocatorRef alloc, CTArrayRef restrict array, void (^mapFn)(CTObjectRef));
+CTArrayRef CTArrayCopyMap(CTAllocatorRef alloc, const CTArray * restrict array, void (^mapFn)(CTObjectRef));
 
 /**
  * Remove all objects in the array that the filter block doesn't return true for.
@@ -159,7 +159,7 @@ void CTArrayFilter(CTArrayRef restrict array, uint8_t (^filterFn)(CTObjectRef));
  * @param filterFn	A function to apply to every CTObject in the array.
  * @return		A new CTArrayRef
  **/
-CTArrayRef CTArrayCopyFilter(CTAllocatorRef alloc, CTArrayRef restrict array, uint8_t (^filterFn)(CTObjectRef));
+CTArrayRef CTArrayCopyFilter(CTAllocatorRef alloc, const CTArray * restrict array, uint8_t (^filterFn)(CTObjectRef));
 
 /**
  * Apply a comparison function to every element of the array and return true if they all pass.
@@ -167,7 +167,7 @@ CTArrayRef CTArrayCopyFilter(CTAllocatorRef alloc, CTArrayRef restrict array, ui
  * @param cmpFn	A function to apply to every CTObject in the array.
  * @return		An 8-bit boolean.
  **/
-uint8_t CTArrayAll(CTArrayRef restrict array, uint8_t (^cmpFn)(const CTObjectRef));
+uint8_t CTArrayAll(const CTArray * restrict array, uint8_t (^cmpFn)(const CTObject *));
 
 /**
  * Apply a comparison function to every element of the array and return true if they all pass.
@@ -176,7 +176,7 @@ uint8_t CTArrayAll(CTArrayRef restrict array, uint8_t (^cmpFn)(const CTObjectRef
  * @param cmpFn	A function to apply to every CTObject in the array.
  * @return		An 8-bit boolean.
  **/
-uint8_t CTArrayAllError(CTArrayRef restrict array, CTErrorRef * error, uint8_t (^cmpFn)(const CTObjectRef, CTErrorRef *));
+uint8_t CTArrayAllError(const CTArray * restrict array, CTErrorRef * error, uint8_t (^cmpFn)(const CTObject *, CTErrorRef *));
 
 /**
  * Apply a comparison function to every element of the array and return true if any of them pass.
@@ -184,11 +184,20 @@ uint8_t CTArrayAllError(CTArrayRef restrict array, CTErrorRef * error, uint8_t (
  * @param cmpFn	A function to apply to every CTObject in the array.
  * @return		An 8-bit boolean.
  **/
-uint8_t CTArrayAny(CTArrayRef restrict array, uint8_t (^cmpFn)(const CTObjectRef));
+uint8_t CTArrayAny(const CTArray * restrict array, uint8_t (^cmpFn)(const CTObject *));
+
+/**
+ * Create a subset of a CTArray starting at a given index
+  * @param alloc	A properly initialised CTAllocator that was created with CTAllocatorCreate.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param index	The index that the new array should start from.
+ * @return		An 8-bit boolean.
+ **/
+const CTArray * CTArraySubsetFromIndex(CTAllocatorRef alloc, const CTArray * array, uint64_t index);
 
 /**
  * Return a CTObject encasing the CTArray passed.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		The CTArray wrapped in a CTObject. The result is identical to using CTObjectCreate.
  **/
-CTObjectRef CTObjectWithArray(CTAllocatorRef alloc, CTArrayRef restrict array);
+CTObjectRef CTObjectWithArray(CTAllocatorRef alloc, CTArray * restrict array);

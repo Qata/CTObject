@@ -34,14 +34,14 @@ typedef struct
 
 inline void * CTObjectValueIfNonNilAndType(CTObjectRef object, CTOBJECT_TYPE type);
 CTObjectRef CTObjectCreate(CTAllocatorRef restrict alloc, void * ptr, CTOBJECT_TYPE type);
-CTObjectRef CTObjectCopy(CTAllocatorRef restrict alloc, const CTObjectRef restrict object);
-void * CTObjectValue(const CTObjectRef restrict object);
-CTOBJECT_TYPE CTObjectType(const CTObjectRef restrict object);
-uint64_t CTObjectSize(const CTObjectRef restrict object);
+CTObjectRef CTObjectCopy(CTAllocatorRef restrict alloc, const CTObject * restrict object);
+void * CTObjectValue(const CTObject * restrict object);
+CTOBJECT_TYPE CTObjectType(const CTObject * restrict object);
+uint64_t CTObjectSize(const CTObject * restrict object);
 /**
  * Compare two CTObject objects
  * @param array	A properly initialised CTObject that was created with CTObjectCreate* or CTObjectWith*.
  * @return		A value indicating equality, 0 = false, 1 = true.
  **/
-uint8_t CTObjectCompare(const CTObjectRef restrict object1, const CTObjectRef restrict object2);
+uint8_t CTObjectCompare(const CTObject * restrict object1, const CTObject * restrict object2);
 void CTObjectRelease(CTObjectRef object);

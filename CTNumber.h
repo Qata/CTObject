@@ -52,27 +52,27 @@ CTNumberRef CTNumberCopy(CTAllocatorRef restrict alloc, CTNumberRef number);
  * @param array	A properly initialised CTNumber that was created with CTNumberCreate*.
  * @return		A value indicating equality, 0 = false, 1 = true.
  **/
-uint8_t CTNumberCompare(const CTNumberRef restrict number1, const CTNumberRef restrict number2);
-uint8_t CTLargeNumberCompare(const CTLargeNumberRef restrict number1, const CTLargeNumberRef restrict number2);
+uint8_t CTNumberCompare(const CTNumber * restrict number1, const CTNumber * restrict number2);
+uint8_t CTLargeNumberCompare(const CTLargeNumber * restrict number1, const CTLargeNumber * restrict number2);
 
 void CTNumberRelease(CTNumberRef number);
 void CTLargeNumberRelease(CTLargeNumberRef lnumber);
 
 CTLargeNumberRef CTLargeNumberCreate(CTAllocatorRef restrict alloc, CTNumberRef base, CTNumberRef exponent);
 CTLargeNumberRef CTLargeNumberCopy(CTAllocatorRef restrict alloc, CTLargeNumberRef number);
-CTNumberRef CTLargeNumberBase(const CTLargeNumberRef restrict number);
-CTNumberRef CTLargeNumberExponent(const CTLargeNumberRef restrict number);
+CTNumberRef CTLargeNumberBase(const CTLargeNumber * restrict number);
+CTNumberRef CTLargeNumberExponent(const CTLargeNumber * restrict number);
 
 void CTNumberSetUnsignedLongValue(CTNumberRef restrict number, uint64_t longInteger);
 void CTNumberSetLongValue(CTNumberRef restrict number, int64_t longInteger);
 void CTNumberSetDoubleValue(CTNumberRef restrict number, long double floatingPoint);
 
-uint32_t CTNumberUnsignedIntValue(const CTNumberRef restrict number);
-int32_t CTNumberIntValue(const CTNumberRef restrict number);
-uint64_t CTNumberUnsignedLongValue(const CTNumberRef restrict number);
-int64_t CTNumberLongValue(const CTNumberRef restrict number);
-long double CTNumberDoubleValue(const CTNumberRef restrict number);
-CTNUMBER_TYPE CTNumberType(const CTNumberRef restrict number);
+uint32_t CTNumberUnsignedIntValue(const CTNumber * restrict number);
+int32_t CTNumberIntValue(const CTNumber * restrict number);
+uint64_t CTNumberUnsignedLongValue(const CTNumber * restrict number);
+int64_t CTNumberLongValue(const CTNumber * restrict number);
+long double CTNumberDoubleValue(const CTNumber * restrict number);
+CTNUMBER_TYPE CTNumberType(const CTNumber * restrict number);
 
 /**
  * Return a CTObject encasing the CTNumber passed.

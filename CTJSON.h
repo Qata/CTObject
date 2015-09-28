@@ -27,4 +27,4 @@ typedef uint64_t CTJSONOptions;
 #include "CTError.h"
 
 CTObjectRef CTJSONParse(CTAllocatorRef restrict alloc, const char * restrict JSON, CTJSONOptions options, CTErrorRef * error);
-CTStringRef CTJSONSerialise(CTAllocatorRef restrict alloc, const CTObjectRef restrict JSON, CTJSONOptions options);
+CTStringRef CTJSONSerialise(CTAllocatorRef restrict alloc, const CTObject * restrict JSON, CTJSONOptions options);

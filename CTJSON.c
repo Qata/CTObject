@@ -21,14 +21,14 @@
 #include <math.h>
 #include <ctype.h>
 
-CTObjectRef CTStringFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error);
-CTObjectRef CTObjectFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error);
+CTObjectRef CTStringFromJSON(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error);
+CTObjectRef CTObjectFromJSON(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error);
 void CTJSONSerialiseRecursive(CTAllocatorRef alloc, CTStringRef JSON, void * obj, CTOBJECT_TYPE type, CTJSONOptions options);
-CTObjectRef CTJSONParse2(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error);
-CTObjectRef CTDictionaryFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error);
-CTObjectRef CTLiteralFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTErrorRef * error);
-CTObjectRef CTNumberFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTErrorRef * error);
-CTObjectRef CTArrayFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error);
+CTObjectRef CTJSONParse2(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error);
+CTObjectRef CTDictionaryFromJSON(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error);
+CTObjectRef CTLiteralFromJSON(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTErrorRef * error);
+CTObjectRef CTNumberFromJSON(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTErrorRef * error);
+CTObjectRef CTArrayFromJSON(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error);
 
 
 CTObjectRef CTJSONParse(CTAllocatorRef restrict alloc, const char * restrict JSON, CTJSONOptions options, CTErrorRef * error)
@@ -41,7 +41,7 @@ CTObjectRef CTJSONParse(CTAllocatorRef restrict alloc, const char * restrict JSO
 	return retVal;
 }
 
-CTObjectRef CTJSONParse2(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error)
+CTObjectRef CTJSONParse2(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error)
 {
 	CTObjectRef retVal = CTObjectCreate(alloc, NULL, CTOBJECT_NOT_AN_OBJECT);
 	if (CTStringLength(JSON))
@@ -90,7 +90,7 @@ CTObjectRef CTJSONParse2(CTAllocatorRef alloc, const CTStringRef restrict JSON, 
 	return retVal;
 }
 
-CTObjectRef CTDictionaryFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error)
+CTObjectRef CTDictionaryFromJSON(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error)
 {
 	CTDictionaryRef dictionary = CTDictionaryCreate(alloc);
 	CTObjectRef key = NULL;
@@ -148,7 +148,7 @@ CTObjectRef CTDictionaryFromJSON(CTAllocatorRef alloc, const CTStringRef restric
 	return CTObjectCreate(alloc, dictionary, CTOBJECT_TYPE_DICTIONARY);
 }
 
-CTObjectRef CTArrayFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error)
+CTObjectRef CTArrayFromJSON(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error)
 {
     CTArrayRef array = CTArrayCreate(alloc);
 	++(*start);
@@ -169,7 +169,7 @@ CTObjectRef CTArrayFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSO
 	return CTObjectCreate(alloc, array, CTOBJECT_TYPE_ARRAY);
 }
 
-CTObjectRef CTStringFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error)
+CTObjectRef CTStringFromJSON(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTJSONOptions options, CTErrorRef * error)
 {
     CTStringRef string = CTStringCreate(alloc, "");
 	const char * JSONC = CTStringUTF8String(JSON);
@@ -280,7 +280,7 @@ CTObjectRef CTStringFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JS
 	return CTObjectWithString(alloc, string);
 }
 
-CTObjectRef CTNumberFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTErrorRef * error)
+CTObjectRef CTNumberFromJSON(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTErrorRef * error)
 {
 	assert(alloc);
 	CTObjectRef retVal = NULL;
@@ -397,7 +397,7 @@ CTObjectRef CTNumberFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JS
 	return retVal;
 }
 
-CTObjectRef CTLiteralFromJSON(CTAllocatorRef alloc, const CTStringRef restrict JSON, uint64_t * start, CTErrorRef * error)
+CTObjectRef CTLiteralFromJSON(CTAllocatorRef alloc, const CTString * restrict JSON, uint64_t * start, CTErrorRef * error)
 {
 	const char * err = "A JSON literal that was not true, false or null was found";
 	uint8_t size = 4;
@@ -434,7 +434,7 @@ CTObjectRef CTLiteralFromJSON(CTAllocatorRef alloc, const CTStringRef restrict J
 	return CTObjectCreate(alloc, NULL, CTOBJECT_NOT_AN_OBJECT);
 }
 
-CTStringRef CTJSONSerialise(CTAllocatorRef alloc, const CTObjectRef restrict JSON, CTJSONOptions options)
+CTStringRef CTJSONSerialise(CTAllocatorRef alloc, const CTObject * restrict JSON, CTJSONOptions options)
 {
     CTStringRef retVal = CTStringCreate(alloc, "");
     CTJSONSerialiseRecursive(alloc, retVal, CTObjectValue(JSON), CTObjectType(JSON), options);

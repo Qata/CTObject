@@ -35,7 +35,7 @@ CTObjectRef CTObjectCreate(CTAllocatorRef restrict alloc, void * ptr, CTOBJECT_T
     return object;
 }
 
-CTObjectRef CTObjectCopy(CTAllocatorRef restrict alloc, const CTObjectRef restrict object)
+CTObjectRef CTObjectCopy(CTAllocatorRef restrict alloc, const CTObject * restrict object)
 {
 	switch(object->type)
 	{
@@ -54,7 +54,7 @@ CTObjectRef CTObjectCopy(CTAllocatorRef restrict alloc, const CTObjectRef restri
 	}
 }
 
-uint8_t CTObjectCompare(const CTObjectRef restrict object1, const CTObjectRef restrict object2)
+uint8_t CTObjectCompare(const CTObject * restrict object1, const CTObject * restrict object2)
 {
 	if (object1 == object2)
 	{
@@ -74,7 +74,7 @@ uint8_t CTObjectCompare(const CTObjectRef restrict object1, const CTObjectRef re
 			case CTOBJECT_TYPE_LARGE_NUMBER:
 				return CTLargeNumberCompare(object1->ptr, object2->ptr);
 			case CTOBJECT_TYPE_STRING:
-				return CTStringCompare(object1->ptr, object2->ptr) == 0;
+				return CTStringIsEqual(object1->ptr, object2->ptr);
 			case CTOBJECT_TYPE_NULL:
 				return 1;
 			case CTOBJECT_NOT_AN_OBJECT:
@@ -84,19 +84,19 @@ uint8_t CTObjectCompare(const CTObjectRef restrict object1, const CTObjectRef re
 	return 0;
 }
 
-inline void * CTObjectValue(const CTObjectRef restrict object)
+inline void * CTObjectValue(const CTObject * restrict object)
 {
 	assert(object);
 	return object->ptr;
 }
 
-inline CTOBJECT_TYPE CTObjectType(const CTObjectRef restrict object)
+inline CTOBJECT_TYPE CTObjectType(const CTObject * restrict object)
 {
 	assert(object);
 	return object->type;
 }
 
-inline uint64_t CTObjectSize(const CTObjectRef restrict object)
+inline uint64_t CTObjectSize(const CTObject * restrict object)
 {
 	assert(object);
 	return object->size;

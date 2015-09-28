@@ -60,7 +60,7 @@ CTNumberRef CTNumberCopy(CTAllocatorRef restrict alloc, CTNumberRef number)
 	}
 }
 
-uint8_t CTNumberCompare(const CTNumberRef restrict number1, const CTNumberRef restrict number2)
+uint8_t CTNumberCompare(const CTNumber * restrict number1, const CTNumber * restrict number2)
 {
 	if (number1->type == number2->type)
 	{
@@ -77,7 +77,7 @@ uint8_t CTNumberCompare(const CTNumberRef restrict number1, const CTNumberRef re
 	return 0;
 }
 
-uint8_t CTLargeNumberCompare(const CTLargeNumberRef restrict number1, const CTLargeNumberRef restrict number2)
+uint8_t CTLargeNumberCompare(const CTLargeNumber * restrict number1, const CTLargeNumber * restrict number2)
 {
 	return CTNumberCompare(number1->base, number2->base) && CTNumberCompare(number1->exponent, number2->exponent);
 }
@@ -96,12 +96,12 @@ CTLargeNumberRef CTLargeNumberCopy(CTAllocatorRef restrict alloc, CTLargeNumberR
 	return CTLargeNumberCreate(alloc, CTNumberCopy(alloc, number->base), CTNumberCopy(alloc, number->exponent));
 }
 
-CTNumberRef CTLargeNumberBase(const CTLargeNumberRef restrict number)
+CTNumberRef CTLargeNumberBase(const CTLargeNumber * restrict number)
 {
 	return number->base;
 }
 
-CTNumberRef CTLargeNumberExponent(const CTLargeNumberRef restrict number)
+CTNumberRef CTLargeNumberExponent(const CTLargeNumber * restrict number)
 {
 	return number->exponent;
 }
@@ -136,7 +136,7 @@ void CTNumberSetDoubleValue(CTNumberRef restrict number, long double value)
     number->type = CTNUMBER_TYPE_DOUBLE;
 }
 
-uint32_t CTNumberUnsignedIntValue(const CTNumberRef restrict number)
+uint32_t CTNumberUnsignedIntValue(const CTNumber * restrict number)
 {
     switch (number->type)
 	{
@@ -151,7 +151,7 @@ uint32_t CTNumberUnsignedIntValue(const CTNumberRef restrict number)
     }
 }
 
-int32_t CTNumberIntValue(const CTNumberRef restrict number)
+int32_t CTNumberIntValue(const CTNumber * restrict number)
 {
     switch (number->type)
     {
@@ -166,7 +166,7 @@ int32_t CTNumberIntValue(const CTNumberRef restrict number)
     }
 }
 
-uint64_t CTNumberUnsignedLongValue(const CTNumberRef restrict number)
+uint64_t CTNumberUnsignedLongValue(const CTNumber * restrict number)
 {
     switch (number->type)
     {
@@ -181,7 +181,7 @@ uint64_t CTNumberUnsignedLongValue(const CTNumberRef restrict number)
     }
 }
 
-int64_t CTNumberLongValue(const CTNumberRef restrict number)
+int64_t CTNumberLongValue(const CTNumber * restrict number)
 {
     switch (number->type)
     {
@@ -196,7 +196,7 @@ int64_t CTNumberLongValue(const CTNumberRef restrict number)
     }
 }
 
-long double CTNumberDoubleValue(const CTNumberRef restrict number)
+long double CTNumberDoubleValue(const CTNumber * restrict number)
 {
     switch (number->type)
     {
@@ -211,7 +211,7 @@ long double CTNumberDoubleValue(const CTNumberRef restrict number)
     }
 }
 
-CTNUMBER_TYPE CTNumberType(const CTNumberRef restrict number)
+CTNUMBER_TYPE CTNumberType(const CTNumber * restrict number)
 {
 	return number->type;
 }

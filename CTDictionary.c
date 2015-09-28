@@ -22,12 +22,12 @@ CTDictionaryEntryRef CTDictionaryCreateEntry(CTAllocatorRef restrict alloc)
     return retVal;
 }
 
-CTStringRef CTDictionaryEntryKey(const CTDictionaryEntryRef restrict entry)
+CTStringRef CTDictionaryEntryKey(const CTDictionaryEntry * restrict entry)
 {
 	return entry->key;
 }
 
-CTObjectRef CTDictionaryEntryValue(const CTDictionaryEntryRef restrict entry)
+CTObjectRef CTDictionaryEntryValue(const CTDictionaryEntry * restrict entry)
 {
 	return entry->value;
 }
@@ -193,7 +193,7 @@ void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restric
 	}
 }
 
-CTDictionaryEntryRef CTDictionaryEntryAtIndex(const CTDictionaryRef restrict dict, uint64_t index)
+CTDictionaryEntryRef CTDictionaryEntryAtIndex(const CTDictionary * restrict dict, uint64_t index)
 {
 	if (index < dict->count)
 	{
@@ -202,7 +202,7 @@ CTDictionaryEntryRef CTDictionaryEntryAtIndex(const CTDictionaryRef restrict dic
 	return NULL;
 }
 
-CTObjectRef CTDictionaryObjectForKey(const CTDictionaryRef restrict dict, const char * restrict key)
+CTObjectRef CTDictionaryObjectForKey(const CTDictionary * restrict dict, const char * restrict key)
 {
 	hash_t key_hash = CTStringCharHash(key);
     for (uint64_t i = 0; i < dict->count; ++i)
@@ -215,7 +215,7 @@ CTObjectRef CTDictionaryObjectForKey(const CTDictionaryRef restrict dict, const 
     return NULL;
 }
 
-uint64_t CTDictionaryIndexOfEntry(const CTDictionaryRef restrict dict, const char * restrict key)
+uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key)
 {
     for (uint64_t i = 0; i < dict->count; ++i)
     {
@@ -227,7 +227,7 @@ uint64_t CTDictionaryIndexOfEntry(const CTDictionaryRef restrict dict, const cha
     return CT_NOT_FOUND;
 }
 
-uint64_t CTDictionaryCount(const CTDictionaryRef restrict dict)
+uint64_t CTDictionaryCount(const CTDictionary * restrict dict)
 {
 	return dict->count;
 }

@@ -56,17 +56,17 @@ void CTNetServerRelease(CTNetServerRef server)
     CTAllocatorDeallocate(server->alloc, server);
 }
 
-void CTNetServerClose(const CTNetServerRef restrict server)
+void CTNetServerClose(const CTNetServer * restrict server)
 {
     close(server->handle);
 }
 
-long CTNetServerSend(const CTNetServerRef restrict server, const char * restrict bytes, uint64_t size)
+long CTNetServerSend(const CTNetServer * restrict server, const char * restrict bytes, uint64_t size)
 {
     return send(server->handle, bytes, size, 0);
 }
 
-const char * CTNetServerReceive(const CTNetServerRef restrict server, uint64_t size)
+const char * CTNetServerReceive(const CTNetServer * restrict server, uint64_t size)
 {
     CTAllocatorRef alloc = CTAllocatorCreate();
     char * receive = CTAllocatorAllocate(alloc, size);

@@ -27,6 +27,6 @@ typedef struct
 
 CTNetServerRef CTNetServerOpen(CTAllocatorRef restrict alloc, const char * restrict address, unsigned short port);
 void CTNetServerRelease(CTNetServerRef server);
-void CTNetServerClose(const CTNetServerRef restrict server);
-long CTNetServerSend(const CTNetServerRef restrict server, const char * restrict bytes, uint64_t size);
-const char * CTNetServerReceive(const CTNetServerRef restrict server, uint64_t size);
+void CTNetServerClose(const CTNetServer * restrict server);
+long CTNetServerSend(const CTNetServer * restrict server, const char * restrict bytes, uint64_t size);
+const char * CTNetServerReceive(const CTNetServer * restrict server, uint64_t size);
