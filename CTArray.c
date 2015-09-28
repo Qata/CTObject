@@ -210,6 +210,18 @@ uint8_t CTArrayAll(CTArrayRef restrict array, uint8_t (^cmpFn)(const CTObjectRef
 	return retVal;
 }
 
+uint8_t CTArrayAllError(CTArrayRef restrict array, CTErrorRef * error, uint8_t (^cmpFn)(const CTObjectRef, CTErrorRef *))
+{
+	uint8_t retVal = 1;
+	
+	for (uint64_t i = 0; i < array->count && retVal; ++i)
+	{
+		retVal &= cmpFn(array->elements[i], error);
+	}
+	
+	return retVal;
+}
+
 uint8_t CTArrayAny(CTArrayRef restrict array, uint8_t (^cmpFn)(const CTObjectRef))
 {
 	uint8_t retVal = 0;

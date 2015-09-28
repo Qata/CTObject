@@ -9,6 +9,7 @@
 #pragma once
 #include "CTAllocator.h"
 #include "CTObject.h"
+#include "CTError.h"
 /**
  * An object that keeps an array of type independent, dynamically allocated elements.
  **/
@@ -167,6 +168,15 @@ CTArrayRef CTArrayCopyFilter(CTAllocatorRef alloc, CTArrayRef restrict array, ui
  * @return		An 8-bit boolean.
  **/
 uint8_t CTArrayAll(CTArrayRef restrict array, uint8_t (^cmpFn)(const CTObjectRef));
+
+/**
+ * Apply a comparison function to every element of the array and return true if they all pass.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param error	A CTErrorRef pointer that is passed into the comparison function.
+ * @param cmpFn	A function to apply to every CTObject in the array.
+ * @return		An 8-bit boolean.
+ **/
+uint8_t CTArrayAllError(CTArrayRef restrict array, CTErrorRef * error, uint8_t (^cmpFn)(const CTObjectRef, CTErrorRef *));
 
 /**
  * Apply a comparison function to every element of the array and return true if any of them pass.
