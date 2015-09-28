@@ -459,10 +459,20 @@ void CTJSONSerialiseRecursive(CTAllocatorRef alloc, CTStringRef JSON, void * obj
 	switch (type)
 	{
 		case CTOBJECT_TYPE_STRING:
+		{
+			CTAllocatorRef local_alloc = CTAllocatorCreate();
 			CTStringAppendCharacter(JSON, options & CTJSONOptionsSingleQuoteStrings ? '\'' : '"');
-			CTStringAppendCharacters(JSON, CTStringUTF8String(obj), CTSTRING_NO_LIMIT);
+			CTStringAppendCharacters(JSON, CTStringUTF8String(CTStringReplaceCharacterWithCharacters(local_alloc, obj, ^const char *(const char character) {
+				if (options & CTJSONOptionsSingleQuoteStrings)
+				{
+					return character == '\'' ? "\\'" : NULL;
+				}
+				return character == '"' ? "\\\"" : NULL;
+			})), CTSTRING_NO_LIMIT);
 			CTStringAppendCharacter(JSON, options & CTJSONOptionsSingleQuoteStrings ? '\'' : '"');
+			CTAllocatorRelease(local_alloc);
 			break;
+		}
 		case CTOBJECT_TYPE_NUMBER:
 		{
 			double intpart;

@@ -45,15 +45,17 @@ void CTStringAppendString(CTStringRef restrict string1, CTStringRef restrict str
 void CTStringToUpper(CTStringRef restrict string);
 void CTStringToLower(CTStringRef restrict string);
 
-const char * CTStringStringBetween(CTStringRef restrict string, const char * restrict search1, const char * restrict search2);
-uint8_t CTStringContainsString(CTStringRef restrict string, const char * restrict search);
-int8_t CTStringCompare(CTStringRef restrict string1, CTStringRef restrict string2);
-int8_t CTStringCompare2(CTStringRef restrict string1, const char * restrict string2);
-uint8_t CTStringIsEqual2(CTStringRef restrict string1, const char * restrict string2);
+const char * CTStringStringBetween(const CTStringRef restrict string, const char * restrict search1, const char * restrict search2);
+uint8_t CTStringContainsString(const CTStringRef restrict string, const char * restrict search);
+int8_t CTStringCompare(const CTStringRef restrict string1, const CTStringRef restrict string2);
+int8_t CTStringCompare2(const CTStringRef restrict string1, const char * restrict string2);
+uint8_t CTStringIsEqual(const CTStringRef restrict string1, const CTStringRef restrict string2);
+uint8_t CTStringIsEqual2(const CTStringRef restrict string1, const char * restrict string2);
+CTStringRef CTStringReplaceCharacterWithCharacters(CTAllocatorRef alloc, const CTStringRef restrict string, const char * (^repFn)(const char));
 
 /**
  * Return a CTObject encasing the CTString passed.
  * @param str	A properly initialised CTString that was created with CTStringCreate.
  * @return		The CTString wrapped in a CTObject. The result is identical to using CTObjectCreate.
  **/
-CTObjectRef CTObjectWithString(CTAllocatorRef alloc, CTStringRef restrict str);
+CTObjectRef CTObjectWithString(CTAllocatorRef alloc, const CTStringRef restrict str);
