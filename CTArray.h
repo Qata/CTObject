@@ -187,6 +187,13 @@ uint8_t CTArrayAllError(const CTArray * restrict array, CTErrorRef * error, uint
 uint8_t CTArrayAny(const CTArray * restrict array, uint8_t (^cmpFn)(const CTObject *));
 
 /**
+ * Apply a function to every element of the array.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param eachFn	A function to apply to every CTObject in the array.
+ **/
+void CTArrayEach(CTArray * restrict array, void (^eachFn)(CTObject *));
+
+/**
  * Create a subset of a CTArray starting at a given index
   * @param alloc	A properly initialised CTAllocator that was created with CTAllocatorCreate.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.

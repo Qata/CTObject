@@ -234,6 +234,14 @@ uint8_t CTArrayAny(const CTArray * restrict array, uint8_t (^cmpFn)(const CTObje
 	return retVal;
 }
 
+void CTArrayEach(CTArray * restrict array, void (^eachFn)(CTObject *))
+{
+	for (uint64_t i = 0; i < array->count; ++i)
+	{
+		eachFn(array->elements[i]);
+	}
+}
+
 const CTArray * CTArraySubsetFromIndex(CTAllocatorRef alloc, const CTArray * array, uint64_t index)
 {
 	if (index > 0)
