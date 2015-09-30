@@ -109,7 +109,7 @@ void CTArrayDeleteEntry(CTArrayRef restrict array, uint64_t index)
 	memmove(array->elements + index, array->elements + index + 1, sizeof(CTObjectRef *) * (--array->count - index));
 }
 
-uint64_t CTArrayIndexOfEntryByReference(CTArrayRef restrict array, CTObjectRef restrict value)
+uint64_t CTArrayIndexOfEntryByReference(const CTArray * restrict array, CTObjectRef restrict value)
 {
     for (uint64_t i = 0; i < array->count; ++i)
     {
@@ -121,7 +121,7 @@ uint64_t CTArrayIndexOfEntryByReference(CTArrayRef restrict array, CTObjectRef r
     return CT_NOT_FOUND;
 }
 
-uint64_t CTArrayIndexOfEntryByValue(CTArrayRef restrict array, CTObjectRef value)
+uint64_t CTArrayIndexOfEntryByValue(const CTArray * restrict array, CTObjectRef value)
 {
     for (uint64_t i = 0; i < array->count; ++i)
     {
@@ -154,7 +154,7 @@ inline CTObjectRef CTArrayObjectAtIndex(const CTArray * restrict array, uint64_t
 	return array->elements[index];
 }
 
-inline uint64_t CTArrayCount(CTArrayRef restrict array)
+inline uint64_t CTArrayCount(const CTArray * restrict array)
 {
 	return array->count;
 }

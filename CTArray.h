@@ -111,7 +111,7 @@ CTObjectRef CTArrayObjectAtIndex(const CTArray * restrict array, uint64_t index)
  * @param value	The CTObject pointer to search for in the array.
  * @return		The index of the CTObject, if not found, NULL is returned.
  **/
-uint64_t CTArrayIndexOfEntryByReference(CTArrayRef restrict array, CTObjectRef value);
+uint64_t CTArrayIndexOfEntryByReference(const CTArray * restrict array, CTObjectRef value);
 
 /**
  * Return the index of the CTObjectRef in the array.
@@ -119,14 +119,14 @@ uint64_t CTArrayIndexOfEntryByReference(CTArrayRef restrict array, CTObjectRef v
  * @param value	The CTObject to search for in the array.
  * @return		The index of the CTObject, if not found, NULL is returned.
  **/
-uint64_t CTArrayIndexOfEntryByValue(CTArrayRef restrict array, CTObjectRef value);
+uint64_t CTArrayIndexOfEntryByValue(const CTArray * restrict array, CTObjectRef value);
 
 /**
  * Return the count of the array.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
  * @return		The count of the CTArray. The result is identical to using array->count.
  **/
-uint64_t CTArrayCount(CTArrayRef restrict array);
+uint64_t CTArrayCount(const CTArray * restrict array);
 
 /**
  * Apply a function to every element of the array.
