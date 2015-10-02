@@ -159,7 +159,7 @@ inline uint64_t CTArrayCount(const CTArray * restrict array)
 	return array->count;
 }
 
-void CTArrayMap(CTArrayRef restrict array, void (^mapFn)(CTObjectRef))
+void CTArrayMapMutate(CTArrayRef restrict array, void (^mapFn)(CTObject * object))
 {
 	for (uint64_t i = 0; i < array->count; ++i)
 	{
@@ -167,27 +167,27 @@ void CTArrayMap(CTArrayRef restrict array, void (^mapFn)(CTObjectRef))
 	}
 }
 
-CTArrayRef CTArrayCopyMap(CTAllocatorRef alloc, const CTArray * restrict array, void (^mapFn)(CTObjectRef))
+CTArrayRef CTArrayMap(CTAllocatorRef alloc, const CTArray * restrict array, void (^mapFn)(CTObject * object))
 {
 	CTArrayRef newArray = CTArrayCopy(alloc, array);
-	CTArrayMap(newArray, mapFn);
+	CTArrayMapMutate(newArray, mapFn);
 	return newArray;
 }
 
-void CTArrayFilter(CTArrayRef restrict array, uint8_t (^filterFn)(CTObjectRef))
+void CTArrayFilterMutate(CTArray * restrict array, uint8_t (^filterFn)(CTObject * object))
 {
-	for (int64_t i = array->count - 1; i >= 0; --i)
+	for (uint64_t i = CTArrayCount(array); i > 0; --i)
 	{
-		if (!filterFn(array->elements[i]))
+		if (!filterFn(array->elements[i - 1]))
 		{
-			CTArrayDeleteEntry(array, i);
+			CTArrayDeleteEntry(array, i - 1);
 		}
 	}
 }
 
-CTArrayRef CTArrayCopyFilter(CTAllocatorRef alloc, const CTArray * restrict array, uint8_t (^filterFn)(CTObjectRef))
+CTArray * CTArrayFilter(CTAllocatorRef alloc, const CTArray * restrict array, uint8_t (^filterFn)(CTObject * object))
 {
-	CTArrayRef newArray = CTArrayCreate(alloc);
+	CTArray * newArray = CTArrayCreate(alloc);
 	for (uint64_t i = 0; i < array->count; ++i)
 	{
 		if (filterFn(array->elements[i]))
@@ -210,7 +210,7 @@ uint8_t CTArrayAll(const CTArray * restrict array, uint8_t (^cmpFn)(const CTObje
 	return retVal;
 }
 
-uint8_t CTArrayAllError(const CTArray * restrict array, CTErrorRef * error, uint8_t (^cmpFn)(const CTObject *, CTErrorRef *))
+uint8_t CTArrayAllError(const CTArray * restrict array, CTErrorRef * error, uint8_t (^cmpFn)(const CTObject * object, CTError ** error))
 {
 	uint8_t retVal = 1;
 	
@@ -222,7 +222,7 @@ uint8_t CTArrayAllError(const CTArray * restrict array, CTErrorRef * error, uint
 	return retVal;
 }
 
-uint8_t CTArrayAny(const CTArray * restrict array, uint8_t (^cmpFn)(const CTObject *))
+uint8_t CTArrayAny(const CTArray * restrict array, uint8_t (^cmpFn)(const CTObject * object))
 {
 	uint8_t retVal = 0;
 	
@@ -234,12 +234,30 @@ uint8_t CTArrayAny(const CTArray * restrict array, uint8_t (^cmpFn)(const CTObje
 	return retVal;
 }
 
-void CTArrayEach(CTArray * restrict array, void (^eachFn)(CTObject *))
+void CTArrayEach(const CTArray * restrict array, void (^eachFn)(CTObject * object))
 {
 	for (uint64_t i = 0; i < array->count; ++i)
 	{
 		eachFn(array->elements[i]);
 	}
+}
+
+void CTArrayReverseEach(const CTArray * restrict array, void (^eachFn)(CTObject * object))
+{
+	for (uint64_t i = CTArrayCount(array); i > 0; --i)
+	{
+		eachFn(array->elements[i - 1]);
+	}
+}
+
+CTArray * CTArrayReverse(CTAllocator * restrict alloc, const CTArray * restrict array)
+{
+	CTArray * new_array = CTArrayCreate(alloc);
+	for (uint64_t i = CTArrayCount(array); i > 0; --i)
+	{
+		CTArrayAddEntry2(new_array, CTArrayObjectAtIndex(array, i - 1));
+	}
+	return new_array;
 }
 
 const CTArray * CTArraySubsetFromIndex(CTAllocatorRef alloc, const CTArray * array, uint64_t index)
@@ -255,6 +273,15 @@ const CTArray * CTArraySubsetFromIndex(CTAllocatorRef alloc, const CTArray * arr
 		return new_array;
 	}
 	return array;
+}
+
+CTObject * CTArrayReduce(CTObject * start, const CTArray * array, CTObject * (^redFn)(CTObject * accumulator, const CTObject * object))
+{
+	for (uint64_t i = 0; i < array->count; ++i)
+	{
+		start = redFn(start, array->elements[i]);
+	}
+	return start;
 }
 
 CTObjectRef CTObjectWithArray(CTAllocatorRef alloc, CTArray * restrict array)
