@@ -143,7 +143,7 @@ void CTArrayMapMutate(CTArray * restrict array, void (^mapFn)(CTObject * object)
  * @param mapFn	A function to apply to every CTObject in the array.
  * @return		A new CTArrayRef
  **/
-CTArrayRef CTArrayMap(CTAllocatorRef alloc, const CTArray * restrict array, void (^mapFn)(CTObject * object));
+CTArrayRef CTArrayMap(CTAllocatorRef alloc, const CTArray * restrict array, CTObject * (^mapFn)(CTObject * object));
 
 /**
  * Remove all objects in the array that the filter block doesn't return true for.

@@ -167,11 +167,14 @@ void CTArrayMapMutate(CTArrayRef restrict array, void (^mapFn)(CTObject * object
 	}
 }
 
-CTArrayRef CTArrayMap(CTAllocatorRef alloc, const CTArray * restrict array, void (^mapFn)(CTObject * object))
+CTArray * CTArrayMap(CTAllocatorRef alloc, const CTArray * restrict array, CTObject * (^mapFn)(CTObject * object))
 {
-	CTArrayRef newArray = CTArrayCopy(alloc, array);
-	CTArrayMapMutate(newArray, mapFn);
-	return newArray;
+	CTArrayRef new_array = CTArrayCreate(alloc);
+	for (uint64_t i = 0; i < array->count; ++i)
+	{
+		CTArrayAddEntry2(new_array, mapFn(array->elements[i]));
+	}
+	return new_array;
 }
 
 void CTArrayFilterMutate(CTArray * restrict array, uint8_t (^filterFn)(CTObject * object))
