@@ -16,10 +16,9 @@
 #include "CTFunctions.h"
 #include "CTNumber.h"
 
-CTDictionaryEntryRef CTDictionaryCreateEntry(CTAllocatorRef restrict alloc)
+CTDictionaryEntry * CTDictionaryCreateEntry(CTAllocatorRef restrict alloc)
 {
-    CTDictionaryEntryRef retVal = CTAllocatorAllocate(alloc, sizeof(CTDictionaryEntry));
-    return retVal;
+    return CTAllocatorAllocate(alloc, sizeof(CTDictionaryEntry));
 }
 
 CTStringRef CTDictionaryEntryKey(const CTDictionaryEntry * restrict entry)
@@ -71,6 +70,22 @@ CTDictionaryRef CTDictionaryCreateWithKeysPairedWithNumbers(CTAllocatorRef restr
 	return retVal;
 }
 
+CTDictionaryRef CTDictionaryCreateWithKeysPairedWithStrings(CTAllocatorRef restrict alloc, ...)
+{
+	CTDictionaryRef retVal = CTDictionaryCreate(alloc);
+	va_list list;
+	va_start(list, alloc);
+	for (const char * key = va_arg(list, const char*); key != NULL; key = va_arg(list, const char*))
+	{
+		CTString * value = va_arg(list, CTString *);
+		if (!value)
+			break;
+		CTDictionaryAddEntry(retVal, key, CTObjectWithString(alloc, value));
+	}
+	va_end(list);
+	return retVal;
+}
+
 CTDictionaryRef CTDictionaryCopy(CTAllocatorRef restrict alloc, CTDictionaryRef dict)
 {
 	CTDictionaryRef new_dict = CTDictionaryCreate(alloc);
@@ -99,11 +114,11 @@ uint8_t CTDictionaryCompare(CTDictionaryRef dict1, CTDictionaryRef dict2)
 	{
 		for (uint64_t i = 0; i < dict1->count; ++i)
 		{
-			CTDictionaryEntryRef entry1 = CTDictionaryEntryAtIndex(dict1, i);
-			CTDictionaryEntryRef entry2 = NULL;
+			CTDictionaryEntry * entry1 = CTDictionaryEntryAtIndex(dict1, i);
+			CTDictionaryEntry * entry2 = NULL;
 			for (uint64_t j = 0; j < dict2->count; ++j)
 			{
-				CTDictionaryEntryRef entryTemp = CTDictionaryEntryAtIndex(dict2, j);
+				CTDictionaryEntry * entryTemp = CTDictionaryEntryAtIndex(dict2, j);
 				if (CTStringCompare(entry1->key, entryTemp->key) == 0 && CTObjectCompare(entry1->value, entryTemp->value))
 				{
 					entry2 = entryTemp;
@@ -152,7 +167,7 @@ void CTDictionaryAddEntry(CTDictionaryRef restrict dict, const char * restrict k
 void CTDictionaryAddEntry2(CTDictionaryRef restrict dict, CTStringRef restrict key, CTObjectRef restrict value)
 {
     uint64_t index = dict->count++;
-	assert((dict->elements = CTAllocatorReallocate(dict->alloc, dict->elements, sizeof(CTDictionaryEntryRef) * dict->count)));
+	assert((dict->elements = CTAllocatorReallocate(dict->alloc, dict->elements, sizeof(CTDictionaryEntry *) * dict->count)));
     dict->elements[index] = CTDictionaryCreateEntry(dict->alloc);
 	dict->elements[index]->key = key;
     dict->elements[index]->value = value;
@@ -172,7 +187,7 @@ void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restric
 		}
 		if (countOfKeys)
 		{
-			CTDictionaryEntryRef* retVal = CTAllocatorAllocate(dict->alloc, sizeof(CTDictionaryEntryRef) * dict->count - countOfKeys);
+			CTDictionaryEntry ** retVal = CTAllocatorAllocate(dict->alloc, sizeof(CTDictionaryEntry *) * dict->count - countOfKeys);
 			for (uint64_t i = 0, count = 0; i < dict->count; ++i)
 			{
 				if (strcmp(CTStringUTF8String(dict->elements[i]->key), key))
@@ -193,7 +208,7 @@ void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restric
 	}
 }
 
-CTDictionaryEntryRef CTDictionaryEntryAtIndex(const CTDictionary * restrict dict, uint64_t index)
+CTDictionaryEntry * CTDictionaryEntryAtIndex(const CTDictionary * restrict dict, uint64_t index)
 {
 	if (index < dict->count)
 	{
@@ -230,6 +245,25 @@ uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char
 uint64_t CTDictionaryCount(const CTDictionary * restrict dict)
 {
 	return dict->count;
+}
+
+CTObject * CTDictionaryReduce(CTObject * start, const CTDictionary * dictionary, CTObject * (^redFn)(CTObject * accumulator, const CTDictionaryEntry * entry))
+{
+	for (uint64_t i = 0; i < dictionary->count; ++i)
+	{
+		start = redFn(start, dictionary->elements[i]);
+	}
+	return start;
+}
+
+CTArray * CTDictionaryMap(CTAllocator * alloc, const CTDictionary * dictionary, CTObject * (^mapFn)(const CTDictionaryEntry * entry))
+{
+	CTArray * array = CTArrayCreate(alloc);
+	for (uint64_t i = 0; i < dictionary->count; ++i)
+	{
+		CTArrayAddEntry2(array, mapFn(dictionary->elements[i]));
+	}
+	return array;
 }
 
 CTObjectRef CTObjectWithDictionary(CTAllocatorRef alloc, CTDictionaryRef restrict dict)

@@ -157,7 +157,7 @@ CTStringRef CTBencodeSerialise(CTAllocatorRef restrict alloc, CTObjectRef restri
             CTStringAppendCharacter(retVal, 'd');
             for (uint64_t i = 0; i < CTDictionaryCount(CTObjectValue(bencoded)); ++i)
             {
-				CTDictionaryEntryRef pair = CTDictionaryEntryAtIndex(CTObjectValue(bencoded), i);
+				CTDictionaryEntry * pair = CTDictionaryEntryAtIndex(CTObjectValue(bencoded), i);
                 if (CTStringLength(CTObjectValue(bencoded)))
                 {
                     char buf[(int)ceil(log10(CTStringLength(CTDictionaryEntryKey(pair))) + 1)];

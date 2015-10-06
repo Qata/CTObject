@@ -9,23 +9,25 @@
 #include "CTAllocator.h"
 #include "CTString.h"
 #include "CTObject.h"
+#include "CTArray.h"
 
 typedef struct
 {
 	CTStringRef key;
 	CTObjectRef value;
-} CTDictionaryEntry, * CTDictionaryEntryRef;
+} CTDictionaryEntry;
 
 typedef struct
 {
     CTAllocatorRef alloc;
     uint64_t count;
-    CTDictionaryEntryRef* elements;
+    CTDictionaryEntry ** elements;
 } CTDictionary, * CTDictionaryRef;
 
 CTDictionaryRef CTDictionaryCreate(CTAllocatorRef restrict alloc);
 CTDictionaryRef CTDictionaryCreateWithKeysPairedWithValues(CTAllocatorRef restrict alloc, ...);
 CTDictionaryRef CTDictionaryCreateWithKeysPairedWithNumbers(CTAllocatorRef restrict alloc, ...);
+CTDictionaryRef CTDictionaryCreateWithKeysPairedWithStrings(CTAllocatorRef restrict alloc, ...);
 CTDictionaryRef CTDictionaryCopy(CTAllocatorRef restrict alloc, CTDictionaryRef dict);
 void CTDictionaryRelease(CTDictionaryRef dict);
 
@@ -36,7 +38,7 @@ void CTDictionaryRelease(CTDictionaryRef dict);
  **/
 uint8_t CTDictionaryCompare(CTDictionaryRef dict1, CTDictionaryRef dict2);
 
-CTDictionaryEntryRef CTDictionaryEntryAtIndex(const CTDictionary * restrict dict, uint64_t index);
+CTDictionaryEntry * CTDictionaryEntryAtIndex(const CTDictionary * restrict dict, uint64_t index);
 
 CTStringRef CTDictionaryEntryKey(const CTDictionaryEntry * restrict entry);
 CTObjectRef CTDictionaryEntryValue(const CTDictionaryEntry * restrict entry);
@@ -49,6 +51,9 @@ void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restric
 CTObjectRef CTDictionaryObjectForKey(const CTDictionary * restrict dict, const char * restrict key);
 uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key);
 uint64_t CTDictionaryCount(const CTDictionary * restrict dict);
+
+CTObject * CTDictionaryReduce(CTObject * start, const CTDictionary * dictionary, CTObject * (^redFn)(CTObject * accumulator, const CTDictionaryEntry * entry));
+CTArray * CTDictionaryMap(CTAllocator * alloc, const CTDictionary * dictionary, CTObject * (^mapFn)(const CTDictionaryEntry * entry));
 
 /**
  * Return a CTObject encasing the CTDictionary passed.
