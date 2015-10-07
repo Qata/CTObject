@@ -134,7 +134,7 @@ uint64_t CTArrayCount(const CTArray * restrict array);
  * @param mapFn	A function to apply to every CTObject in the array.
  * @return		An eldritch void.
  **/
-void CTArrayMapMutate(CTArray * restrict array, void (^mapFn)(CTObject * object));
+void CTArrayMapMutate(CTArray * restrict array, void (^mapFn)(const CTObject * object));
 
 /**
  * Copy the array and apply a function to every element then return the new array.
@@ -143,7 +143,7 @@ void CTArrayMapMutate(CTArray * restrict array, void (^mapFn)(CTObject * object)
  * @param mapFn	A function to apply to every CTObject in the array.
  * @return		A new CTArrayRef
  **/
-CTArrayRef CTArrayMap(CTAllocatorRef alloc, const CTArray * restrict array, CTObject * (^mapFn)(CTObject * object));
+CTArrayRef CTArrayMap(CTAllocatorRef alloc, const CTArray * restrict array, CTObject * (^mapFn)(const CTObject * object));
 
 /**
  * Remove all objects in the array that the filter block doesn't return true for.
@@ -151,7 +151,7 @@ CTArrayRef CTArrayMap(CTAllocatorRef alloc, const CTArray * restrict array, CTOb
  * @param filterFn	A function to apply to every CTObject in the array.
  * @return		An eldritch void.
  **/
-void CTArrayFilterMutate(CTArrayRef restrict array, uint8_t (^filterFn)(CTObject * object));
+void CTArrayFilterMutate(CTArrayRef restrict array, uint8_t (^filterFn)(const CTObject * object));
 
 /**
  * Copy all the elements from the array for which the filter block returns true and return the new array.
@@ -159,7 +159,7 @@ void CTArrayFilterMutate(CTArrayRef restrict array, uint8_t (^filterFn)(CTObject
  * @param filterFn	A function to apply to every CTObject in the array.
  * @return		A new CTArrayRef
  **/
-CTArrayRef CTArrayFilter(CTAllocatorRef alloc, const CTArray * restrict array, uint8_t (^filterFn)(CTObject * object));
+CTArrayRef CTArrayFilter(CTAllocatorRef alloc, const CTArray * restrict array, uint8_t (^filterFn)(const CTObject * object));
 
 /**
  * Apply a comparison function to every element of the array and return true if they all pass.
@@ -216,6 +216,14 @@ const CTArray * CTArraySubsetFromIndex(CTAllocatorRef alloc, const CTArray * arr
  * @param redFn	A function to apply to every CTObject in the array.
  **/
 CTObject * CTArrayReduce(CTObject * start, const CTArray * array, CTObject * (^redFn)(CTObject * accumulator, const CTObject * object));
+
+/**
+ * Apply a comparison function to every element of the array and return the first element to pass.
+ * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param cmpFn	A function to apply to every CTObject in the array.
+ * @return		An 8-bit boolean.
+ **/
+CTObject * CTArrayFirst(const CTArray * array, uint8_t (^cmpFn)(const CTObject * object));
 
 /**
  * Return a CTObject encasing the CTArray passed.
