@@ -13,7 +13,7 @@
 
 CTNull global_null = {.value = "null"};
 
-CTNullRef CTNullCreate()
+CTNullRef CTNullCreate(void)
 {
     return &global_null;
 }
