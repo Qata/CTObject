@@ -422,7 +422,7 @@ CTObjectRef CTLiteralFromJSON(CTAllocatorRef alloc, const CTString * restrict JS
 			if (CTStringLength(JSON) - *start >= size && !strncmp(JSONC + *start, "null", 4))
 			{
 				*start += size;
-				return CTObjectCreate(alloc, CTNullCreate(alloc), CTOBJECT_TYPE_NULL);
+				return CTObjectCreate(alloc, CTNullCreate(), CTOBJECT_TYPE_NULL);
 			}
 		default:
 			if (error)

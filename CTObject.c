@@ -50,7 +50,7 @@ CTObjectRef CTObjectCopy(CTAllocatorRef restrict alloc, const CTObject * restric
 		case CTOBJECT_TYPE_STRING:
 			return CTObjectWithString(alloc, CTStringCopy(alloc, object->ptr));
 		default:
-			return CTObjectWithNull(alloc, CTNullCreate(alloc));
+			return CTObjectWithNull(alloc, CTNullCreate());
 	}
 }
 

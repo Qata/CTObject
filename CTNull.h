@@ -17,5 +17,4 @@ typedef struct
 
 CTNullRef CTNullCreate(void);
 const char * CTNullValue(CTNullRef null);
-void CTNullRelease(CTNullRef null);
 CTObjectRef CTObjectWithNull(CTAllocatorRef alloc, CTNullRef restrict n);
