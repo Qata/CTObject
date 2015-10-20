@@ -278,6 +278,45 @@ CTObject * CTArrayReduce(CTObject * start, const CTArray * array, CTObject * (^r
 	return start;
 }
 
+CTNumber * CTArrayMin(CTNumber * container, const CTArray * array)
+{
+	for (uint64_t i = 0; i < array->count; ++i)
+	{
+		assert(CTObjectType(array->elements[i]) == CTOBJECT_TYPE_NUMBER);
+		const CTNumber * number = CTObjectValue(array->elements[i]);
+		if (CTNumberDoubleValue(number) < CTNumberDoubleValue(container))
+		{
+			CTNumberSetDoubleValue(container, CTNumberDoubleValue(number));
+		}
+	}
+	return container;
+}
+
+CTNumber * CTArrayMax(CTNumber * container, const CTArray * array)
+{
+	for (uint64_t i = 0; i < array->count; ++i)
+	{
+		assert(CTObjectType(array->elements[i]) == CTOBJECT_TYPE_NUMBER);
+		const CTNumber * number = CTObjectValue(array->elements[i]);
+		if (CTNumberDoubleValue(number) > CTNumberDoubleValue(container))
+		{
+			CTNumberSetDoubleValue(container, CTNumberDoubleValue(number));
+		}
+	}
+	return container;
+}
+
+CTNumber * CTArrayAverage(CTNumber * container, const CTArray * array)
+{
+	for (uint64_t i = 0; i < array->count; ++i)
+	{
+		assert(CTObjectType(array->elements[i]) == CTOBJECT_TYPE_NUMBER);
+		const CTNumber * number = CTObjectValue(array->elements[i]);
+		CTNumberSetDoubleValue(container, CTNumberDoubleValue(container) + CTNumberDoubleValue(number) / array->count);
+	}
+	return container;
+}
+
 CTObjectRef CTObjectWithArray(CTAllocatorRef alloc, CTArray * restrict array)
 {
 	return CTObjectCreate(alloc, array, CTOBJECT_TYPE_ARRAY);

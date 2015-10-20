@@ -9,7 +9,9 @@
 #pragma once
 #include "CTAllocator.h"
 #include "CTObject.h"
+#include "CTNumber.h"
 #include "CTError.h"
+
 /**
  * An object that keeps an array of type independent, dynamically allocated elements.
  **/
@@ -224,6 +226,10 @@ CTObject * CTArrayReduce(CTObject * start, const CTArray * array, CTObject * (^r
  * @return		An 8-bit boolean.
  **/
 CTObject * CTArrayFirst(const CTArray * array, uint8_t (^cmpFn)(const CTObject * object));
+
+CTNumber * CTArrayMin(CTNumber * container, const CTArray * array);
+CTNumber * CTArrayMax(CTNumber * container, const CTArray * array);
+CTNumber * CTArrayAverage(CTNumber * container, const CTArray * array);
 
 /**
  * Return a CTObject encasing the CTArray passed.
