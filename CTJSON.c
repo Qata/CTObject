@@ -125,7 +125,6 @@ CTObjectRef CTDictionaryFromJSON(CTAllocatorRef alloc, const CTString * restrict
 								*error = CTErrorCreate(alloc, err, CTJSON_PARSE_ERROR);
 							}
 							return CTObjectCreate(alloc, dictionary, CTOBJECT_TYPE_DICTIONARY);
-							break;
 					}
 					if (CTObjectNonNilAndType(key, CTOBJECT_TYPE_STRING) && value)
 					{
