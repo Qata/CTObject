@@ -552,3 +552,77 @@ void CTJSONSerialiseRecursive(CTAllocatorRef alloc, CTStringRef JSON, void * obj
 		}
 	}
 }
+size_t fileSize(const char * restrict file)
+{
+	if (access(file, F_OK | R_OK) != -1)
+	{
+		FILE * f = fopen(file, "r");
+		if (f)
+		{
+			fseek(f, 0, SEEK_END);
+			long fsize = ftell(f);
+			if (fsize >= 0)
+			{
+				return fsize;
+			}
+			fclose(f);
+		}
+	}
+	return 0;
+}
+
+size_t readFile(const char * restrict file, char * buffer, size_t buflen)
+{
+	if (access(file, F_OK | R_OK) != -1)
+	{
+		FILE * f = fopen(file, "r");
+		if (f)
+		{
+			size_t bytesRead = 0;
+			if ((bytesRead = fread(buffer, 1, buflen, f)) > 0)
+			{
+				return bytesRead;
+			}
+			fclose(f);
+		}
+	}
+	return 0;
+}
+
+CTObject * loadJSONWithAllocatorFromPath(CTAllocator * alloc, const char * restrict path)
+{
+	CTObject * ret_val = NULL;
+	size_t file_size = fileSize(path);
+	if (file_size > 0)
+	{
+		char buffer[file_size + 1];
+		if (readFile(path, buffer, file_size) > 0)
+		{
+			CTError * error = NULL;
+			CTObject * JSON_object = CTJSONParse(alloc, buffer, 0, &error);
+			if (!error)
+			{
+				ret_val = JSON_object;
+			}
+		}
+	}
+	return ret_val;
+}
+
+void saveJSONToPath(const CTString * restrict content, const char * restrict path)
+{
+	FILE * f = fopen(path, "w");
+	if (f)
+	{
+		fputs(CTStringUTF8String(content), f);
+		fclose(f);
+	}
+}
+
+void saveCTObjectAsJSONToPath(const CTObject * restrict content, const char * restrict path)
+{
+	CTAllocator * alloc = CTAllocatorCreate();
+	CTString * JSON = CTJSONSerialise(alloc, content, 0);
+	saveJSONToPath(JSON, path);
+	CTAllocatorRelease(alloc);
+}

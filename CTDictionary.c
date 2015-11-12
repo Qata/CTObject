@@ -173,6 +173,14 @@ void CTDictionaryAddEntry2(CTDictionaryRef restrict dict, CTStringRef restrict k
     dict->elements[index]->value = value;
 }
 
+void CTDictionaryCopyEntries(CTDictionaryRef restrict dest, CTDictionaryRef restrict src)
+{
+	for (uint64_t i = 0; i < src->count; i++)
+	{
+		CTDictionaryAddEntry2(dest, src->elements[i]->key, src->elements[i]->value);
+	}
+}
+
 void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restrict key)
 {
     if (dict->count)
