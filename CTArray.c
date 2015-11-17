@@ -87,10 +87,10 @@ CTObjectRef CTArrayEntry(const CTArray * restrict array, uint64_t index)
 }
 
 
-void CTArrayModifyEntry(CTArrayRef restrict array, uint64_t index, CTObjectRef restrict new_value)
+void CTArraySetObjectAtIndex(CTArray * restrict array, uint64_t index, CTObjectRef restrict object)
 {
-	assert(array->count > index);
-	array->elements[index] = new_value;
+	assert(index < array->count);
+	array->elements[index] = object;
 }
 
 void CTArrayDeleteEntry(CTArrayRef restrict array, uint64_t index)

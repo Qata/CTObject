@@ -173,11 +173,27 @@ void CTDictionaryAddEntry2(CTDictionaryRef restrict dict, CTStringRef restrict k
     dict->elements[index]->value = value;
 }
 
-void CTDictionaryCopyEntries(CTDictionaryRef restrict dest, CTDictionaryRef restrict src)
+CTDictionary * CTDictionaryMerge(CTAllocator * alloc, const CTDictionary * restrict src1, const CTDictionary * restrict src2)
 {
-	for (uint64_t i = 0; i < src->count; i++)
+	CTDictionary * new_dictionary = CTDictionaryCreate(alloc);
+	
+	for (uint64_t index = 0; index < CTDictionaryCount(src1); ++index)
 	{
-		CTDictionaryAddEntry2(dest, src->elements[i]->key, src->elements[i]->value);
+		CTDictionaryAddEntry(new_dictionary, src1->elements[index]->key->characters, CTObjectCopy(alloc, src1->elements[index]->value));
+	}
+	for (uint64_t index = 0; index < CTDictionaryCount(src2); ++index)
+	{
+		CTDictionaryAddEntry(new_dictionary, src2->elements[index]->key->characters, CTObjectCopy(alloc, src2->elements[index]->value));
+	}
+	
+	return new_dictionary;
+}
+
+void CTDictionaryMergeMutate(CTDictionary * restrict dest, const CTDictionary * restrict src)
+{
+	for (uint64_t index = 0; index < CTDictionaryCount(src); ++index)
+	{
+		CTDictionaryAddEntry(dest, src->elements[index]->key->characters, CTObjectCopy(dest->alloc, src->elements[index]->value));
 	}
 }
 
@@ -185,14 +201,12 @@ void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restric
 {
     if (dict->count)
 	{
-		int countOfKeys = 0;
+		uint64_t countOfKeys = 0;
 		for (uint64_t i = 0; i < dict->count; ++i)
 		{
-			if (!strcmp(CTStringUTF8String(dict->elements[i]->key), key))
-			{
-				++countOfKeys;
-			}
+			countOfKeys += (!strcmp(CTStringUTF8String(dict->elements[i]->key), key));
 		}
+		
 		if (countOfKeys)
 		{
 			CTDictionaryEntry ** retVal = CTAllocatorAllocate(dict->alloc, sizeof(CTDictionaryEntry *) * dict->count - countOfKeys);

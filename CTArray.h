@@ -92,7 +92,14 @@ CTObjectRef CTArrayEntry(const CTArray * restrict array, uint64_t index);
  **/
 void CTArrayDeleteEntry(CTArrayRef restrict array, uint64_t index);
 
-void CTArrayModifyEntry(CTArrayRef restrict array, uint64_t index, CTObjectRef restrict new_value);
+/**
+ * Set the CTObject at the specified index.
+ * @param array		A properly initialised CTArray that was created with CTArrayCreate*.
+ * @param index		The index of the object to be set.
+ * @param object	The object to be set.
+ * @return			A dark void, filled with eldritch creatures, the sight of which would cause any human to lose all connections to reality.
+ **/
+void CTArraySetObjectAtIndex(CTArray * restrict array, uint64_t index, CTObjectRef restrict object);
 
 /**
  * Delete every CTObject in the specified array.

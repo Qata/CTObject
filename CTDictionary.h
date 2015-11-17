@@ -47,12 +47,14 @@ void CTDictionaryAddEntriesFromQueryString(CTDictionaryRef restrict dict, const 
 
 void CTDictionaryAddEntry(CTDictionaryRef restrict dict, const char * restrict key, CTObjectRef restrict value);
 void CTDictionaryAddEntry2(CTDictionaryRef restrict dict, CTStringRef restrict key, CTObjectRef restrict value);
-void CTDictionaryCopyEntries(CTDictionaryRef restrict dest, CTDictionaryRef restrict src);
 void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restrict key);
 CTObjectRef CTDictionaryObjectForKey(const CTDictionary * restrict dict, const char * restrict key);
 uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key);
 uint64_t CTDictionaryCount(const CTDictionary * restrict dict);
 
+void CTDictionaryMergeMutate(CTDictionary * restrict dest, const CTDictionary * restrict src);
+
+CTDictionary * CTDictionaryMerge(CTAllocator * alloc, const CTDictionary * restrict src1, const CTDictionary * restrict src2);
 CTObject * CTDictionaryReduce(CTObject * start, const CTDictionary * dictionary, CTObject * (^redFn)(CTObject * accumulator, const CTDictionaryEntry * entry));
 CTArray * CTDictionaryMap(CTAllocator * alloc, const CTDictionary * dictionary, CTObject * (^mapFn)(const CTDictionaryEntry * entry));
 
