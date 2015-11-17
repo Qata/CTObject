@@ -47,6 +47,7 @@ void CTDictionaryAddEntriesFromQueryString(CTDictionaryRef restrict dict, const 
 
 void CTDictionaryAddEntry(CTDictionaryRef restrict dict, const char * restrict key, CTObjectRef restrict value);
 void CTDictionaryAddEntry2(CTDictionaryRef restrict dict, CTStringRef restrict key, CTObjectRef restrict value);
+void CTDictionaryCopyEntries(CTDictionaryRef restrict dest, CTDictionaryRef restrict src);
 void CTDictionaryDeleteEntry(CTDictionaryRef restrict dict, const char * restrict key);
 CTObjectRef CTDictionaryObjectForKey(const CTDictionary * restrict dict, const char * restrict key);
 uint64_t CTDictionaryIndexOfEntry(const CTDictionary * restrict dict, const char * restrict key);

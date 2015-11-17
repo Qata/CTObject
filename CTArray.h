@@ -92,6 +92,8 @@ CTObjectRef CTArrayEntry(const CTArray * restrict array, uint64_t index);
  **/
 void CTArrayDeleteEntry(CTArrayRef restrict array, uint64_t index);
 
+void CTArrayModifyEntry(CTArrayRef restrict array, uint64_t index, CTObjectRef restrict new_value);
+
 /**
  * Delete every CTObject in the specified array.
  * @param array	A properly initialised CTArray that was created with CTArrayCreate*.
