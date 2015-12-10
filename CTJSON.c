@@ -554,39 +554,33 @@ void CTJSONSerialiseRecursive(CTAllocatorRef alloc, CTStringRef JSON, void * obj
 }
 size_t fileSize(const char * restrict file)
 {
+	long fsize = 0;
 	if (access(file, F_OK | R_OK) != -1)
 	{
 		FILE * f = fopen(file, "r");
 		if (f)
 		{
 			fseek(f, 0, SEEK_END);
-			long fsize = ftell(f);
-			if (fsize >= 0)
-			{
-				return fsize;
-			}
+			fsize = ftell(f);
 			fclose(f);
 		}
 	}
-	return 0;
+	return fsize;
 }
 
 size_t readFile(const char * restrict file, char * buffer, size_t buflen)
 {
+	size_t bytesRead = 0;
 	if (access(file, F_OK | R_OK) != -1)
 	{
 		FILE * f = fopen(file, "r");
 		if (f)
 		{
-			size_t bytesRead = 0;
-			if ((bytesRead = fread(buffer, 1, buflen, f)) > 0)
-			{
-				return bytesRead;
-			}
+			bytesRead = fread(buffer, 1, buflen, f);
 			fclose(f);
 		}
 	}
-	return 0;
+	return bytesRead;
 }
 
 CTObject * loadJSONWithAllocatorFromPath(CTAllocator * alloc, const char * restrict path)
