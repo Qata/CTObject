@@ -620,3 +620,8 @@ void saveCTObjectAsJSONToPath(const CTObject * restrict content, const char * re
 	saveJSONToPath(JSON, path);
 	CTAllocatorRelease(alloc);
 }
+
+void renameJSONFile(const char * restrict path1, const char * restrict path2)
+{
+	rename(path1, path2);
+}

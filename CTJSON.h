@@ -31,3 +31,4 @@ CTStringRef CTJSONSerialise(CTAllocatorRef restrict alloc, const CTObject * rest
 CTObject * loadJSONWithAllocatorFromPath(CTAllocator * alloc, const char * restrict path);
 void saveJSONToPath(const CTString * restrict content, const char * restrict path);
 void saveCTObjectAsJSONToPath(const CTObject * restrict content, const char * restrict path);
+void renameJSONFile(const char * restrict path1, const char * restrict path2);
