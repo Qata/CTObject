@@ -28,6 +28,7 @@ typedef uint64_t CTJSONOptions;
 
 CTObjectRef CTJSONParse(CTAllocatorRef restrict alloc, const char * restrict JSON, CTJSONOptions options, CTErrorRef * error);
 CTStringRef CTJSONSerialise(CTAllocatorRef restrict alloc, const CTObject * restrict JSON, CTJSONOptions options);
+CTStringRef CTJSONSerialiseAndSendOverNetwork(CTAllocatorRef restrict alloc, const CTObject * restrict JSON, CTJSONOptions options, int fd);
 CTObject * loadJSONWithAllocatorFromPath(CTAllocator * alloc, const char * restrict path);
 void saveJSONToPath(const CTString * restrict content, const char * restrict path);
 void saveCTObjectAsJSONToPath(const CTObject * restrict content, const char * restrict path);
