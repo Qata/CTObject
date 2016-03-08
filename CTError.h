@@ -17,5 +17,6 @@ typedef struct
 } CTError, * CTErrorRef;
 
 CTErrorRef CTErrorCreate(CTAllocatorRef alloc, const char * restrict error, int code);
+void CTErrorAppend(CTErrorRef previous_error, CTErrorRef new_error);
 void CTErrorRelease(CTErrorRef restrict error);
 const CTString * CTErrorGetErrorString(CTErrorRef restrict error);

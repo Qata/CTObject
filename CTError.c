@@ -18,6 +18,12 @@ CTErrorRef CTErrorCreate(CTAllocatorRef alloc, const char * restrict error, int 
     return retVal;
 }
 
+void CTErrorAppend(CTErrorRef previous_error, CTErrorRef new_error)
+{
+	CTStringAppendCharacters(previous_error->error, ", ", CTSTRING_NO_LIMIT);
+	CTStringAppendString(previous_error->error, new_error->error);
+}
+
 void CTErrorRelease(CTErrorRef error)
 {
     CTStringRelease(error->error);
