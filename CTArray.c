@@ -2,8 +2,8 @@
 //  CTArray.c
 //  CTObject
 //
-//  Created by Carlo Tortorella on 22/10/13.
-//  Copyright (c) 2013 Carlo Tortorella. All rights reserved.
+//  Created by Charlotte Tortorella on 22/10/13.
+//  Copyright (c) 2013 Charlotte Tortorella. All rights reserved.
 //
 
 #include <stdio.h>
